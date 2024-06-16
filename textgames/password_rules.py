@@ -19,6 +19,8 @@
 # \item Rule 11 (hard): sum of all roman numbers equal to ...
 # \item Rule 12 (hard): the number of capital letters should be less than ...
 
+import random
+from enum import Enum
 
 class RuleType(Enum):
     NONREPEATABLE = 1 # non repeatable
@@ -266,7 +268,7 @@ class ConsistContinentOfRule(Rule):
 
 
 
-    the text has the synonym word of \textbf{[string]}
+    # the text has the synonym word of \textbf{[string]}
 
 
 # Rule 12

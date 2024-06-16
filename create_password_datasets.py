@@ -2,7 +2,7 @@ import json
 import random
 from enum import Enum
 
-from textgames.rules import generate_rules
+from textgames.password_rules import generate_rules
 
 def __main__():
     generate_rules()
