@@ -20,6 +20,7 @@
 # \item Rule 12 (hard): the number of capital letters should be less than ...
 
 import random
+from sympy.parsing.sympy_parser import parse_expr
 from enum import Enum
 
 class RuleType(Enum):
@@ -266,12 +267,45 @@ class ConsistContinentOfRule(Rule):
         return f"the text has the continent of {self.str}"
     
 
-
-
-    # the text has the synonym word of \textbf{[string]}
-
-
 # Rule 12
+class ConsistSynonymOfRule(Rule):
+    def __init__(self, args):
+        self.str = args["str"]
+        self.words = args["words"]
+        self.country_to_continent_map = args["word_to_synonym_map"]
+
+    def generate_rule(self, args):
+        # randomly create value
+        value = self.words[random.randint(0, len(self.words)-1)]
+        return {"str": value}
+    
+    def validate(self, input):
+        return self.country_to_continent_map[self.str].lower() in input.lower()
+    
+    def generate_prompt(self):
+        return f"the text has the synonym of {self.str}"
+
+
+# Rule 13
+class ConsistAntonymOfRule(Rule):
+    def __init__(self, args):
+        self.str = args["str"]
+        self.words = args["words"]
+        self.country_to_continent_map = args["word_to_antonym_map"]
+
+    def generate_rule(self, args):
+        # randomly create value
+        value = self.words[random.randint(0, len(self.words)-1)]
+        return {"str": value}
+    
+    def validate(self, input):
+        return self.country_to_continent_map[self.str].lower() in input.lower()
+    
+    def generate_prompt(self):
+        return f"the text has the antonym of {self.str}"
+
+
+# Rule 14
 class ArithmeticSumAllDigitsRule(Rule):
     def __init__(self, args):
         self.num = args["num"]
@@ -288,6 +322,30 @@ class ArithmeticSumAllDigitsRule(Rule):
             if "0" <= c <= "9":
                 value += int(c)
         return self.num == value
+    
+
+# Rule 15
+class ArithmeticConsistExpressionRule(Rule):
+    def __init__(self, args):
+        self.num = args["num"]
+        self.num_operator = args["num_operator"]
+
+    def generate_rule(self, args):
+        # randomly create value
+        operators = ["+", '-', "/", "*"]
+        num_operator = random.randint(1, self.num_operator)
+        operation = ""
+        for i in range(num_operator):
+            if i == 0:
+                operation = str(random.randint(0, 9))
+            next_num = random.randint(0, 9)
+            operation += " " + operators[random.randint(0,3)] + " " + next_num
+        
+        value = parse_expr(operation)
+        return {"value": value, "operation": operation}
+
+    def validate(self, args):
+        return str(self.num) in args["str"]
 
 
 COUNT_RULES = {
@@ -316,10 +374,6 @@ ARITHMETIC_RULES = {
     "arithmetic_sum_all_digits": [ArithmeticSumAllDigitsRule, RuleType.NONREPEATABLE],
     "arithmetic_consist_expression": [ArithmeticConsistExpressionRule, RuleType.REPEATABLE],
     # complicated rule, 2^2, some other formula
-}
-
-VISION_TEXT_RULES = {
-
 }
 
 def generate_rules():
