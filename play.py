@@ -2,6 +2,7 @@ from textgames.password_game.game import PasswordGame
 
 if __name__ == "__main__":
     print("#" * 20)
+    print("    Welcome to")
     print("   🎮 TextGames")
     print("#" * 20)
     print("Game options:")
