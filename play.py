@@ -1,5 +1,6 @@
 from textgames.password_game.password_game import PasswordGame
 from textgames.sudoku.sudoku import Sudoku
+from textgames.bracket_game.bracket_game import BracketGame
 
 if __name__ == "__main__":
     print("#" * 20)
@@ -9,7 +10,7 @@ if __name__ == "__main__":
     print("Games:")
     print("1. 🔑\tPassword Game")
     print("2. 🧩\tSudoku")
-    print("3. 🗳️\tBracket Game [Under construction]")
+    print("3. 🗳️\tBracket Game")
     print("#" * 20)
 
     game = None
@@ -26,6 +27,9 @@ if __name__ == "__main__":
             game.generate_new_game(size=9, characters=["1", "2", "3", "4", "5", "6", "7", "8", "9"],
                                    empty_character="_", empty_ratio=0.1)
             game.print_sudoku()
+        elif user_input == "3":
+            game = BracketGame()
+            game.generate_new_game(num_words=5, num_rules=3, depth=2)
         else:
             print("The option is not available.")
             game = None

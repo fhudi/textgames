@@ -113,10 +113,10 @@ class PasswordGame(BaseGame):
 
         self.rule_id_list = [key for key in PasswordGame.RULES]
 
-    def generate_new_game(self, num_rules=1):
+    def generate_new_game(self, *args, **kwargs) -> None:
         self.rules = []
         self.rules_ids = []
-        self.num_rules = num_rules
+        self.num_rules = kwargs["num_rules"]
 
         # rule = ConsistCapitalOfRule({"words": self.COUNTRY_LIST, "country_to_capital_map": self.COUNTRY_TO_CAPITAL_MAP})
         # rule.str = "indonesia"
@@ -141,16 +141,16 @@ class PasswordGame(BaseGame):
             output = rule.generate_rule(output)
         return output
 
-    def get_prompt(self):
+    def get_prompt(self) -> str:
         prompt = "Please write a text string without any space by following a set of given rules. Please write only the answer and follow the following criteria:\n"
         for rule in self.rules:
             prompt += "- " + rule.generate_prompt() + "\n"
         return prompt
     
-    def validate(self, input):
+    def validate(self, answer: str) -> bool:
         res = True
         for rule in self.rules:
-            if not rule.validate(input):
-                print(input, " is not satisfying this rule:", rule.generate_prompt())
+            if not rule.validate(answer):
+                print(answer, " is not satisfying this rule:", rule.generate_prompt())
                 res = False
         return res
