@@ -23,8 +23,8 @@ class PasswordGame(BaseGame):
         "arithmetic_consist_math_expression": [ArithmeticMathWordExpressionRule, RuleType.REPEATABLE],
     }
 
-    def __init__(self, num_rules=1, rules_args=None):
-        self.num_rules = num_rules
+    def __init__(self, rules_args=None):
+        self.num_rules = None
         self.rules_ids = []
         self.rules = []
 
@@ -118,9 +118,10 @@ class PasswordGame(BaseGame):
 
         self.rule_id_list = [key for key in PasswordGame.RULES]
 
-    def generate_new_game(self):
+    def generate_new_game(self, num_rules=1):
         self.rules = []
         self.rules_ids = []
+        self.num_rules = num_rules
 
         # rule = ConsistCapitalOfRule({"words": self.COUNTRY_LIST, "country_to_capital_map": self.COUNTRY_TO_CAPITAL_MAP})
         # rule.str = "indonesia"

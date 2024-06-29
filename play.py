@@ -10,22 +10,20 @@ if __name__ == "__main__":
     print("1. 🔑 Password Games")
     print("2. 🧩 Sudoku [under construction]")
     print("#" * 20)
-    print(">")
-    user_input = str(input())
+    user_input = str(input(f"Game option> "))
     if user_input == "1":
         while True:
-            game = PasswordGame(num_rules=5)
-            game.generate_new_game()
+            game = PasswordGame()
+            game.generate_new_game(num_rules=5)
 
             solved = False
 
             while not solved:
                 print(game.get_prompt())
-                print("guess>")
-                user_input = str(input())
+                user_input = str(input(f"Guess> "))
                 if game.validate(user_input):
-                    print("correct guess")
+                    print("Correct guess")
                     solved=True
                 else:
-                    print("bad guess")
+                    print("Bad guess")
 
