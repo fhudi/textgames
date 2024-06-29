@@ -44,7 +44,12 @@ class Sudoku(BaseGame):
                     return False
         return self.is_valid_sudoku(mat)
 
-    def generate_new_game(self, size=4, characters=["1","2","3","4"], empty_character="_", empty_ratio=0.5):
+    def generate_new_game(self, *args, **kwargs) -> None:
+        size=kwargs["size"]
+        characters=kwargs["characters"]
+        empty_character=kwargs["empty_character"]
+        empty_ratio=kwargs["empty_ratio"]
+
         assert size == len(characters)
         
         self.size = size
@@ -161,9 +166,10 @@ class Sudoku(BaseGame):
 
     def print_sudoku(self):
         for i in range(self.size):
+            string = ""
             for j in range(self.size):
-                print(self.mat[i][j], end=" ")
-            print()
+                string += self.mat[i][j]
+            print(string)
 
     def get_prompt(self):
         characters = ",".join(c for c in self.characters)
