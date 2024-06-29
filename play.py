@@ -23,9 +23,6 @@ if __name__ == "__main__":
         elif user_input == "2":
             game = Sudoku()
             game.generate_new_game(size=4, characters=["1","2","3","4"], empty_character="_", empty_ratio=0.2)
-            # game.print_sudoku()
-            # game.generate_new_game(size=9, characters=["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-            #                        empty_character="_", empty_ratio=0.1)
             game.print_sudoku()
         elif user_input == "3":
             game = BracketGame()
@@ -37,7 +34,6 @@ if __name__ == "__main__":
     solved = False
     print(game.get_prompt())
     while not solved:
-        # user_input = str(input(f"Guess> "))
         contents = []
         user_input = ""
         count = 0
