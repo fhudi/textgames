@@ -9,7 +9,7 @@ class PasswordGame(BaseGame):
         "count_num_upper_char": [CountNumUppercaseCharRule, RuleType.NONREPEATABLE, 3],
         "count_num_lower_char": [CountNumLowercaseCharRule, RuleType.NONREPEATABLE, 3],
         "count_num_specific_char": [CountNumSpecificCharRule, RuleType.REPEATABLE, 2],
-        "count_num_latin_alpha": [CountNumLatinAlphaRule, RuleType.NONREPEATABLE, 4],
+        "count_num_english_alpha": [CountNumEnglishAlphaRule, RuleType.NONREPEATABLE, 4],
         "count_num_digit": [CountNumDigitRule, RuleType.NONREPEATABLE, 4],
         "count_num_special_char": [CountNumSpecialCharRule, RuleType.NONREPEATABLE, 4],
         "count_num_romans_digit": [CountNumRomansDigitRule, RuleType.NONREPEATABLE, 4],
@@ -18,7 +18,7 @@ class PasswordGame(BaseGame):
         "consist_continent_of": [ConsistContinentOfRule, RuleType.REPEATABLE, 5],
         # "consist_synonym_of": [ConsistSynonymOfRule, RuleType.REPEATABLE, 5],
         # "consist_antonym_of": [ConsistAntonymOfRule, RuleType.REPEATABLE, 5],
-        "arithmetic_sum_all_digits": [ArithmeticSumAllDigitsRule, RuleType.NONREPEATABLE, 2],
+        # "arithmetic_sum_all_digits": [ArithmeticSumAllDigitsRule, RuleType.NONREPEATABLE, 2],
         "arithmetic_consist_math_expression": [ArithmeticMathExpressionRule, RuleType.REPEATABLE, 5],
         "arithmetic_consist_math_expression": [ArithmeticMathWordExpressionRule, RuleType.REPEATABLE, 5],
     }
@@ -74,7 +74,7 @@ class PasswordGame(BaseGame):
                     "min_extra_num_char": 1, "max_extra_num_char": 5
                 },
                 "count_num_specific_char": {},
-                "count_num_latin_alpha": {
+                "count_num_english_alpha": {
                     "min_extra_num_char": 1, "max_extra_num_char": 5
                 },
                 "count_num_digit": {
@@ -105,7 +105,7 @@ class PasswordGame(BaseGame):
                 #     "words": ANTONYM_WORD_LIST,
                 #     "word_to_antonym_map": WORD_TO_ANTONYM_MAP
                 # },
-                "arithmetic_sum_all_digits": {},
+                # "arithmetic_sum_all_digits": {},
                 "arithmetic_consist_math_expression": {
                     "max_num_operator": 5
                 },
@@ -145,7 +145,7 @@ class PasswordGame(BaseGame):
         return output
 
     def get_prompt(self):
-        prompt = "Please construct a text string with the following criteria and print only the string if there is such a string otherwise print None:\n"
+        prompt = "Please write a text string without any space by following a set of given rules. Please write only the answer and follow the following criteria:\n"
         for rule in self.rules:
             prompt += "- " + rule.generate_prompt() + "\n"
         return prompt

@@ -66,21 +66,16 @@ class CountNumUppercaseCharRule(Rule):
 # Rule 3
 class CountNumLowercaseCharRule(Rule):
     def __init__(self, args):
-        self.extra_num_char = random.randint(args["min_extra_num_char"], args["max_extra_num_char"])
         self.num_char = None
     
     def generate_rule(self, input):
-        count = 0
+        counts = 0
         for c in input:
             if "a" <= c <= "z":
-                count += 1
-        
-        output = input
-        for _ in range(self.extra_num_char):
-            output += chr(ord("a") + random.randint(0, 25))
-        self.num_char = count + self.extra_num_char
+                counts += 1
 
-        return output
+        self.num_char = counts
+        return input
 
     def validate(self, input):
         count = 0
@@ -126,7 +121,7 @@ class CountNumSpecificCharRule(Rule):
 
 
 # Rule 5
-class CountNumLatinAlphaRule(Rule):
+class CountNumEnglishAlphaRule(Rule):
     def __init__(self, args):
         self.extra_num_char = random.randint(args["min_extra_num_char"], args["max_extra_num_char"])
         self.num_char = None
@@ -159,7 +154,7 @@ class CountNumLatinAlphaRule(Rule):
         return counts == self.num_char
     
     def generate_prompt(self):
-        return f"the text has {self.num_char} latin character"
+        return f"the text has {self.num_char} english character"
 
 
 # Rule 6
@@ -258,7 +253,7 @@ class CountNumRomansDigitRule(Rule):
         return num_roman_char == self.num_char
     
     def generate_prompt(self):
-        return f"the text has {self.num_char} number of roman digits"
+        return f"the text has {self.num_char} roman digits, including 'I', 'V', 'X', 'L', 'C', 'D'"
 
 
 # Rule 9
@@ -350,25 +345,25 @@ class ConsistAntonymOfRule(Rule):
         return f"the text has the antonym of {self.str}"
 
 
-# Rule 14
-class ArithmeticSumAllDigitsRule(Rule):
-    def __init__(self, args):
-        self.num = random.randint(0, 10)
+# # Rule 14
+# class ArithmeticSumAllDigitsRule(Rule):
+#     def __init__(self, args):
+#         self.num = random.randint(0, 10)
 
-    def generate_rule(self, input):
-        output = input + str(self.num)
-        return output
+#     def generate_rule(self, input):
+#         output = input + str(self.num)
+#         return output
 
-    def validate(self, input):
-        value = 0
-        s = input
-        for c in s:
-            if "0" <= c <= "9":
-                value += int(c)
-        return self.num == value
+#     def validate(self, input):
+#         value = 0
+#         s = input
+#         for c in s:
+#             if "0" <= c <= "9":
+#                 value += int(c)
+#         return self.num == value
     
-    def generate_prompt(self):
-        return "the text has the sum of all numeral digits"
+#     def generate_prompt(self):
+#         return "the text has the sum of all numeral digits"
     
 
 # Rule 15

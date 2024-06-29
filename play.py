@@ -13,7 +13,7 @@ if __name__ == "__main__":
     user_input = str(input(f"Game option> "))
     if user_input == "1":
         game = PasswordGame()
-        possible_answer = game.generate_new_game(num_rules=5)
+        possible_answer = game.generate_new_game(num_rules=3)
         solved = False
 
         print(game.get_prompt())
