@@ -35,26 +35,16 @@ if __name__ == "__main__":
     print(game.get_prompt())
     while not solved:
         contents = []
-        user_input = ""
-        count = 0
         while True:
             try:
-                if count == 0:
-                    line = str(input(f"Guess> \t"))
-                    count += 1
-                else:
-                    line = str(input("\t"))
+                line = str(input("" if contents else f"Guess>\n"))
                 if len(line) == 0:
                     break
             except EOFError:
                 break
             contents.append(line)
-        
-        for i in range(len(contents)):
-            if i > 0:
-                user_input += "\n"
-            user_input += contents[i]
 
+        user_input = '\n'.join(contents)
         if game.validate(user_input):
             print("Correct guess")
             solved = True
