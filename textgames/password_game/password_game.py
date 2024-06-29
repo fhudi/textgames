@@ -23,7 +23,7 @@ class PasswordGame(BaseGame):
         "arithmetic_consist_math_expression": [ArithmeticMathWordExpressionRule, RuleType.REPEATABLE, 5],
     }
 
-    def __init__(self, rules_args=None):
+    def __init__(self):
         self.num_rules = None
         self.rules_ids = []
         self.rules = []
@@ -64,55 +64,52 @@ class PasswordGame(BaseGame):
         # print(COUNTRY_TO_CAPITAL_MAP)
         # print(COUNTRY_TO_CONTINENT_MAP)
 
-        if rules_args is not None:
-            self.rules_args = rules_args
-        else:
-            self.rules_args = {
-                "count_num_char": {},
-                "count_num_upper_char": {},
-                "count_num_lower_char": {
-                    "min_extra_num_char": 1, "max_extra_num_char": 5
-                },
-                "count_num_specific_char": {},
-                "count_num_english_alpha": {
-                    "min_extra_num_char": 1, "max_extra_num_char": 5
-                },
-                "count_num_digit": {
-                    "min_extra_num_char": 1, "max_extra_num_char": 5
-                },
-                "count_num_special_char": {
-                    "min_extra_num_char": 1, "max_extra_num_char": 5
-                },
-                "count_num_romans_digit": {
-                    "min_extra_num_char": 1, "max_extra_num_char": 5
-                },
-                "consist_str": {
-                    "words": self.WORD_LIST   
-                },
-                "consist_capital_of": {
-                    "words": self.COUNTRY_LIST,
-                    "country_to_capital_map": self.COUNTRY_TO_CAPITAL_MAP
-                },
-                "consist_continent_of": {
-                    "words": self.COUNTRY_LIST,
-                    "country_to_continent_map": self.COUNTRY_TO_CONTINENT_MAP
-                },
-                # "consist_synonym_of": {
-                #     "words": SYNONYM_WORD_LIST,
-                #     "word_to_synonym_map": WORD_TO_SYNONYM_MAP
-                # },
-                # "consist_antonym_of": {
-                #     "words": ANTONYM_WORD_LIST,
-                #     "word_to_antonym_map": WORD_TO_ANTONYM_MAP
-                # },
-                # "arithmetic_sum_all_digits": {},
-                "arithmetic_consist_math_expression": {
-                    "max_num_operator": 5
-                },
-                "arithmetic_consist_math_expression": {
-                    "max_num_operator": 5
-                }
+        self.rules_args = {
+            "count_num_char": {},
+            "count_num_upper_char": {},
+            "count_num_lower_char": {
+                "min_extra_num_char": 1, "max_extra_num_char": 5
+            },
+            "count_num_specific_char": {},
+            "count_num_english_alpha": {
+                "min_extra_num_char": 1, "max_extra_num_char": 5
+            },
+            "count_num_digit": {
+                "min_extra_num_char": 1, "max_extra_num_char": 5
+            },
+            "count_num_special_char": {
+                "min_extra_num_char": 1, "max_extra_num_char": 5
+            },
+            "count_num_romans_digit": {
+                "min_extra_num_char": 1, "max_extra_num_char": 5
+            },
+            "consist_str": {
+                "words": self.WORD_LIST   
+            },
+            "consist_capital_of": {
+                "words": self.COUNTRY_LIST,
+                "country_to_capital_map": self.COUNTRY_TO_CAPITAL_MAP
+            },
+            "consist_continent_of": {
+                "words": self.COUNTRY_LIST,
+                "country_to_continent_map": self.COUNTRY_TO_CONTINENT_MAP
+            },
+            # "consist_synonym_of": {
+            #     "words": SYNONYM_WORD_LIST,
+            #     "word_to_synonym_map": WORD_TO_SYNONYM_MAP
+            # },
+            # "consist_antonym_of": {
+            #     "words": ANTONYM_WORD_LIST,
+            #     "word_to_antonym_map": WORD_TO_ANTONYM_MAP
+            # },
+            # "arithmetic_sum_all_digits": {},
+            "arithmetic_consist_math_expression": {
+                "max_num_operator": 5
+            },
+            "arithmetic_consist_math_expression": {
+                "max_num_operator": 5
             }
+        }
 
         self.rule_id_list = [key for key in PasswordGame.RULES]
 
