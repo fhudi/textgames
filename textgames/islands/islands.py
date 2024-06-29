@@ -3,7 +3,7 @@ import numpy as np
 import random
 import math
 from textgames.base_game import BaseGame
-
+from typing import List
 #%%
 """Example Prompt
 You are asked to construct a 2D [N] x [N] grid, consisting of water tiles (denoted by ’.’), 
@@ -66,6 +66,83 @@ class Islands(BaseGame):
         self.island_with_coconut = island_with_coconut
         self.total_coconuts = total_coconuts
 
+    def validate(self, answer: str) -> bool:
+        print(answer)
+        # clean up the input, to make it more flexible towards formatting
+        answer = answer.split("\n")
+        answer = [a.replace(" ", "").lower().strip() for a in answer]
+        print(answer)
+        # check the size
+        if len(answer) != self.N or len(answer[0]) != self.N:
+            print(f"2D grid is not {self.N} x {self.N}. ({len(answer)} x {len(answer[0])})")
+            return False
+
+        # check the tiles, ensure they are valid
+        for a in answer:
+            for c in a:
+                if c != 'o' and c != '.' and c != '#':
+                    print(f'2D contains invalid character ({c})')
+                    return False
+
+        islands = []
+        # build the islands, denoted as a set of coordinate and tile
+        visited = [[False] * self.N for _ in range(self.N)] # for flood-fill
+        print(visited)
+        # helper flood-fill
+        def flood_fill(x, y, answer, visited, island_set):
+
+            if x < 0 or y < 0 or x == self.N or y == self.N or answer[x][y] == '.' or visited[x][y]:
+                return
+
+            visited[x][y] = True
+            island_set.add((x, y, answer[x][y]))
+
+            flood_fill(x + 1, y, answer, visited, island_set)
+            flood_fill(x, y + 1, answer, visited, island_set)
+            flood_fill(x - 1, y, answer, visited, island_set)
+            flood_fill(x, y - 1, answer, visited, island_set)
+
+        for i in range(self.N):
+            for j in range(self.N):
+                if answer[i][j] != '.' and visited[i][j] == False:
+                    island_set = set()
+                    flood_fill(i, j, answer, visited, island_set)
+                    islands.append(island_set)
+
+
+        print(islands)
+        
+        # constraint 1: has exactly K islands
+        if len(islands) != self.num_islands:
+            print(f"There must be exactly {self.num_islands} islands, but you provided {len(islands)} islands")
+            return False
+
+        # constraint 2: island size
+        for island in islands:
+            if len(island) < self.island_size_min or len(island) > self.island_size_max:
+                print(f"The size of each island must be from {self.island_size_min} to {self.island_size_max} tiles")
+                return False
+
+        # constraint 3: islands with coconut
+        solution_island_with_coconut = 0
+
+        for island in islands:
+            has_coconut = any(c == 'o' for _, _, c in island)
+            if has_coconut:
+                solution_island_with_coconut += 1
+        if solution_island_with_coconut != self.island_with_coconut:
+            print(f"There must be exactly {self.island_with_coconut} islands that have coconut trees on them")
+            return False
+
+        # constraint 4: total coconut trees
+        solution_total_coconuts = sum(c == 'o' for island in islands for _, _, c in island)
+
+        if solution_total_coconuts != self.total_coconuts:
+            print(f"There must be exactly {self.total_coconuts} total coconut trees.")
+            return False
+
+        return True
+
     def get_prompt(self):
         prompt = f"""Example Prompt
 You are asked to construct a 2D {self.N} x {self.N} grid, consisting of water tiles (denoted by ’.’), 
@@ -83,9 +160,3 @@ Your 2D grid must follow the following rules:
 Print only the answer.
 """
         return prompt
-
-
-
-
-
-
