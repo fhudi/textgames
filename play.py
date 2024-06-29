@@ -22,10 +22,10 @@ if __name__ == "__main__":
             print(f"possible answer: {possible_answer}")
         elif user_input == "2":
             game = Sudoku()
-            # game.generate_new_game(size=4, characters=["1","2","3","4"], empty_character="_", empty_ratio=0.5)
+            game.generate_new_game(size=4, characters=["1","2","3","4"], empty_character="_", empty_ratio=0.2)
             # game.print_sudoku()
-            game.generate_new_game(size=9, characters=["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-                                   empty_character="_", empty_ratio=0.1)
+            # game.generate_new_game(size=9, characters=["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            #                        empty_character="_", empty_ratio=0.1)
             game.print_sudoku()
         elif user_input == "3":
             game = BracketGame()
@@ -37,7 +37,28 @@ if __name__ == "__main__":
     solved = False
     print(game.get_prompt())
     while not solved:
-        user_input = str(input(f"Guess> "))
+        # user_input = str(input(f"Guess> "))
+        contents = []
+        user_input = ""
+        count = 0
+        while True:
+            try:
+                if count == 0:
+                    line = str(input(f"Guess> "))
+                    count += 1
+                else:
+                    line = str(input())
+                if len(line) == 0:
+                    break
+            except EOFError:
+                break
+            contents.append(line)
+        
+        for i in range(len(contents)):
+            if i > 0:
+                user_input += "\n"
+            user_input += contents[i]
+
         if game.validate(user_input):
             print("Correct guess")
             solved = True

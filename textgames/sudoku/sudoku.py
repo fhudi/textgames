@@ -166,9 +166,10 @@ class Sudoku(BaseGame):
 
     def print_sudoku(self):
         for i in range(self.size):
+            string = ""
             for j in range(self.size):
-                print(self.mat[i][j], end=" ")
-            print()
+                string += self.mat[i][j]
+            print(string)
 
     def get_prompt(self):
         characters = ",".join(c for c in self.characters)
