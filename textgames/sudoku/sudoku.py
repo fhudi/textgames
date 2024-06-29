@@ -29,7 +29,7 @@ class Sudoku(BaseGame):
         return True
 
     def validate(self, input):
-        mat = [["X" for i in range(self.size)] for j in range(self.size)]
+        mat = [[self.empty_character for i in range(self.size)] for j in range(self.size)]
 
         arr = input.split(" ")
         for i in range(len(arr)):
@@ -44,7 +44,7 @@ class Sudoku(BaseGame):
                     return False
         return self.is_valid_sudoku(mat)
 
-    def generate_new_game(self, size=4, characters=["1","2","3","4"], empty_character="X", empty_ratio=0.5):
+    def generate_new_game(self, size=4, characters=["1","2","3","4"], empty_character="_", empty_ratio=0.5):
         assert size == len(characters)
         
         self.size = size
@@ -157,7 +157,7 @@ class Sudoku(BaseGame):
 
     def get_prompt(self):
         characters = ",".join(c for c in self.characters)
-        prompt = f"Please solve the {self.size}x{self.size} sudoku with {characters} as the values and fill X with the possible value and only print the answer. Follow the sudoku rule.\n"
+        prompt = f"Please solve the {self.size}x{self.size} sudoku with {characters} as the values and fill {self.empty_character} with the possible value and only print the answer. Follow the sudoku rule.\n"
         sudoku = ""
         for i in range(len(self.mat)):
             if i > 0:
