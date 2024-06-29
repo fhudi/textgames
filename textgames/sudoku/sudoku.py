@@ -49,20 +49,30 @@ class Sudoku(BaseGame):
         
         self.size = size
         self.srn = int(math.sqrt(self.size))
-        self.mat = [[0 for _ in range(self.size)] for _ in range(self.size)]
-        self.characters = characters
-        self.empty_character = empty_character
-        self.num_empty_block = int(size * size * empty_ratio)
 
-        self.char_to_id = {}
-        for c_id in range(len(self.characters)):
-            self.char_to_id[self.characters[c_id]] = c_id
+        valid_puzzle = False
+        while not valid_puzzle:
+            self.mat = [[0 for _ in range(self.size)] for _ in range(self.size)]
+            self.characters = characters
+            self.empty_character = empty_character
+            self.num_empty_block = int(size * size * empty_ratio)
 
-        # fill the diagonal of small square (srn x srn) matrices
-        self.fill_diagonal()
-        self.fill_remaining(0, self.srn)
-        self.replace_digits()
-        self.remove_digits()
+            self.char_to_id = {}
+            for c_id in range(len(self.characters)):
+                self.char_to_id[self.characters[c_id]] = c_id
+
+            # fill the diagonal of small square (srn x srn) matrices
+            self.fill_diagonal()
+            self.fill_remaining(0, self.srn)
+            self.replace_digits()
+
+            valid_puzzle = True
+            for i in range(self.size):
+                for j in range(self.size):
+                    if self.mat[i][j] == 0:
+                        valid_puzzle = False
+
+            self.remove_digits()
     
     def unused_in_row(self, i, num):
         for j in range(self.size):
@@ -129,19 +139,19 @@ class Sudoku(BaseGame):
         return False
 
     def remove_digits(self):
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.mat[i][j] == 0:
+                    self.mat[i][j] = self.empty_character
+
         count = self.num_empty_block
 
         while (count != 0):
             i = self.random_generator(self.size) - 1
             j = self.random_generator(self.size) - 1
-            if (self.mat[i][j] != 0):
+            if (self.mat[i][j] != self.empty_character):
                 count -= 1
                 self.mat[i][j] = self.empty_character
-
-        for i in range(self.size):
-            for j in range(self.size):
-                if self.mat[i][j] == 0:
-                    self.mat[i][j] = self.empty_character
 
     def replace_digits(self):
         for i in range(len(self.mat)):
