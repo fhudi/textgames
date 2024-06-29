@@ -18,6 +18,7 @@ if __name__ == "__main__":
         if user_input == "1":
             game = PasswordGame()
             possible_answer = game.generate_new_game(num_rules=3)
+            print(f"possible answer: {possible_answer}")
             game_chosen = True
         elif user_input == "2":
             game = Sudoku()
