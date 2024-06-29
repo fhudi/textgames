@@ -5,22 +5,22 @@ from textgames.game import BaseGame
 
 class PasswordGame(BaseGame):
     RULES = {
-        "count_num_char": [CountNumCharRule, RuleType.NONREPEATABLE],
-        "count_num_upper_char": [CountNumUppercaseCharRule, RuleType.NONREPEATABLE],
-        "count_num_lower_char": [CountNumLowercaseCharRule, RuleType.NONREPEATABLE],
-        "count_num_specific_char": [CountNumSpecificCharRule, RuleType.REPEATABLE],
-        "count_num_latin_alpha": [CountNumLatinAlphaRule, RuleType.NONREPEATABLE],
-        "count_num_digit": [CountNumDigitRule, RuleType.NONREPEATABLE],
-        "count_num_special_char": [CountNumSpecialCharRule, RuleType.NONREPEATABLE],
-        "count_num_romans_digit": [CountNumRomansDigitRule, RuleType.NONREPEATABLE],
-        "consist_str": [ConsistStrRule, RuleType.REPEATABLE],
-        "consist_capital_of": [ConsistCapitalOfRule, RuleType.REPEATABLE],
-        "consist_continent_of": [ConsistContinentOfRule, RuleType.REPEATABLE],
-        # "consist_synonym_of": [ConsistSynonymOfRule, RuleType.REPEATABLE],
-        # "consist_antonym_of": [ConsistAntonymOfRule, RuleType.REPEATABLE],
-        "arithmetic_sum_all_digits": [ArithmeticSumAllDigitsRule, RuleType.NONREPEATABLE],
-        "arithmetic_consist_math_expression": [ArithmeticMathExpressionRule, RuleType.REPEATABLE],
-        "arithmetic_consist_math_expression": [ArithmeticMathWordExpressionRule, RuleType.REPEATABLE],
+        "count_num_char": [CountNumCharRule, RuleType.NONREPEATABLE, 1],
+        "count_num_upper_char": [CountNumUppercaseCharRule, RuleType.NONREPEATABLE, 3],
+        "count_num_lower_char": [CountNumLowercaseCharRule, RuleType.NONREPEATABLE, 3],
+        "count_num_specific_char": [CountNumSpecificCharRule, RuleType.REPEATABLE, 2],
+        "count_num_latin_alpha": [CountNumLatinAlphaRule, RuleType.NONREPEATABLE, 4],
+        "count_num_digit": [CountNumDigitRule, RuleType.NONREPEATABLE, 4],
+        "count_num_special_char": [CountNumSpecialCharRule, RuleType.NONREPEATABLE, 4],
+        "count_num_romans_digit": [CountNumRomansDigitRule, RuleType.NONREPEATABLE, 4],
+        "consist_str": [ConsistStrRule, RuleType.REPEATABLE, 5],
+        "consist_capital_of": [ConsistCapitalOfRule, RuleType.REPEATABLE, 5],
+        "consist_continent_of": [ConsistContinentOfRule, RuleType.REPEATABLE, 5],
+        # "consist_synonym_of": [ConsistSynonymOfRule, RuleType.REPEATABLE, 5],
+        # "consist_antonym_of": [ConsistAntonymOfRule, RuleType.REPEATABLE, 5],
+        "arithmetic_sum_all_digits": [ArithmeticSumAllDigitsRule, RuleType.NONREPEATABLE, 2],
+        "arithmetic_consist_math_expression": [ArithmeticMathExpressionRule, RuleType.REPEATABLE, 5],
+        "arithmetic_consist_math_expression": [ArithmeticMathWordExpressionRule, RuleType.REPEATABLE, 5],
     }
 
     def __init__(self, rules_args=None):
@@ -53,6 +53,10 @@ class PasswordGame(BaseGame):
                     continue
                 if len(capital_city.split(" ")) > 1:
                     continue
+                if continent == "":
+                    continue
+                if capital_city == "":
+                    continue
                 self.COUNTRY_TO_CAPITAL_MAP[country.lower()] = capital_city.lower()
                 self.COUNTRY_TO_CONTINENT_MAP[country.lower()] = continent.lower()
                 self.COUNTRY_LIST.append(country)
@@ -64,29 +68,23 @@ class PasswordGame(BaseGame):
             self.rules_args = rules_args
         else:
             self.rules_args = {
-                "count_num_char": {
-                    "min_num_char": 10, "max_num_char": 20
-                },
-                "count_num_upper_char": {
-                    "min_num_char": 2, "max_num_char": 5
-                },
+                "count_num_char": {},
+                "count_num_upper_char": {},
                 "count_num_lower_char": {
-                    "min_num_char": 2, "max_num_char": 5
+                    "min_extra_num_char": 1, "max_extra_num_char": 5
                 },
-                "count_num_specific_char": {
-                    "min_num_char": 2, "max_num_char": 5
-                },
+                "count_num_specific_char": {},
                 "count_num_latin_alpha": {
-                    "min_num_char": 5, "max_num_char": 10
+                    "min_extra_num_char": 1, "max_extra_num_char": 5
                 },
                 "count_num_digit": {
-                    "min_num_char": 2, "max_num_char": 5
+                    "min_extra_num_char": 1, "max_extra_num_char": 5
                 },
                 "count_num_special_char": {
-                    "min_num_char": 2, "max_num_char": 5
+                    "min_extra_num_char": 1, "max_extra_num_char": 5
                 },
                 "count_num_romans_digit": {
-                    "min_num_char": 2, "max_num_char": 5
+                    "min_extra_num_char": 1, "max_extra_num_char": 5
                 },
                 "consist_str": {
                     "words": self.WORD_LIST   
@@ -133,10 +131,18 @@ class PasswordGame(BaseGame):
             if rule_id in self.rules_ids:
                 if PasswordGame.RULES[rule_id][1] == RuleType.REPEATABLE:
                     self.rules_ids.append(rule_id)
-                    self.rules.append(PasswordGame.RULES[rule_id][0](self.rules_args[rule_id]))
+                    self.rules.append([PasswordGame.RULES[rule_id][0], PasswordGame.RULES[rule_id][2], rule_id])
             else:
                 self.rules_ids.append(rule_id)
-                self.rules.append(PasswordGame.RULES[rule_id][0](self.rules_args[rule_id]))
+                self.rules.append([PasswordGame.RULES[rule_id][0], PasswordGame.RULES[rule_id][2], rule_id])
+        
+        self.rules.sort(key=lambda l: l[1], reverse=True)
+        self.rules = [rule[0](self.rules_args[rule[2]]) for rule in self.rules]
+
+        output = ""
+        for rule in self.rules:
+            output = rule.generate_rule(output)
+        return output
 
     def get_prompt(self):
         prompt = "Please construct a text string with the following criteria and print only the string if there is such a string otherwise print None:\n"

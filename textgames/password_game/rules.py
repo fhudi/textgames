@@ -11,7 +11,7 @@ class Rule():
     def __init__(self, args):
         pass
 
-    def generate_rule(self, args):
+    def generate_rule(self, input):
         pass
 
     def validate(self, input):
@@ -24,8 +24,12 @@ class Rule():
 # Rule 1
 class CountNumCharRule(Rule):
     def __init__(self, args):
-        self.num_char = random.randint(args["min_num_char"], args["max_num_char"])
-    
+        self.num_char = None
+
+    def generate_rule(self, input):
+        self.num_char = len(input)
+        return input
+
     def validate(self, input):
         return len(input.strip()) == self.num_char
     
@@ -36,7 +40,17 @@ class CountNumCharRule(Rule):
 # Rule 2
 class CountNumUppercaseCharRule(Rule):
     def __init__(self, args):
-        self.num_char = random.randint(args["min_num_char"], args["max_num_char"])
+        self.num_char = None
+
+    def generate_rule(self, input):
+        count = 0
+        for c in input:
+            if "A" <= c <= "Z":
+                count += 1
+        
+        self.num_char = count
+
+        return input
     
     def validate(self, input):
         count = 0
@@ -52,8 +66,22 @@ class CountNumUppercaseCharRule(Rule):
 # Rule 3
 class CountNumLowercaseCharRule(Rule):
     def __init__(self, args):
-        self.num_char = random.randint(args["min_num_char"], args["max_num_char"])
+        self.extra_num_char = random.randint(args["min_extra_num_char"], args["max_extra_num_char"])
+        self.num_char = None
     
+    def generate_rule(self, input):
+        count = 0
+        for c in input:
+            if "a" <= c <= "z":
+                count += 1
+        
+        output = input
+        for _ in range(self.extra_num_char):
+            output += chr(ord("a") + random.randint(0, 25))
+        self.num_char = count + self.extra_num_char
+
+        return output
+
     def validate(self, input):
         count = 0
         for c in input:
@@ -68,7 +96,7 @@ class CountNumLowercaseCharRule(Rule):
 # Rule 4
 class CountNumSpecificCharRule(Rule):
     def __init__(self, args):
-        self.num_char = random.randint(args["min_num_char"], args["max_num_char"])
+        self.num_char = None
 
         char_ord = random.randint(0, 25)
         is_upper = random.randint(0, 1)
@@ -77,6 +105,15 @@ class CountNumSpecificCharRule(Rule):
         else:
             self.char = chr(ord("a") + char_ord)
     
+    def generate_rule(self, input):
+        counts = 0
+        for c in input:
+            if c == self.char:
+                counts += 1
+        self.num_char = counts
+
+        return input
+        
     def validate(self, input):
         counts = 0
         for c in input:
@@ -91,8 +128,29 @@ class CountNumSpecificCharRule(Rule):
 # Rule 5
 class CountNumLatinAlphaRule(Rule):
     def __init__(self, args):
-        self.num_char = random.randint(args["min_num_char"], args["max_num_char"])
+        self.extra_num_char = random.randint(args["min_extra_num_char"], args["max_extra_num_char"])
+        self.num_char = None
     
+    def generate_rule(self, input):
+        counts = 0
+        for c in input:
+            if "a" <= c <= "z" or "A" <= c <= "Z":
+                counts += 1
+        self.num_char = counts + self.extra_num_char
+
+        output = input
+        for _ in range(self.extra_num_char):
+            char_ord = random.randint(0, 25)
+            is_upper = random.randint(0, 1)
+            while is_upper and char_ord in [ord("I")-ord("A"), ord("V")-ord("A"), ord("X")-ord("A"), ord("L")-ord("A"), ord("C")-ord("A"), ord("D")-ord("A")]:
+                char_ord = random.randint(0, 25)
+                is_upper = random.randint(0, 1)
+            if is_upper:
+                output += chr(ord("A") + char_ord)
+            else:
+                output += chr(ord("a") + char_ord)
+        return output
+
     def validate(self, input):
         counts = 0
         for c in input:
@@ -107,7 +165,22 @@ class CountNumLatinAlphaRule(Rule):
 # Rule 6
 class CountNumDigitRule(Rule):
     def __init__(self, args):
-        self.num_char = random.randint(args["min_num_char"], args["max_num_char"])
+        self.extra_num_char = random.randint(args["min_extra_num_char"], args["max_extra_num_char"])
+        self.num_char = None
+
+    def generate_rule(self, input):
+        counts = 0
+        for c in input:
+            if "0" <= c <= "9":
+                counts += 1
+        self.num_char = counts + self.extra_num_char
+
+        output = input
+        for _ in range(self.extra_num_char):
+            output += str(random.randint(0, 9))
+
+        return output
+
     
     def validate(self, input):
         counts = 0
@@ -123,12 +196,27 @@ class CountNumDigitRule(Rule):
 # Rule 7
 class CountNumSpecialCharRule(Rule):
     def __init__(self, args):
-        self.num_char = random.randint(args["min_num_char"], args["max_num_char"])
+        self.extra_num_char = random.randint(args["min_extra_num_char"], args["max_extra_num_char"])
+        self.num_char = None
+        self.special_char_list = ["!", "@", "#", "$", "%", "^", "&", "*"]
+
+    def generate_rule(self, input):
+        counts = 0
+        for c in input:
+            if c in self.special_char_list:
+                counts += 1
+        self.num_char = counts + self.extra_num_char
+
+        output = input
+        for _ in range(self.extra_num_char):
+            output += str(self.special_char_list[random.randint(0, 7)])
+
+        return output
     
     def validate(self, input):
         counts = 0
         for c in input:
-            if c in ["!", "@", "#", "$", "%", "^", "&", "*"]:
+            if c in self.special_char_list:
                 counts += 1
         return counts == self.num_char
     
@@ -139,8 +227,22 @@ class CountNumSpecialCharRule(Rule):
 # Rule 8
 class CountNumRomansDigitRule(Rule):
     def __init__(self, args):
-        self.num_char = random.randint(args["min_num_char"], args["max_num_char"])
+        self.extra_num_char = random.randint(args["min_extra_num_char"], args["max_extra_num_char"])
+        self.num_char = None
         self.ROMANS_CHARS = ["I", "V", "X", "L", "C", "D"]
+
+    def generate_rule(self, input):
+        counts = 0
+        for c in input:
+            if c in self.ROMANS_CHARS:
+                counts += 1
+        self.num_char = counts + self.extra_num_char
+
+        output = input
+        for _ in range(self.extra_num_char):
+            output += str(self.ROMANS_CHARS[random.randint(0, 5)])
+
+        return output
     
     def validate(self, input):
         counts = {}
@@ -164,12 +266,16 @@ class ConsistStrRule(Rule):
     def __init__(self, args):
         self.words = args["words"]
         self.str = self.words[random.randint(0, len(self.words)-1)]
+
+    def generate_rule(self, input):
+        output = input + self.str
+        return output
     
     def validate(self, input):
         return self.str in input
     
     def generate_prompt(self):
-        return f"the text has '{self.str}' string"
+        return f"the text has \"{self.str}\" string"
     
 
 # Rule 10
@@ -178,6 +284,10 @@ class ConsistCapitalOfRule(Rule):
         self.words = args["words"]
         self.str = self.words[random.randint(0, len(self.words)-1)]
         self.country_to_capital_map = args["country_to_capital_map"]
+
+    def generate_rule(self, input):
+        output = input + self.country_to_capital_map[self.str.lower()]
+        return output
     
     def validate(self, input):
         return self.country_to_capital_map[self.str.lower()].lower() in input.lower()
@@ -192,6 +302,10 @@ class ConsistContinentOfRule(Rule):
         self.words = args["words"]
         self.str = self.words[random.randint(0, len(self.words)-1)]
         self.country_to_continent_map = args["country_to_continent_map"]
+
+    def generate_rule(self, input):
+        output = input + self.country_to_continent_map[self.str.lower()]
+        return output
     
     def validate(self, input):
         return self.country_to_continent_map[self.str.lower()].lower() in input.lower()
@@ -207,6 +321,10 @@ class ConsistSynonymOfRule(Rule):
         self.str = self.words[random.randint(0, len(self.words)-1)]
         self.country_to_continent_map = args["word_to_synonym_map"]
     
+    def generate_rule(self, input):
+        output = input + self.str
+        return output
+    
     def validate(self, input):
         return self.country_to_continent_map[self.str].lower() in input.lower()
     
@@ -221,6 +339,10 @@ class ConsistAntonymOfRule(Rule):
         self.str = self.words[random.randint(0, len(self.words)-1)]
         self.country_to_continent_map = args["word_to_antonym_map"]
     
+    def generate_rule(self, input):
+        output = input + self.str
+        return output
+
     def validate(self, input):
         return self.country_to_continent_map[self.str].lower() in input.lower()
     
@@ -232,6 +354,10 @@ class ConsistAntonymOfRule(Rule):
 class ArithmeticSumAllDigitsRule(Rule):
     def __init__(self, args):
         self.num = random.randint(0, 10)
+
+    def generate_rule(self, input):
+        output = input + str(self.num)
+        return output
 
     def validate(self, input):
         value = 0
@@ -274,6 +400,10 @@ class ArithmeticMathExpressionRule(Rule):
 
         self.expression = expression
         self.num = value
+
+    def generate_rule(self, input):
+        output = input + str(self.num)
+        return output
 
     def validate(self, input):
         return str(self.num) in input
@@ -326,6 +456,10 @@ class ArithmeticMathWordExpressionRule(Rule):
             value = parse_expr(expression)
         self.expression = expression
         self.num = value
+
+    def generate_rule(self, input):
+        output = input + str(self.num)
+        return output
 
     def validate(self, input):
         return str(self.num) in input

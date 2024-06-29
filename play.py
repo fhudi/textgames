@@ -13,10 +13,11 @@ if __name__ == "__main__":
     user_input = str(input(f"Game option> "))
     if user_input == "1":
         game = PasswordGame()
-        game.generate_new_game(num_rules=5)
+        possible_answer = game.generate_new_game(num_rules=5)
         solved = False
 
         print(game.get_prompt())
+        print(f"possible answer: {possible_answer}")
         while not solved:
             user_input = str(input(f"Guess> "))
             if game.validate(user_input):
