@@ -319,7 +319,7 @@ class ArithmeticMathWordExpressionRule(Rule):
 
                 if next_operator == "/" and next_num == 0:
                     restart = True
-                    
+
             if restart:
                 continue
             
@@ -451,7 +451,7 @@ class PasswordGame():
     def validate(self):
         pass
 
-    def generate_rule(self):
+    def generate_new_game(self):
         self.rules = []
         self.rules_ids = []
 

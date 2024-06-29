@@ -13,7 +13,7 @@ if __name__ == "__main__":
     if user_input == "1":
         while True:
             game = PasswordGame(num_rules=5)
-            game.generate_rule()
+            game.generate_new_game()
 
             solved = False
 
