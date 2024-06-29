@@ -23,6 +23,7 @@ Print only the answer.
 #%%
 import re
 import numpy as np
+from textgames.base_game import BaseGame
 
 #%%
 
@@ -101,6 +102,9 @@ class ConsecutiveScoring(Scoring):
         self._seq = seq
         self.prompt = None
 
+    def __repr__(self):
+        return f"{self.__class__.__qualname__}(point={self.point}, seq={self._seq})"
+
     def calc_score(self, word):
         return len(self._pattern.findall(word)) * self.point
 
@@ -123,7 +127,7 @@ class ConsecutiveScoring(Scoring):
             prompt = f"every {len(self._seq)} consecutive {'consonant' if self._seq == 'c' else 'vowel'}s"
 
         if prompt is None:
-            raise NotImplementedError(f"[{self.__class__}] Not implemented for pattern: '{self._seq}'")
+            raise NotImplementedError(repr(self))
         else:
             self.prompt = self.point_wrapper(prompt, randint=0)
         return self.prompt
@@ -134,10 +138,13 @@ class LengthScoring(Scoring):
     def __init__(self, point=1, lt=None, gt=None, eq=None, ne=None):
         super().__init__(point)
         self.point = point
-        self.lt, self.gt = lt or np.inf, gt or -np.inf
+        self.lt, self.gt = lt or np.inf, gt or 0
         self.eq = eq if (lt is None) and (gt is None) else None
         self.ne = ne
         self.prompt = None
+
+    def __repr__(self):
+        return f"{self.__class__.__qualname__}(point={self.point}, lt={self.lt}, gt={self.gt}, eq={self.eq}, ne={self.ne})"
 
     def calc_score(self, word):
         n = len(word)
@@ -154,14 +161,17 @@ class LengthScoring(Scoring):
             return self.prompt
 
         prompt = None
-        if self.lt < np.inf and not (self.gt > -np.inf) and self.ne is None:
-            prompt = f"word less than {self.lt} characters"
-
-        # print(self.lt, self.gt, self.eq, self.ne)
-        # print(self.lt < np.inf, self.gt > -np.inf)
+        if self.gt > 0:
+            prompt = f"word more than {self.gt} character{'s' if self.gt > 1 else ''}"
+        if self.lt < np.inf:
+            prompt = f"{'word' if prompt is None else f'{prompt} and'} less than {self.lt} characters"
+        if self.ne is not None:
+            prompt = f"{'word' if prompt is None else f'{prompt} but'} not equal to {self.ne} character{'s' if self.ne > 1 else ''}"
+        if prompt is None and self.eq is not None:
+            prompt = f"word that has exactly {self.eq} character{'s' if self.eq > 1 else ''}"
 
         if prompt is None:
-            raise NotImplementedError(f"[{self.__class__}] Not implemented for current condition ()")
+            raise NotImplementedError(repr(self))
         else:
             self.prompt = self.point_wrapper(prompt, randint=0)
         return self.prompt
@@ -176,6 +186,9 @@ class AffixScoring(Scoring):
         self.prefix = None if prefix is None else re.compile(f"^{prefix}")
         self.suffix = None if suffix is None else re.compile(f"{suffix}$")
         self.prompt = None
+
+    def __repr__(self):
+        return f"{self.__class__.__qualname__}(point={self.point}, prefix={self.prefix_txt}, suffix={self.suffix_txt})"
 
     def calc_score(self, word):
         if self.prefix is not None and self.prefix.search(word) is None:
@@ -195,18 +208,10 @@ class AffixScoring(Scoring):
             prompt = f"word ends with {self.suffix_txt}"
 
         if prompt is None:
-            raise NotImplementedError(f"[{self.__class__}] Not implemented for current condition ({repr(self)})")
+            raise NotImplementedError(repr(self))
         else:
             self.prompt = self.point_wrapper(prompt, randint=0)
         return self.prompt
-
-
-#%%
-# - every pair of consecutive consonant has 5 points
-# - additional 1 point if there exists exactly 1 'g'
-# - word less than 5 characters gets extra 10 points
-# - word starts with 'gen' gets additional 100 points
-# - word ends with 'ta' gets negative 1000 points
 
 
 #%%
@@ -219,6 +224,9 @@ class InfixScoring(Scoring):
         self.n = n
         self.prompt = None
 
+    def __repr__(self):
+        return f"{self.__class__.__qualname__}(point={self.point}, infix={self.infix}, n={self.n})"
+
     def calc_score(self, word):
         if self.n is None:
             return 0 if self.pattern.search(word) is None else self.point
@@ -229,7 +237,6 @@ class InfixScoring(Scoring):
         if self.prompt is not None:
             return self.prompt
 
-        prompt = None
         assert self.infix is not None, "owowo"
         if self.n is None:
             prompt = f"there exists '{self.infix}' in the word"
@@ -237,19 +244,19 @@ class InfixScoring(Scoring):
             prompt = f"there exists exactly {self.n} '{self.infix}' in the word"
 
         if prompt is None:
-            raise NotImplementedError(f"[{self.__class__}] Not implemented for current condition ({repr(self)})")
+            raise NotImplementedError(repr(self))
         else:
             self.prompt = self.point_wrapper(prompt, randint=1)
         return self.prompt
 
 
-
 #%%
-class TheGame:
+class OrderingTextGame(BaseGame):
     def __init__(self, rules=None, words=None):
         self.rules = rules or set()
         self.words = words or set()
         self.points = dict()
+        self.answer = None
 
     def calc_point(self, word):
         ret = 0
@@ -265,9 +272,49 @@ class TheGame:
     def recalculate_all(self):
         for word in self.words:
             self.points[word] = self.calc_point(word)
+        self.answer = sorted(self.words, key=lambda x: (self.points[x], x))
 
     def get_answer(self):
-        return sorted(self.words, key=lambda word: (self.get_point(word), word))
+        if self.answer is None:
+            self.recalculate_all()
+        return self.answer    # sorted(self.words, key=lambda word: (self.get_point(word), word))
+
+    def validate(self, answer: str) -> bool:
+        return answer == "\n".join(self.get_answer())
+
+    def generate_new_game(self, *args, **kwargs) -> None:
+        # - every pair of consecutive consonant has 5 points
+        # - additional 1 point if there exists exactly 1 'g'
+        # - word less than 5 characters gets extra 10 points
+        # - word starts with 'gen' gets additional 100 points
+        # - word ends with 'ta' gets negative 1000 points
+        self.rules = {
+            ConsecutiveScoring(point=5, seq="cc"),
+            InfixScoring(point=1, infix="g", n=1),
+            LengthScoring(point=10, lt=5),
+            AffixScoring(point=100, prefix="gen"),
+            AffixScoring(point=-1000, suffix="ta"),
+        }
+        self.words = {"genta", "winata", "hudi", "alham", "aji"}
+        self.recalculate_all()
+
+    def get_prompt(self) -> str:
+        prompt = (
+            "Given a set of rules to calculate point, sort the set of words in increasing order.\n"
+            "When there 2 or more words with same point, sort lexicographically.\n"
+        )
+
+        prompt += "\nRules:\n"
+        for rule in self.rules:
+            prompt += f"- {rule.generate_prompt()}\n"
+
+        prompt += "\nWords:\n"
+        for word in self.words:
+            prompt += f"- {word}\n"
+
+        prompt += "\nPrint only the answer."
+        return prompt
+
 
 
 #%%
@@ -281,23 +328,10 @@ class RuleSetGenerator:
 
 #%%
 if __name__ == '__main__':
-    words = ["genta", "winata", "hudi", "alham", "aji"]
+    thegame = OrderingTextGame()
+    thegame.generate_new_game()
 
-    thegame = TheGame(
-        rules={
-            ConsecutiveScoring(point=5, seq="cc"),
-            InfixScoring(point=1, infix="g", n=1),
-            LengthScoring(point=10, lt=5),
-            AffixScoring(point=100, prefix="gen"),
-            AffixScoring(point=-1000, suffix="ta"),
-        },
-        words=set(words),
-    )
-
-    print("Rule Prompt List:")
-    for rule in thegame.rules:
-        print(f" - {rule.generate_prompt()}")
-    print("==========")
+    print(thegame.get_prompt())
 
     def calc_point(word, verbose=False):
         cnt = 0
@@ -331,8 +365,12 @@ if __name__ == '__main__':
             print(word, cnt)
         return cnt
 
-    assert thegame.get_answer() == sorted(words, key=lambda w: (calc_point(w), w))
+    ans = sorted(thegame.words, key=lambda w: (calc_point(w), w))
+    assert thegame.get_answer() == ans, f"{thegame.get_answer()}\n{ans}"
+    print(thegame.validate("\n".join(ans)))
     print("All tests passed")
+    print(ans)
+    print(list(map(lambda x: (thegame.get_point(x), x), ans)))
 
 #%%
 
