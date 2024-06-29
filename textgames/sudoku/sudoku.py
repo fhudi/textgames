@@ -9,5 +9,3 @@ class Sudoku(BaseGame):
         pass
     def get_prompt(self):
         pass
-    def validate(self, input):
-        pass
