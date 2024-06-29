@@ -1,7 +1,7 @@
 import random
 from pathlib import Path
 from textgames.password_game.rules import *
-from textgames.game import BaseGame
+from textgames.base_game import BaseGame
 
 class PasswordGame(BaseGame):
     RULES = {

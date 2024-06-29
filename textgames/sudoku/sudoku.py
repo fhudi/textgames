@@ -1,6 +1,6 @@
 import random
 import math
-from textgames.game import BaseGame
+from textgames.base_game import BaseGame
 
 class Sudoku(BaseGame):
     def __init__(self):
