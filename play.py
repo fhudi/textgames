@@ -8,6 +8,7 @@ if __name__ == "__main__":
     print("#" * 20)
     print("Game options:")
     print("1. 🔑 Password Games")
+    print("2. 🧩 Sudoku [under construction]")
     print("#" * 20)
     print(">")
     user_input = str(input())
