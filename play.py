@@ -15,11 +15,10 @@ if __name__ == "__main__":
         while True:
             game = PasswordGame()
             game.generate_new_game(num_rules=5)
-
             solved = False
 
+            print(game.get_prompt())
             while not solved:
-                print(game.get_prompt())
                 user_input = str(input(f"Guess> "))
                 if game.validate(user_input):
                     print("Correct guess")
