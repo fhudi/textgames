@@ -12,17 +12,18 @@ if __name__ == "__main__":
     print("#" * 20)
     user_input = str(input(f"Game option> "))
     if user_input == "1":
-        while True:
-            game = PasswordGame()
-            game.generate_new_game(num_rules=5)
-            solved = False
+        game = PasswordGame()
+        game.generate_new_game(num_rules=5)
+        solved = False
 
-            print(game.get_prompt())
-            while not solved:
-                user_input = str(input(f"Guess> "))
-                if game.validate(user_input):
-                    print("Correct guess")
-                    solved=True
-                else:
-                    print("Bad guess")
+        print(game.get_prompt())
+        while not solved:
+            user_input = str(input(f"Guess> "))
+            if game.validate(user_input):
+                print("Correct guess")
+                solved=True
+            else:
+                print("Bad guess")
+        print("Thank you for playing!")
+            
 
