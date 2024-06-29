@@ -2,10 +2,10 @@ from textgames.password_game.game import PasswordGame
 
 if __name__ == "__main__":
     print("#" * 20)
-    print("     TextGames")
+    print("   🎮 TextGames")
     print("#" * 20)
     print("Game options:")
-    print("1. Password Games")
+    print("1. 🔑 Password Games")
     print("#" * 20)
     print(">")
     user_input = str(input())
