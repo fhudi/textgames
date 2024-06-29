@@ -2,6 +2,7 @@ import random
 from enum import Enum
 from pathlib import Path
 from sympy.parsing.sympy_parser import parse_expr
+from textgames.game import BaseGame
 
 class RuleType(Enum):
     NONREPEATABLE = 1 # non repeatable
@@ -333,7 +334,7 @@ class ArithmeticMathWordExpressionRule(Rule):
     def generate_prompt(self):
         return f"the text has a number that equals to {self.expression}"
 
-class PasswordGame():
+class PasswordGame(BaseGame):
     RULES = {
         "count_num_char": [CountNumCharRule, RuleType.NONREPEATABLE],
         "count_num_upper_char": [CountNumUppercaseCharRule, RuleType.NONREPEATABLE],

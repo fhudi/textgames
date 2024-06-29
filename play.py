@@ -1,4 +1,5 @@
-from textgames.password_game.game import PasswordGame
+from textgames.password_game.password_game import PasswordGame
+from textgames.sudoku.sudoku import Sudoku
 
 if __name__ == "__main__":
     print("#" * 20)
