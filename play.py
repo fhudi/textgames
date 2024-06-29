@@ -44,10 +44,10 @@ if __name__ == "__main__":
         while True:
             try:
                 if count == 0:
-                    line = str(input(f"Guess> "))
+                    line = str(input(f"Guess> \t"))
                     count += 1
                 else:
-                    line = str(input())
+                    line = str(input("\t"))
                 if len(line) == 0:
                     break
             except EOFError:
