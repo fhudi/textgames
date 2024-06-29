@@ -147,6 +147,7 @@ class InfixRule(Rule):
         else:
             return len(self.pattern.findall(word)) * self.point
 
+
 #%%
 class TheGame:
     def __init__(self, rules=None, words=None):
@@ -171,6 +172,12 @@ class TheGame:
 
     def get_answer(self):
         return sorted(self.words, key=lambda word: (self.get_point(word), word))
+
+
+#%%
+class RuleSetGenerator:
+    def __init__(self):
+        raise NotImplementedError()
 
 
 #%%
