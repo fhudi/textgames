@@ -38,11 +38,11 @@ class PasswordGame(BaseGame):
         # WORD_TO_SYNONYM_MAP = {}
         # WORD_TO_ANTONYM_MAP = {}
 
-        with open(str(Path(__file__).absolute()).replace("password_game.py","") + "/kb/word_list.txt") as f:
+        with open(str(Path(__file__).absolute()).replace("password_game/password_game.py","") + "/assets/kb/word_list.txt") as f:
             for line in f:
                 self.WORD_LIST.append(line.replace("\n", ""))
 
-        with open(str(Path(__file__).absolute()).replace("password_game.py","") + "/kb/country_capital_city.tsv") as f:
+        with open(str(Path(__file__).absolute()).replace("password_game/password_game.py","") + "/assets/kb/country_capital_city.tsv") as f:
             count = 0
             for line in f:
                 count += 1
