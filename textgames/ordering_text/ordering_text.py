@@ -272,7 +272,7 @@ class OrderingTextGame(BaseGame):
     def recalculate_all(self):
         for word in self.words:
             self.points[word] = self.calc_point(word)
-        self.answer = sorted(self.words, key=lambda x: (self.points[x], x))
+        self.answer = sorted(self.words, key=lambda x: (-self.points[x], x))
 
     def get_answer(self):
         if self.answer is None:
@@ -283,24 +283,21 @@ class OrderingTextGame(BaseGame):
         return answer.replace(' ', '\n') == "\n".join(self.get_answer())
 
     def generate_new_game(self, *args, **kwargs) -> None:
-        # - every pair of consecutive consonant has 5 points
-        # - additional 1 point if there exists exactly 1 'g'
-        # - word less than 5 characters gets extra 10 points
-        # - word starts with 'gen' gets additional 100 points
-        # - word ends with 'ta' gets negative 1000 points
-        self.rules = {
-            ConsecutiveScoring(point=5, seq="cc"),
-            InfixScoring(point=1, infix="g", n=1),
-            LengthScoring(point=10, lt=5),
-            AffixScoring(point=100, prefix="gen"),
-            AffixScoring(point=-1000, suffix="ta"),
-        }
-        self.words = {"genta", "winata", "hudi", "alham", "aji"}
+        self.rules = kwargs.get("rules", set())
+        self.words = kwargs.get("words", set())
+        if not self.rules or not self.words:
+            difficulty = kwargs.get("difficulty", 0)
+            if difficulty == 0:
+                self.rules = [
+                    InfixScoring(point=1, infix="g", n=1),
+                    LengthScoring(point=10, lt=5),
+                ]
+                self.words = ["aji", "genta", "ruochen", "hudi"]
         self.recalculate_all()
 
     def get_prompt(self) -> str:
         prompt = (
-            "Given a set of rules to calculate point, sort the set of words in increasing order.\n"
+            "Given a set of rules to calculate point, sort the set of words in decreasing order.\n"
             "When there 2 or more words with same point, sort lexicographically.\n"
         )
 
@@ -329,7 +326,26 @@ class RuleSetGenerator:
 #%%
 if __name__ == '__main__':
     thegame = OrderingTextGame()
-    thegame.generate_new_game()
+
+    # - every pair of consecutive consonant has 5 points
+    # - every pair of consecutive vowels has 3 points
+    # - additional 1 point if there exists exactly 1 'g'
+    # - word less than 5 characters gets extra 10 points
+    # - word starts with 'gen' gets additional 100 points
+    # - word ends with 'ta' gets negative 1000 points
+    thegame.generate_new_game(
+        rules=[
+            ConsecutiveScoring(point=5, seq="cc"),
+            ConsecutiveScoring(point=3, seq="vv"),
+            InfixScoring(point=1, infix="g", n=1),
+            LengthScoring(point=10, lt=5),
+            AffixScoring(point=100, prefix="gen"),
+            AffixScoring(point=-1000, suffix="ta"),
+        ],
+        words=[
+            "genta", "winata", "hudi", "alham", "aji", "ruochen",
+        ],
+    )
 
     print(thegame.get_prompt())
 
@@ -337,6 +353,11 @@ if __name__ == '__main__':
         cnt = 0
 
         cur = len(re.findall(f'[^aeiou][^aeiou]', word)) * 5
+        cnt += cur
+        if verbose:
+            print(cnt)
+
+        cur = len(re.findall(f'[aeiou][aeiou]', word)) * 3
         cnt += cur
         if verbose:
             print(cnt)
@@ -365,12 +386,20 @@ if __name__ == '__main__':
             print(word, cnt)
         return cnt
 
-    ans = sorted(thegame.words, key=lambda w: (calc_point(w), w))
-    assert thegame.get_answer() == ans, f"{thegame.get_answer()}\n{ans}"
-    print(thegame.validate("\n".join(ans)))
+    ans = sorted(thegame.words, key=lambda w: (-calc_point(w), w))
+    assert thegame.get_answer() == ans, f"found: {thegame.get_answer()},  expected: {ans}."
+    # print(thegame.validate("\n".join(ans)))
     print("All tests passed")
-    print(ans)
-    print(list(map(lambda x: (thegame.get_point(x), x), ans)))
+    print(" > answer:", ans)
+    print(" > points:", list(map(lambda x: (thegame.get_point(x), x), ans)))
+
+    thegame.generate_new_game()
+    print(thegame.get_prompt())
+    print(thegame.get_answer())
+
+#%%
+
+
 
 #%%
 
