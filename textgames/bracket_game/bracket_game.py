@@ -18,8 +18,10 @@ class BracketGame(BaseGame):
 
     def validate(self, answer: str) -> bool:
         for rule in self.rules:
-            if rule[1][1] + rule[0] + rule[1][2] not in answer:
-                print(f"{rule[0]} is not between the correct bracket")
+            arr = answer.split(rule[0])
+            
+            if rule[1][1] not in arr[0] or rule[1][2] not in arr[1]:
+                print(f"{rule[0]} is not between the correct bracket, {rule[1][1]} not in {arr[0]} and {rule[1][2]} not in {arr[1]}")
                 return False
             
         filter_answer = answer
