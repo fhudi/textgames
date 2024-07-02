@@ -3,17 +3,25 @@ from textgames.sudoku.sudoku import Sudoku
 from textgames.bracket_game.bracket_game import BracketGame
 from textgames.ordering_text.ordering_text import OrderingTextGame
 
+from termcolor import colored, cprint
+
+def print_text_green(string):
+    print(colored(string, "light_green"))
+
+def print_text_cyan(string):
+    print(colored(string, "cyan"))
+
 if __name__ == "__main__":
-    print("#" * 20)
-    print("    Welcome to")
-    print("   🎮 TextGames")
-    print("#" * 20)
-    print("Games:")
-    print("1. 🔑\tPassword Game")
-    print("2. 🧩\tSudoku")
-    print("3. 🗳️\tBracket Game")
-    print("4. 📈\tOrdering Text")
-    print("#" * 20)
+    print_text_green("#" * 20)
+    print_text_cyan("    Welcome to")
+    print_text_cyan("   🎮 TextGames")
+    print_text_green("#" * 20)
+    print_text_green("Games:")
+    print_text_green("1. 🔑\tPassword Game")
+    print_text_green("2. 🧩\tSudoku")
+    print_text_green("3. 🗳️\tBracket Game")
+    print_text_green("4. 📈\tOrdering Text")
+    print_text_green("#" * 20)
 
     game = None
     while game is None:
