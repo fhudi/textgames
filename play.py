@@ -4,7 +4,7 @@ from textgames.bracket_game.bracket_game import BracketGame
 from textgames.ordering_text.ordering_text import OrderingTextGame
 
 import random
-from termcolor import colored, cprint
+from termcolor import colored
 
 def print_text_green(string):
     print(colored(string, "light_green"))
