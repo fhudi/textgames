@@ -16,15 +16,18 @@ def print_text_white(string):
     print(colored(string, "white"))
 
 if __name__ == "__main__":
+    GAME_IDS = ["1","2","3","4"]
+    GAME_NAMES = ["🔑\tPassword Game", "🧩\tSudoku", "🗳️\tBracket Game", "📈\tOrdering Text"]
+    LEVEL_IDS = ["1","2","3"]
+    LEVELS = ["🚅\tEasy","🚀\tMedium","🛸\tHard"]
+
     print_text_green("#" * 20)
     print_text_cyan("    Welcome to")
     print("   🎮 " + colored("Text", "white")+ colored("Games", "yellow"))
     print_text_green("#" * 20)
     print_text_green("Games:")
-    print_text_green("1. 🔑\tPassword Game")
-    print_text_green("2. 🧩\tSudoku")
-    print_text_green("3. 🗳️\tBracket Game")
-    print_text_green("4. 📈\tOrdering Text")
+    for i, game_name in zip(range(len(GAME_NAMES)), GAME_NAMES):
+        print_text_green(f"{i+1}. {game_name}")
     print_text_green("#" * 20)
 
     game_id = None
@@ -32,26 +35,32 @@ if __name__ == "__main__":
     while game_id is None:
         user_input = str(input(f"Choose the game> "))
 
-        if user_input in ["1", "2", "3", "4"]:
+        if user_input in GAME_IDS:
             game_id = user_input
 
             print_text_green("#" * 20)
             print_text_green("Difficulty Levels:")
-            print_text_green("1. 🚅\tEasy")
-            print_text_green("2. 🚀\tMedium")
-            print_text_green("3. 🛸\tHard")
+            for i, level in zip(range(len(LEVELS)), LEVELS):
+                print_text_green(f"{i+1}. {level}")
             print_text_green("#" * 20)
 
             while difficulty_level is None:
                 user_input = str(input(f"Choose the difficulty level> "))
-                if user_input in ["1", "2", "3"]:
+                if user_input in LEVEL_IDS:
                     difficulty_level = user_input
                 else:
                     print("The difficulty level option is not available.")
         else:
-            print("The game option is not available.")
-            game = None
+            arr = user_input.split("-")
+            if len(arr) == 2 and isinstance(arr[0], str) and isinstance(arr[1], str):
+                if arr[0] in GAME_IDS and arr[1] in LEVEL_IDS:
+                    game_id = arr[0]
+                    difficulty_level = arr[1]
+            else:
+                print("The game option is not available.")
+                game = None
 
+    print_text_green(f"Game chosen: {GAME_NAMES[int(game_id)-1]} and Difficulty Level: {LEVELS[int(difficulty_level)-1]}")
     if game_id == "1":
         game = PasswordGame()
         if difficulty_level == "1":
