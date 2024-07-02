@@ -11,10 +11,13 @@ def print_text_green(string):
 def print_text_cyan(string):
     print(colored(string, "cyan"))
 
+def print_text_white(string):
+    print(colored(string, "white"))
+
 if __name__ == "__main__":
     print_text_green("#" * 20)
     print_text_cyan("    Welcome to")
-    print_text_cyan("   🎮 TextGames")
+    print("   🎮 " + colored("Text", "white")+ colored("Games", "yellow"))
     print_text_green("#" * 20)
     print_text_green("Games:")
     print_text_green("1. 🔑\tPassword Game")
