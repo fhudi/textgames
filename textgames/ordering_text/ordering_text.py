@@ -280,7 +280,7 @@ class OrderingTextGame(BaseGame):
         return self.answer    # sorted(self.words, key=lambda word: (self.get_point(word), word))
 
     def validate(self, answer: str) -> bool:
-        return answer == "\n".join(self.get_answer())
+        return answer.replace(' ', '\n') == "\n".join(self.get_answer())
 
     def generate_new_game(self, *args, **kwargs) -> None:
         # - every pair of consecutive consonant has 5 points
