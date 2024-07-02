@@ -6,7 +6,7 @@ class BracketGame(BaseGame):
     def __init__(self):
         self.WORD_LIST = []
 
-        with open(str(Path(__file__).absolute()).replace("bracket_game.py","") + "/kb/word_list.txt") as f:
+        with open(str(Path(__file__).absolute()).replace("bracket_game/bracket_game.py","") + "assets/kb/word_list.txt") as f:
             for line in f:
                 self.WORD_LIST.append(line.replace("\n", ""))
 

@@ -42,7 +42,7 @@ if __name__ == "__main__":
         contents = []
         while True:
             try:
-                line = str(input("" if contents else f"Guess>\n"))
+                line = str(input("\t" if contents else f"Guess>\t"))
                 if len(line) == 0:
                     break
             except EOFError:
