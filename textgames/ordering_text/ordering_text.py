@@ -22,8 +22,23 @@ Print only the answer.
 
 #%%
 import re
+import random
+import string
+from typing import Tuple, List
+
 import numpy as np
 from textgames.base_game import BaseGame
+
+#%%
+from pathlib import Path
+_FP_WORDS_ = Path(__file__).parent.parent / "assets/kb" / "word_list.txt"
+
+_WORDS_BY_LEN_ = {}
+with open(_FP_WORDS_) as f:
+    for line in map(lambda _: _.strip(), f):
+        if 1 <= len(line) <= 20:
+            _WORDS_BY_LEN_.setdefault(len(line), []).append(line)
+
 
 #%%
 
@@ -73,8 +88,11 @@ class Scoring:
     def generate_prompt(self):
         raise NotImplementedError()
 
-    def point_wrapper(self, pattern: str, randint: int = 0) -> str:
+    def text_wrapper_for_point(self, pattern: str, randint: int = 0) -> str:
         return self.str_point_patterns[randint].format(pattern=pattern)
+
+    def text_sampler(self, valid: bool = True, *args, **kwargs) -> str:
+        raise NotImplementedError()
 
 
 #%%
@@ -84,8 +102,21 @@ class ConsecutiveScoring(Scoring):
         'v': "[aeiou]",
     }
 
-    def __init__(self, point=1, seq="cc"):
+    def __init__(self, point=1, seq=None):
         super().__init__(point)
+
+        # random initialisation
+        if seq is None:
+            mode = random.randint(1, 6)    # c/v, cc, vv, vc, cv, [cv]{3}
+            match mode:
+                case 1:
+                    seq = random.choice(["c", "v"])
+                case 2 | 3 | 4 | 5:
+                    seq = ["cc", "vv", "vc", "cv"][mode-2]
+                case 6:
+                    seq = random.choice(["ccc", "vvv"])
+
+        # print("seq", seq)
         pattern = ""
         n = 1
         for a, b in zip(seq, seq[1:] + '$'):
@@ -99,6 +130,8 @@ class ConsecutiveScoring(Scoring):
                     pattern += f"{{{n}}}" if (n > 1) else ""
                 n = 1
         self._pattern = re.compile(pattern)
+        assert all(c in self.regex_pattern.keys() for c in seq), \
+            f"Please use only the allowed pattern: {self.regex_pattern.keys()}"
         self._seq = seq
         self.prompt = None
 
@@ -129,8 +162,17 @@ class ConsecutiveScoring(Scoring):
         if prompt is None:
             raise NotImplementedError(repr(self))
         else:
-            self.prompt = self.point_wrapper(prompt, randint=0)
+            self.prompt = self.text_wrapper_for_point(prompt, randint=0)
         return self.prompt
+
+    def text_sampler(self, valid=True, *args, **kwargs) -> str:
+        def randomise(c):
+            while True:
+                ret = random.choice(string.ascii_lowercase)
+                check = re.search(c, ret)
+                if (valid and check) or (not valid and not check):
+                    return ret
+        return ''.join(map(randomise, self._seq))
 
 
 #%%
@@ -138,9 +180,26 @@ class LengthScoring(Scoring):
     def __init__(self, point=1, lt=None, gt=None, eq=None, ne=None):
         super().__init__(point)
         self.point = point
+
+        # random initialisation
+        if gt is None and lt is None and eq is None and ne is None:
+            mode = random.randint(1, 10)    # gt; lt; eq(2); ne; gtlt; gt-ne; lt-ne; gtlt-ne; eq-ne;
+            if mode in {1, 6, 7, 9}:
+                gt = random.randint(1, 8)
+            if mode in {2, 6, 8, 9}:
+                lt = random.randint((gt or 3) + 2, 12)
+            if mode in {3, 4, 10}:
+                eq = random.randint(3, 10)
+            if mode in {5, 7, 8, 9, 10}:
+                ne = random.randint((gt or 1) + 2, (lt or 12) - 2)
+                while eq is not None and (ne == eq):
+                    ne = random.randint((gt or 1) + 2, (lt or 12) - 2)
+
         self.lt, self.gt = lt or np.inf, gt or 0
         self.eq = eq if (lt is None) and (gt is None) else None
         self.ne = ne
+        assert self.eq is None or self.ne is None or (self.eq != self.ne), "lhoo"
+        assert (self.gt+1 < self.lt) and ((self.gt+1 != self.ne) or (self.gt+2 < self.lt)), "lhooo"
         self.prompt = None
 
     def __repr__(self):
@@ -173,8 +232,16 @@ class LengthScoring(Scoring):
         if prompt is None:
             raise NotImplementedError(repr(self))
         else:
-            self.prompt = self.point_wrapper(prompt, randint=0)
+            self.prompt = self.text_wrapper_for_point(prompt, randint=0)
         return self.prompt
+
+    def text_sampler(self, valid=True, cur="", *args, **kwargs) -> str:
+        if not valid:
+            raise NotImplementedError(repr(self))
+        target_length = self.eq if self.eq is not None else random.randint(self.gt+1, self.lt-1)
+        while self.ne is not None and (target_length == self.ne):
+            target_length = random.randint(self.gt+1, self.lt-1)
+        return ''.join(random.choices(string.ascii_lowercase, k=target_length))
 
 
 #%%
@@ -182,6 +249,17 @@ class AffixScoring(Scoring):
     def __init__(self, point=1, prefix=None, suffix=None):
         super().__init__(point)
         self.point = point
+
+        # random initialisation
+        if prefix is None and suffix is None:
+            mode = random.randint(1, 3)  # prefix_only, suffix_only, both
+            if mode % 2 == 1:
+                word_len = random.randint(1, 3)
+                prefix = random.choice(_WORDS_BY_LEN_[word_len])
+            if mode // 2 == 1:
+                word_len = random.randint(1, 3)
+                suffix = random.choice(_WORDS_BY_LEN_[word_len])
+
         self.prefix_txt, self.suffix_txt = prefix, suffix
         self.prefix = None if prefix is None else re.compile(f"^{prefix}")
         self.suffix = None if suffix is None else re.compile(f"{suffix}$")
@@ -206,12 +284,19 @@ class AffixScoring(Scoring):
             prompt = f"word starts with {self.prefix_txt}"
         elif self.prefix is None and self.suffix is not None:
             prompt = f"word ends with {self.suffix_txt}"
+        else:
+            prompt = f"word starts with {self.prefix_txt} and ends with {self.suffix_txt}"
 
         if prompt is None:
             raise NotImplementedError(repr(self))
         else:
-            self.prompt = self.point_wrapper(prompt, randint=0)
+            self.prompt = self.text_wrapper_for_point(prompt, randint=0)
         return self.prompt
+
+    def text_sampler(self, valid=True, cur="", *args, **kwargs) -> str:
+        if not valid:
+            raise NotImplementedError(repr(self))
+        return (self.prefix_txt or "") + cur + (self.suffix_txt or "")
 
 
 #%%
@@ -219,6 +304,14 @@ class InfixScoring(Scoring):
     def __init__(self, point=1, infix=None, n=None):
         super().__init__(point)
         self.point = point
+
+        # random initialisation
+        if infix is None:
+            mode = random.randint(1, 2)    # with or without n
+            word_length = random.choices([1, 2, 3], weights=[4, 5, 1])[0]
+            infix = random.choice(_WORDS_BY_LEN_[word_length])
+            n = random.randint(1, 2) if (mode == 1) else None
+
         self.infix = infix
         self.pattern = re.compile(infix)
         self.n = n
@@ -246,8 +339,46 @@ class InfixScoring(Scoring):
         if prompt is None:
             raise NotImplementedError(repr(self))
         else:
-            self.prompt = self.point_wrapper(prompt, randint=1)
+            self.prompt = self.text_wrapper_for_point(prompt, randint=1)
         return self.prompt
+
+    def text_sampler(self, valid=True, cur="", *args, **kwargs) -> str:
+        if not valid:
+            raise NotImplementedError(repr(self))
+        if len(cur) <= 0:
+            return self.infix
+        else:
+            split_idx = random.randint(0, len(cur))    # got chance become prefix or suffix
+            return cur[:split_idx] + self.infix + cur[split_idx:]
+
+
+#%%
+def _game_preset_config(preset_config: int) -> Tuple[List[Scoring], List[str]]:
+    match preset_config:
+        case 1:
+            return [
+                InfixScoring(point=1, infix="g", n=1),
+                LengthScoring(point=10, lt=5),
+            ], [
+                "aji", "genta", "ruochen", "hudi",
+            ]
+        case 2:
+            return [
+                ConsecutiveScoring(point=5, seq="cc"),
+                ConsecutiveScoring(point=3, seq="vv"),
+                InfixScoring(point=1, infix="g", n=1),
+                LengthScoring(point=10, lt=5),
+                AffixScoring(point=100, prefix="gen"),
+                AffixScoring(point=-1000, suffix="ta"),
+            ], [
+                "genta", "winata", "hudi", "alham", "aji", "ruochen",
+            ]
+        case _:
+            return [], []
+
+
+#%%
+SCORING_CLASSES = [ConsecutiveScoring, LengthScoring, AffixScoring, InfixScoring]
 
 
 #%%
@@ -283,16 +414,48 @@ class OrderingTextGame(BaseGame):
         return answer.replace(' ', '\n') == "\n".join(self.get_answer())
 
     def generate_new_game(self, *args, **kwargs) -> None:
-        self.rules = kwargs.get("rules", set())
-        self.words = kwargs.get("words", set())
-        if not self.rules or not self.words:
-            difficulty = kwargs.get("difficulty", 0)
-            if difficulty == 0:
-                self.rules = [
-                    InfixScoring(point=1, infix="g", n=1),
-                    LengthScoring(point=10, lt=5),
-                ]
-                self.words = ["aji", "genta", "ruochen", "hudi"]
+        if "preset_config" in kwargs:
+            self.rules, self.words = _game_preset_config(kwargs["preset_config"])
+
+        elif "rules" in kwargs or "words" in kwargs:
+            _rules, _words = _game_preset_config(1)
+            self.rules = kwargs.get("rules", _rules)
+            self.words = kwargs.get("words", _words)
+
+        else:
+            num_rules = random.randint(*kwargs["num_rules"])
+            print("num_rules", num_rules)
+            scoring_list = random.choices(SCORING_CLASSES, k=num_rules)\
+                if not kwargs["uniq_rules"] else\
+                random.sample(SCORING_CLASSES, k=num_rules)
+            print("scoring_list", scoring_list)
+            _rules = [
+                scoring(point=(random.randrange(5, 101, 5) * random.choice([-1, 1])))
+                for scoring in scoring_list
+            ]
+            print("rules", _rules)
+            self.rules = _rules
+
+            _words = []
+            num_words = random.randint(*kwargs["num_words"])
+            for i in range(num_words):
+                if kwargs["use_word_dic"]:
+                    word_length = random.randint(*kwargs["word_length"])
+                    _word = random.choice(_WORDS_BY_LEN_[word_length])
+                    j, mak_j = 0, 2000
+                    while (i < 2) and (j < mak_j) and (self.calc_point(_word) == 0):
+                        word_length = random.randint(*kwargs["word_length"])
+                        _word = random.choice(_WORDS_BY_LEN_[word_length])
+                        j += 1
+                    if j >= mak_j:
+                        print("can't find matching word")
+                    _words.append(_word)
+                else:
+                    word_length = random.randint(*kwargs["word_length"])
+                    _words.append(''.join(random.choices(string.ascii_lowercase, k=word_length)))
+                    # TODO: change la, abuden (bad dist.) :')
+            self.words = _words
+
         self.recalculate_all()
 
     def get_prompt(self) -> str:
@@ -313,13 +476,6 @@ class OrderingTextGame(BaseGame):
         return prompt
 
 
-
-#%%
-class RuleSetGenerator:
-    def __init__(self):
-        raise NotImplementedError()
-
-
 #%%
 
 
@@ -333,19 +489,8 @@ if __name__ == '__main__':
     # - word less than 5 characters gets extra 10 points
     # - word starts with 'gen' gets additional 100 points
     # - word ends with 'ta' gets negative 1000 points
-    thegame.generate_new_game(
-        rules=[
-            ConsecutiveScoring(point=5, seq="cc"),
-            ConsecutiveScoring(point=3, seq="vv"),
-            InfixScoring(point=1, infix="g", n=1),
-            LengthScoring(point=10, lt=5),
-            AffixScoring(point=100, prefix="gen"),
-            AffixScoring(point=-1000, suffix="ta"),
-        ],
-        words=[
-            "genta", "winata", "hudi", "alham", "aji", "ruochen",
-        ],
-    )
+    tc_rules, tc_words = _game_preset_config(2)
+    thegame.generate_new_game(rules=tc_rules, words=tc_words)
 
     print(thegame.get_prompt())
 
@@ -393,9 +538,6 @@ if __name__ == '__main__':
     print(" > answer:", ans)
     print(" > points:", list(map(lambda x: (thegame.get_point(x), x), ans)))
 
-    thegame.generate_new_game()
-    print(thegame.get_prompt())
-    print(thegame.get_answer())
 
 #%%
 

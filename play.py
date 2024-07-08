@@ -18,7 +18,7 @@ def print_text_white(string):
 if __name__ == "__main__":
     GAME_IDS = ["1","2","3","4"]
     GAME_NAMES = ["🔑\tPassword Game", "🧩\tSudoku", "🗳️\tBracket Game", "📈\tOrdering Text"]
-    LEVEL_IDS = ["1","2","3"]
+    LEVEL_IDS = ["1","2","3","0","00"]
     LEVELS = ["🚅\tEasy","🚀\tMedium","🛸\tHard"]
 
     print_text_green("#" * 20)
@@ -104,7 +104,19 @@ if __name__ == "__main__":
             game.generate_new_game(num_words=10, num_rules=7, depth=3)
     elif game_id == "4":
         game = OrderingTextGame()
-        game.generate_new_game()
+        match difficulty_level:
+            case "0":
+                game.generate_new_game(preset_config=1)
+            case "00":
+                game.generate_new_game(preset_config=2)
+            case "1":
+                game.generate_new_game(num_rules=(2, 4), uniq_rules=True, no_negative=True, num_words=(3, 5), word_length=(3, 8), use_word_dic=True)
+            case "2":
+                game.generate_new_game(num_rules=(4, 10), uniq_rules=False, no_negative=False, num_words=(5, 10), word_length=(3, 15), use_word_dic=True)
+            case "3":
+                game.generate_new_game(num_rules=(4, 10), uniq_rules=False, no_negative=False, num_words=(10, 20), word_length=(1, 15), use_word_dic=False)
+            case _:
+                game.generate_new_game(preset_config=1)
 
     solved = False
     print(game.get_prompt())
