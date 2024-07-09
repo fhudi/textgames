@@ -25,6 +25,7 @@ import re
 import random
 import string
 from typing import Tuple, List
+from itertools import chain
 
 import numpy as np
 from textgames.base_game import BaseGame
@@ -33,10 +34,12 @@ from textgames.base_game import BaseGame
 from pathlib import Path
 _FP_WORDS_ = Path(__file__).parent.parent / "assets/kb" / "word_list.txt"
 
+_WORDS_LIST_ = []
 _WORDS_BY_LEN_ = {}
 with open(_FP_WORDS_) as f:
     for line in map(lambda _: _.strip(), f):
         if 1 <= len(line) <= 20:
+            _WORDS_LIST_.append(line)
             _WORDS_BY_LEN_.setdefault(len(line), []).append(line)
 
 
@@ -255,10 +258,14 @@ class AffixScoring(Scoring):
             mode = random.randint(1, 3)  # prefix_only, suffix_only, both
             if mode % 2 == 1:
                 word_len = random.randint(1, 3)
-                prefix = random.choice(_WORDS_BY_LEN_[word_len])
+                while len(prefix := random.choice(_WORDS_LIST_)) < word_len:
+                    pass
+                prefix = prefix[:word_len]
             if mode // 2 == 1:
                 word_len = random.randint(1, 3)
-                suffix = random.choice(_WORDS_BY_LEN_[word_len])
+                while len(suffix := random.choice(_WORDS_LIST_)) < word_len:
+                    pass
+                suffix = suffix[:word_len]
 
         self.prefix_txt, self.suffix_txt = prefix, suffix
         self.prefix = None if prefix is None else re.compile(f"^{prefix}")
@@ -309,7 +316,10 @@ class InfixScoring(Scoring):
         if infix is None:
             mode = random.randint(1, 2)    # with or without n
             word_length = random.choices([1, 2, 3], weights=[4, 5, 1])[0]
-            infix = random.choice(_WORDS_BY_LEN_[word_length])
+            while len(infix := random.choice(_WORDS_LIST_)) < word_length:
+                pass
+            split_idx = random.randint(0, len(infix) - word_length)
+            infix = infix[split_idx:split_idx + word_length]
             n = random.randint(1, 2) if (mode == 1) else None
 
         self.infix = infix
@@ -424,22 +434,23 @@ class OrderingTextGame(BaseGame):
 
         else:
             num_rules = random.randint(*kwargs["num_rules"])
-            print("num_rules", num_rules)
+            # print("num_rules", num_rules)
             scoring_list = random.choices(SCORING_CLASSES, k=num_rules)\
-                if not kwargs["uniq_rules"] else\
+                if not kwargs["uniq_classrules"] else\
                 random.sample(SCORING_CLASSES, k=num_rules)
-            print("scoring_list", scoring_list)
+            # print("scoring_list", scoring_list)
             _rules = [
-                scoring(point=(random.randrange(5, 101, 5) * random.choice([-1, 1])))
+                scoring(point=(random.randrange(5, 101, 5) *
+                               random.choice([1] if kwargs["positive_only"] else [-1, 1])))
                 for scoring in scoring_list
             ]
-            print("rules", _rules)
+            # print("rules", _rules)
             self.rules = _rules
 
             _words = []
             num_words = random.randint(*kwargs["num_words"])
             for i in range(num_words):
-                if kwargs["use_word_dic"]:
+                if kwargs["word_dic_only"] or (i < 2) or random.randint(0, 1):
                     word_length = random.randint(*kwargs["word_length"])
                     _word = random.choice(_WORDS_BY_LEN_[word_length])
                     j, mak_j = 0, 2000
