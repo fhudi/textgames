@@ -112,6 +112,8 @@ class StringSearch(BaseGame):
     def generate_new_game(self, difficulty=3):
         self.dictionary_by_len = [[] for _ in range(9)]
         self.dictionary = []
+
+        self.difficulty = difficulty
         
         with open("textgames/assets/kb/word_list.txt", 'r') as file:
             for line in file:
@@ -167,34 +169,33 @@ class StringSearch(BaseGame):
         def print_chars(X):
             return ", ".join(X[:-1]) + " and " + X[-1] if len(X) > 1 else X[0]
 
-        if self.is_palindrome_answer:
-            extra_constraints = " - forms a palindrome\n"
-        else:
-            extra_constraints = ""
-
-        
-        # artificial constriants: constraint that does not change anything since it's been there already anyway
-        artificial_constraints = []
-        s = self.answer
-        if any(s[i].lower() not in 'aeiou' and s[i+1].lower() not in 'aeiou' for i in range(len(s)-1)):
-            artificial_constraints.append(" - has 2 consecutive consonants\n")
-        else:
-            artificial_constraints.append(" - does not have 2 consecutive consonants\n")
-        if any(s[i].lower() in 'aeiou' and s[i+1].lower() in 'aeiou' for i in range(len(s)-1)):
-            artificial_constraints.append(" - has 2 consecutive vowels\n")
-        else:
-            artificial_constraints.append(" - does not have 2 consecutive vowels\n")
-        if sum(1 for char in s.lower() if char in 'aeiou') > sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
-            artificial_constraints.append(" - has more vowels than consonants\n")
-        if sum(1 for char in s.lower() if char in 'aeiou') < sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
-            artificial_constraints.append(" - has less vowels than consonants\n")
-        if sum(1 for char in s.lower() if char in 'aeiou') == sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
-            artificial_constraints.append(" - has the same amount of vowels and consonants\n")
-        
-        if extra_constraints == "":
-            extra_constraints = extra_constraints + ''.join(random.sample(artificial_constraints, random.randint(1, 2)))
-        else:
-            extra_constraints = extra_constraints + ''.join(random.sample(artificial_constraints, 1))
+        extra_constraints = ""
+        if self.difficulty == 3:
+            if self.is_palindrome_answer:
+                extra_constraints = " - forms a palindrome\n"
+            
+            # artificial constriants: constraint that does not change anything since it's been there already anyway
+            artificial_constraints = []
+            s = self.answer
+            if any(s[i].lower() not in 'aeiou' and s[i+1].lower() not in 'aeiou' for i in range(len(s)-1)):
+                artificial_constraints.append(" - has 2 consecutive consonants\n")
+            else:
+                artificial_constraints.append(" - does not have 2 consecutive consonants\n")
+            if any(s[i].lower() in 'aeiou' and s[i+1].lower() in 'aeiou' for i in range(len(s)-1)):
+                artificial_constraints.append(" - has 2 consecutive vowels\n")
+            else:
+                artificial_constraints.append(" - does not have 2 consecutive vowels\n")
+            if sum(1 for char in s.lower() if char in 'aeiou') > sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
+                artificial_constraints.append(" - has more vowels than consonants\n")
+            if sum(1 for char in s.lower() if char in 'aeiou') < sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
+                artificial_constraints.append(" - has less vowels than consonants\n")
+            if sum(1 for char in s.lower() if char in 'aeiou') == sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
+                artificial_constraints.append(" - has the same amount of vowels and consonants\n")
+            
+            if extra_constraints == "":
+                extra_constraints = extra_constraints + ''.join(random.sample(artificial_constraints, random.randint(1, 2)))
+            else:
+                extra_constraints = extra_constraints + ''.join(random.sample(artificial_constraints, 1))
 
         prompt = f"""You are given the following string:
 {self.input_text}

@@ -3,6 +3,7 @@ from textgames.sudoku.sudoku import Sudoku
 from textgames.bracket_game.bracket_game import BracketGame
 from textgames.ordering_text.ordering_text import OrderingTextGame
 from textgames.islands.islands import Islands
+from textgames.string_search.string_search import StringSearch
 
 import random
 from termcolor import colored
@@ -17,8 +18,8 @@ def print_text_white(string):
     print(colored(string, "white"))
 
 if __name__ == "__main__":
-    GAME_IDS = ["1","2","3","4", "5"]
-    GAME_NAMES = ["🔑\tPassword Game", "🧩\tSudoku", "🗳️\tBracket Game", "📈\tOrdering Text", "🏝️\tIslands"]
+    GAME_IDS = ["1","2","3","4", "5", "6"]
+    GAME_NAMES = ["🔑\tPassword Game", "🧩\tSudoku", "🗳️\tBracket Game", "📈\tOrdering Text", "🏝️\tIslands", "🔎\tString Search"]
     LEVEL_IDS = ["1","2","3","0","00"]
     LEVELS = ["🚅\tEasy","🚀\tMedium","🛸\tHard"]
 
@@ -126,6 +127,9 @@ if __name__ == "__main__":
             game.generate_new_game(num_islands=random.randint(1, 3))
         elif difficulty_level == "3":
             game.generate_new_game(num_islands=random.randint(3, 6))
+    elif game_id == "6":
+        game = StringSearch()
+        game.generate_new_game(difficulty=int(difficulty_level))
 
     solved = False
     print(game.get_prompt())
