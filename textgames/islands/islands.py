@@ -43,7 +43,7 @@ class Islands(BaseGame):
         if N is None:
             N = random.randint(5, 8)
         if num_islands is None:
-            num_islands = random.randint(1, 5)
+            num_islands = random.randint(1, 6)
 
         if island_size_min is None:
             worst_case = math.floor((N * N // num_islands) * 0.6)
@@ -57,7 +57,7 @@ class Islands(BaseGame):
             island_with_coconut = random.randint(1, num_islands)
 
         if total_coconuts is None:
-            total_coconuts = min(random.randint(1, island_with_coconut * island_size_min), 5)
+            total_coconuts = min(random.randint(island_with_coconut, island_with_coconut * island_size_min), 6)
 
         self.N = N
         self.num_islands = num_islands
@@ -67,11 +67,11 @@ class Islands(BaseGame):
         self.total_coconuts = total_coconuts
 
     def validate(self, answer: str) -> bool:
-        print(answer)
+
         # clean up the input, to make it more flexible towards formatting
         answer = answer.split("\n")
         answer = [a.replace(" ", "").lower().strip() for a in answer]
-        print(answer)
+
         # check the size
         if len(answer) != self.N or len(answer[0]) != self.N:
             print(f"2D grid is not {self.N} x {self.N}. ({len(answer)} x {len(answer[0])})")
@@ -87,7 +87,7 @@ class Islands(BaseGame):
         islands = []
         # build the islands, denoted as a set of coordinate and tile
         visited = [[False] * self.N for _ in range(self.N)] # for flood-fill
-        print(visited)
+
         # helper flood-fill
         def flood_fill(x, y, answer, visited, island_set):
 
@@ -108,9 +108,6 @@ class Islands(BaseGame):
                     island_set = set()
                     flood_fill(i, j, answer, visited, island_set)
                     islands.append(island_set)
-
-
-        print(islands)
         
         # constraint 1: has exactly K islands
         if len(islands) != self.num_islands:
@@ -144,7 +141,21 @@ class Islands(BaseGame):
         return True
 
     def get_prompt(self):
-        prompt = f"""Example Prompt
+        if self.island_with_coconut == 0:
+            prompt = f"""Example Prompt
+You are asked to construct a 2D {self.N} x {self.N} grid, consisting of water tiles (denoted by ’.’), 
+land tiles (denoted by ’#’). 
+
+A group of connected land tiles in 4 cardinal directions forms an island.
+
+Your 2D grid must follow the following rules:
+- There must be exactly {self.num_islands} islands.
+- The size of each island must be from {self.island_size_min} to {self.island_size_max} tiles.
+
+Print only the answer.
+"""
+        else:
+            prompt = f"""Example Prompt
 You are asked to construct a 2D {self.N} x {self.N} grid, consisting of water tiles (denoted by ’.’), 
 land tiles (denoted by ’#’), and coconut tree tiles (denoted by ’o’). 
 Coconut tree tiles are also considered as land tiles. 
