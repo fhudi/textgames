@@ -138,6 +138,10 @@ if __name__ == "__main__":
         while True:
             try:
                 line = str(input("\t" if contents else f"Guess>\t"))
+                # automatic break for some games:
+                if game_id in ["1", "3", "6"]:
+                    contents.append(line)
+                    break
                 if len(line) == 0:
                     break
             except EOFError:
