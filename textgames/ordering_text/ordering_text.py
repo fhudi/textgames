@@ -1,5 +1,36 @@
 #%%
-"""Example Prompt
+"""
+Rules Description
+!! only lower_case characters are considered. (assumption for now)
+
+word length:
+- example: word less than 5 characters gets 10 points
+- possible operands: {\eq, \lt, \gt, \ne}
+    - \le and \ge will be randomized for prompt generation
+- possible combinations: {\gt\lt, \gt\lt\ne}
+- only 1 \ne is considered
+
+neighboring / consecutive chars
+- example: every pair of consecutive consonant gets 5 points
+- possible concepts: {vowels, consonants}
+- possible combinations: vowel after consonant, and vice versa
+- possible counting, i.e.: "3 consecutive consonants".
+
+prefix / suffix
+- examples:
+    - word starts with gen gets extra 100 point
+    - word ends with ta gets negative 1000 point
+- possibility of combination.
+
+infix
+- example: 1 point if there exists exactly 1 `g`
+- possible for counting
+
+
+------------------
+Example Prompt #00
+------------------
+
 Given a set of rules to calculate point, sort the set of words in increasing order.
 When there 2 or more words with same point, sort lexicographically.
 
@@ -31,46 +62,10 @@ import numpy as np
 from textgames.base_game import BaseGame
 
 #%%
-from pathlib import Path
-_FP_WORDS_ = Path(__file__).parent.parent / "assets/kb" / "word_list.txt"
-
-_WORDS_LIST_ = []
-_WORDS_BY_LEN_ = {}
-with open(_FP_WORDS_) as f:
-    for line in map(lambda _: _.strip(), f):
-        if 1 <= len(line) <= 20:
-            _WORDS_LIST_.append(line)
-            _WORDS_BY_LEN_.setdefault(len(line), []).append(line)
-
+from textgames.assets.word_list import WORDS_LIST, WORDS_BY_LEN
 
 #%%
 
-"""Rules Description
-!! only lower_case characters are considered. (assumption for now)
-
-word length:
-- example: word less than 5 characters gets 10 points
-- possible operands: {\eq, \lt, \gt, \ne}
-    - \le and \ge will be randomized for prompt generation
-- possible combinations: {\gt\lt, \gt\lt\ne}
-- only 1 \ne is considered
-
-neighboring / consecutive chars
-- example: every pair of consecutive consonant gets 5 points
-- possible concepts: {vowels, consonants}
-- possible combinations: vowel after consonant, and vice versa
-- possible counting, i.e.: "3 consecutive consonants".
-
-prefix / suffix
-- examples:
-    - word starts with gen gets extra 100 point
-    - word ends with ta gets negative 1000 point
-- possibility of combination.
-
-infix
-- example: 1 point if there exists exactly 1 `g`
-- possible for counting
-"""
 
 
 #%%
@@ -258,12 +253,12 @@ class AffixScoring(Scoring):
             mode = random.randint(1, 3)  # prefix_only, suffix_only, both
             if mode % 2 == 1:
                 word_len = random.randint(1, 3)
-                while len(prefix := random.choice(_WORDS_LIST_)) < word_len:
+                while len(prefix := random.choice(WORDS_LIST)) < word_len:
                     pass
                 prefix = prefix[:word_len]
             if mode // 2 == 1:
                 word_len = random.randint(1, 3)
-                while len(suffix := random.choice(_WORDS_LIST_)) < word_len:
+                while len(suffix := random.choice(WORDS_LIST)) < word_len:
                     pass
                 suffix = suffix[:word_len]
 
@@ -316,7 +311,7 @@ class InfixScoring(Scoring):
         if infix is None:
             mode = random.randint(1, 2)    # with or without n
             word_length = random.choices([1, 2, 3], weights=[4, 5, 1])[0]
-            while len(infix := random.choice(_WORDS_LIST_)) < word_length:
+            while len(infix := random.choice(WORDS_LIST)) < word_length:
                 pass
             split_idx = random.randint(0, len(infix) - word_length)
             infix = infix[split_idx:split_idx + word_length]
@@ -421,7 +416,7 @@ class OrderingTextGame(BaseGame):
         return self.answer    # sorted(self.words, key=lambda word: (self.get_point(word), word))
 
     def validate(self, answer: str) -> bool:
-        return answer.replace(' ', '\n') == "\n".join(self.get_answer())
+        return answer.lower().replace(' ', '\n') == "\n".join(self.get_answer())
 
     def generate_new_game(self, *args, **kwargs) -> None:
         if "preset_config" in kwargs:
@@ -452,11 +447,11 @@ class OrderingTextGame(BaseGame):
             for i in range(num_words):
                 if kwargs["word_dic_only"] or (i < 2) or random.randint(0, 1):
                     word_length = random.randint(*kwargs["word_length"])
-                    _word = random.choice(_WORDS_BY_LEN_[word_length])
+                    _word = random.choice(WORDS_BY_LEN[word_length])
                     j, mak_j = 0, 2000
                     while (i < 2) and (j < mak_j) and (self.calc_point(_word) == 0):
                         word_length = random.randint(*kwargs["word_length"])
-                        _word = random.choice(_WORDS_BY_LEN_[word_length])
+                        _word = random.choice(WORDS_BY_LEN[word_length])
                         j += 1
                     if j >= mak_j:
                         print("can't find matching word")
