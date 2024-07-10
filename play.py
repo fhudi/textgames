@@ -1,3 +1,4 @@
+from textgames.crossword_arranger.crossword_arranger import CrosswordArrangerGame
 from textgames.password_game.password_game import PasswordGame
 from textgames.sudoku.sudoku import Sudoku
 from textgames.bracket_game.bracket_game import BracketGame
@@ -18,8 +19,8 @@ def print_text_white(string):
     print(colored(string, "white"))
 
 if __name__ == "__main__":
-    GAME_IDS = ["1","2","3","4", "5", "6"]
-    GAME_NAMES = ["🔑\tPassword Game", "🧩\tSudoku", "🗳️\tBracket Game", "📈\tOrdering Text", "🏝️\tIslands", "🔎\tString Search"]
+    GAME_IDS = ["1","2","3","4", "5", "6", "7"]
+    GAME_NAMES = ["🔑\tPassword Game", "🧩\tSudoku", "🗳️\tBracket Game", "📈\tOrdering Text", "🏝️\tIslands", "🔎\tString Search", "📰\tCrossword Arranger"]
     LEVEL_IDS = ["1","2","3","0","00"]
     LEVELS = ["🚅\tEasy","🚀\tMedium","🛸\tHard"]
 
@@ -130,6 +131,19 @@ if __name__ == "__main__":
     elif game_id == "6":
         game = StringSearch()
         game.generate_new_game(difficulty=int(difficulty_level))
+
+    elif game_id == "7":
+        game = CrosswordArrangerGame()
+        match difficulty_level:
+            case "0":
+                game.generate_new_game(preset_config=1)
+            case "1":
+                game.generate_new_game(board_size=3, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
+            case "2":
+                game.generate_new_game(board_size=4, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
+            case "3":
+                game.generate_new_game(board_size=5, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
+        print(f"Possible Answer: {game.possible_ans}")
 
     solved = False
     print(game.get_prompt())
