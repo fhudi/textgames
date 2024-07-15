@@ -5,7 +5,7 @@ from textgames.bracket_game.bracket_game import BracketGame
 from textgames.ordering_text.ordering_text import OrderingTextGame
 from textgames.islands.islands import Islands
 from textgames.string_search.string_search import StringSearch
-
+from textgames.anagram_scribble.anagram_scribble import AnagramScribble
 import random
 from termcolor import colored
 
@@ -19,8 +19,8 @@ def print_text_white(string):
     print(colored(string, "white"))
 
 if __name__ == "__main__":
-    GAME_IDS = ["1","2","3","4", "5", "6", "7"]
-    GAME_NAMES = ["🔑\tPassword Game", "🧩\tSudoku", "🗳️\tBracket Game", "📈\tOrdering Text", "🏝️\tIslands", "🔎\tString Search", "📰\tCrossword Arranger"]
+    GAME_IDS = ["1","2","3","4", "5", "6", "7", "8"]
+    GAME_NAMES = ["🔑\tPassword Game", "🧩\tSudoku", "🗳️\tBracket Game", "📈\tOrdering Text", "🏝️\tIslands", "🔎\tString Search", "📰\tCrossword Arranger", "🔤\tAnagram Scribble"]
     LEVEL_IDS = ["1","2","3","0","00"]
     LEVELS = ["🚅\tEasy","🚀\tMedium","🛸\tHard"]
 
@@ -144,6 +144,15 @@ if __name__ == "__main__":
             case "3":
                 game.generate_new_game(board_size=5, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
         print(f"Possible Answer: {game.possible_ans}")
+
+    elif game_id == "8":
+        game = AnagramScribble()
+        if difficulty_level == "1":
+            game.generate_new_game(num_chars=5, allow_repeat=True)
+        elif difficulty_level == "2":
+            game.generate_new_game(num_chars=7, allow_repeat=True)
+        elif difficulty_level == "3":
+            game.generate_new_game(num_chars=10, allow_repeat=False)
 
     solved = False
     print(game.get_prompt())
