@@ -125,11 +125,17 @@ if __name__ == "__main__":
             case "00":
                 game.generate_new_game(preset_config=2)
             case "1":
-                game.generate_new_game(num_rules=(2, 4), uniq_classrules=True, positive_only=False, num_words=(3, 5), word_length=(3, 8), word_dic_only=True)
+                game.generate_new_game(num_rules=(2, 2), uniq_classrules=True, positive_only=False,
+                                       num_words=(3, 3), word_length=(3, 8), word_dic_only=True)
             case "2":
-                game.generate_new_game(num_rules=(4, 8), uniq_classrules=False, positive_only=False, num_words=(5, 10), word_length=(3, 15), word_dic_only=True)
+                game.generate_new_game(num_rules=(2, 4), uniq_classrules=True, positive_only=False,
+                                       num_words=(4, 6), word_length=(3, 8), word_dic_only=True)
             case "3":
-                game.generate_new_game(num_rules=(8, 12), uniq_classrules=False, positive_only=False, num_words=(10, 20), word_length=(6, 15), word_dic_only=False)
+                game.generate_new_game(num_rules=(4, 8), uniq_classrules=False, positive_only=False,
+                                       num_words=(5, 10), word_length=(3, 15), word_dic_only=True)
+            case "4":
+                game.generate_new_game(num_rules=(8, 12), uniq_classrules=False, positive_only=False,
+                                       num_words=(10, 20), word_length=(6, 15), word_dic_only=False)
             case _:
                 game.generate_new_game(preset_config=1)
 
