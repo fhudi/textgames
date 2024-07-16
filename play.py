@@ -19,11 +19,17 @@ def print_text_white(string):
     print(colored(string, "white"))
 
 if __name__ == "__main__":
+    import os
+    _show_hidden_level_ = os.getenv("TEXTGAMES_SHOW_HIDDEN_LEVEL", False)
+
     GAME_IDS = ["1", "2", "3", "4", "5", "6", "7", "8"]
-    GAME_NAMES = ["🔑\tPassword Game", "🧩\tSudoku", "🗳️\tBracket Game", "📈\tOrdering Text", "🏝️\tIslands", "🔎\tString Search", "📰\tCrossword Arranger", "🔤\tAnagram Scribble"]
+    GAME_NAMES = ["🔑\tPassword Game", "🧩\tSudoku", "🗳️\tBracket Game", "📈\tOrdering Text", "🏝️\tIslands",
+                  "🔎\tString Search", "📰\tCrossword Arranger", "🔤\tAnagram Scribble"]
     LEVEL_IDS = ["1", "2", "3", "4", "0", "00"]
-    LEVELS = ["🚅\tEasy","🚀\tMedium","🛸\tHard"]
-    LEVELS_HIDDEN = ["🌌\tInsane", "Sample #1", "Sample #2"]
+    LEVELS = ["🚅\tEasy", "🚀\tMedium", "🛸\tHard"]
+    LEVELS_HIDDEN = ["🌌\tInsane", "🔰\tSample #1", "🔰\tSample #2"]
+    if _show_hidden_level_:
+        LEVELS, LEVELS_HIDDEN = LEVELS + LEVELS_HIDDEN, []
 
     print_text_green("#" * 20)
     print_text_cyan("    Welcome to")
@@ -64,10 +70,11 @@ if __name__ == "__main__":
                 print("The game option is not available.")
                 game = None
 
-    print_text_green(f"Game chosen: {GAME_NAMES[int(game_id)-1]} and Difficulty Level: {LEVELS[int(difficulty_level)-1]}")
+    this_game_name = GAME_NAMES[GAME_IDS.index(game_id)]
+    this_difficulty_level = (LEVELS + LEVELS_HIDDEN)[LEVEL_IDS.index(difficulty_level)].replace("\t", " ")
+    print_text_green(f"Game chosen: {this_game_name} and Difficulty Level: {this_difficulty_level}")
     not_available_game_level = NotImplementedError(
-        "The difficulty level is not available for this game." +
-        f"{GAME_NAMES[GAME_IDS.index(game_id)]} - {(LEVELS + LEVELS_HIDDEN)[LEVEL_IDS.index(difficulty_level)]}"
+        f"The difficulty level is not available for this game: {this_game_name} - {this_difficulty_level}"
     )
     if game_id == "1":
         game = PasswordGame()
