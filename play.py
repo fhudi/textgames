@@ -19,10 +19,11 @@ def print_text_white(string):
     print(colored(string, "white"))
 
 if __name__ == "__main__":
-    GAME_IDS = ["1","2","3","4", "5", "6", "7", "8"]
+    GAME_IDS = ["1", "2", "3", "4", "5", "6", "7", "8"]
     GAME_NAMES = ["🔑\tPassword Game", "🧩\tSudoku", "🗳️\tBracket Game", "📈\tOrdering Text", "🏝️\tIslands", "🔎\tString Search", "📰\tCrossword Arranger", "🔤\tAnagram Scribble"]
-    LEVEL_IDS = ["1","2","3","0","00"]
+    LEVEL_IDS = ["1", "2", "3", "4", "0", "00"]
     LEVELS = ["🚅\tEasy","🚀\tMedium","🛸\tHard"]
+    LEVELS_HIDDEN = ["🌌\tInsane", "Sample #1", "Sample #2"]
 
     print_text_green("#" * 20)
     print_text_cyan("    Welcome to")
@@ -43,8 +44,8 @@ if __name__ == "__main__":
 
             print_text_green("#" * 20)
             print_text_green("Difficulty Levels:")
-            for i, level in zip(range(len(LEVELS)), LEVELS):
-                print_text_green(f"{i+1}. {level}")
+            for i, level in zip(LEVEL_IDS, LEVELS):
+                print_text_green(f"{i}. {level}")
             print_text_green("#" * 20)
 
             while difficulty_level is None:
@@ -64,6 +65,10 @@ if __name__ == "__main__":
                 game = None
 
     print_text_green(f"Game chosen: {GAME_NAMES[int(game_id)-1]} and Difficulty Level: {LEVELS[int(difficulty_level)-1]}")
+    not_available_game_level = NotImplementedError(
+        "The difficulty level is not available for this game." +
+        f"{GAME_NAMES[GAME_IDS.index(game_id)]} - {(LEVELS + LEVELS_HIDDEN)[LEVEL_IDS.index(difficulty_level)]}"
+    )
     if game_id == "1":
         game = PasswordGame()
         if difficulty_level == "1":
@@ -72,9 +77,11 @@ if __name__ == "__main__":
             num_rules = 4
         elif difficulty_level == "3":
             num_rules = 6
+        else:
+            raise not_available_game_level
         possible_answer = game.generate_new_game(num_rules=num_rules)
-        
         print(f"possible answer: {possible_answer}")
+
     elif game_id == "2":
         game = Sudoku()
         if difficulty_level == "1":
@@ -95,8 +102,10 @@ if __name__ == "__main__":
                 game.generate_new_game(size=9, characters=["1","2","3","4","5","6","7","8","9"], empty_character="_", empty_ratio=0.4)
             elif setting == 1:
                 game.generate_new_game(size=9, characters=["A","B","C","D","E","F","G","H","I"], empty_character="_", empty_ratio=0.4)
-        
+        else:
+            raise not_available_game_level
         game.print_sudoku()
+
     elif game_id == "3":
         game = BracketGame()
         if difficulty_level == "1":
@@ -105,6 +114,9 @@ if __name__ == "__main__":
             game.generate_new_game(num_words=5, num_rules=5, depth=2)
         elif difficulty_level == "3":
             game.generate_new_game(num_words=10, num_rules=7, depth=3)
+        else:
+            raise not_available_game_level
+
     elif game_id == "4":
         game = OrderingTextGame()
         match difficulty_level:
@@ -120,6 +132,8 @@ if __name__ == "__main__":
                 game.generate_new_game(num_rules=(8, 12), uniq_classrules=False, positive_only=False, num_words=(10, 20), word_length=(6, 15), word_dic_only=False)
             case _:
                 game.generate_new_game(preset_config=1)
+
+
     elif game_id == "5":
         game = Islands()
         if difficulty_level == "1":
@@ -128,6 +142,9 @@ if __name__ == "__main__":
             game.generate_new_game(num_islands=random.randint(1, 3))
         elif difficulty_level == "3":
             game.generate_new_game(num_islands=random.randint(3, 6))
+        else:
+            raise not_available_game_level
+
     elif game_id == "6":
         game = StringSearch()
         game.generate_new_game(difficulty=int(difficulty_level))
@@ -143,7 +160,9 @@ if __name__ == "__main__":
                 game.generate_new_game(board_size=4, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
             case "3":
                 game.generate_new_game(board_size=5, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
-        print(f"Possible Answer: {game.possible_ans}")
+            case _:
+                raise not_available_game_level
+        print(f"Possible Answer: {game.possible_ans}\n")
 
     elif game_id == "8":
         game = AnagramScribble()
@@ -153,6 +172,8 @@ if __name__ == "__main__":
             game.generate_new_game(num_chars=7, allow_repeat=True)
         elif difficulty_level == "3":
             game.generate_new_game(num_chars=10, allow_repeat=False)
+        else:
+            raise not_available_game_level
 
     solved = False
     print(game.get_prompt())
