@@ -102,7 +102,7 @@ class CrosswordArrangerGame(BaseGame):
         )
 
         prompt += "\nList of words:\n"
-        for word in self.word_list:
+        for word in sorted(self.word_list):
             prompt += f"- {word}\n"
 
         prompt += "\nPrint only the answer."
