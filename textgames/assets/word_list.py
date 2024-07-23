@@ -1,7 +1,8 @@
 import numpy as np
 
 from pathlib import Path
-_FP_WORDS_ = Path(__file__).parent / "kb" / "word_list.txt"
+# _FP_WORDS_ = Path(__file__).parent / "kb" / "word_list.txt"
+_FP_WORDS_ = Path(__file__).parent / "word_list" / "word_list.oxford5k_opal.lower.txt"
 
 WORDS_LIST = []
 WORDS_BY_LEN = {}
