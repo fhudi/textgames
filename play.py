@@ -168,11 +168,13 @@ if __name__ == "__main__":
             case "0":
                 game.generate_new_game(preset_config=1)
             case "1":
-                game.generate_new_game(board_size=3, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
+                game.generate_new_game(board_size=3, noise_ratio=.25, no_ans_prob=.0, no_duplicate=True,)
             case "2":
                 game.generate_new_game(board_size=4, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
             case "3":
                 game.generate_new_game(board_size=5, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
+            case "4":
+                game.generate_new_game(board_size=6, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
             case _:
                 raise not_available_game_level
         print(f"Possible Answer: {game.possible_ans}\n")
