@@ -9,6 +9,8 @@ class AnagramScribble(BaseGame):
         self.WORD_LIST_BIN = {}
         with open(str(Path(__file__).absolute()).replace("anagram_scribble/anagram_scribble.py","") + "assets/kb/words_by_length.json") as f:
             self.WORD_LIST_BIN = json.load(f)
+        self.low_num_chars = None
+        self.high_num_chars = None
         self.num_chars = None
         self.allow_repeat = True
         self.all_chars = list(string.ascii_lowercase)
@@ -17,7 +19,9 @@ class AnagramScribble(BaseGame):
         self.answer = ""
 
     def generate_new_game(self, *args, **kwargs) -> None:
-        self.num_chars = kwargs['num_chars']
+        self.low_num_chars = kwargs['low_num_chars']
+        self.high_num_chars = kwargs['high_num_chars']
+        self.num_chars = random.randint(self.low_num_chars, self.high_num_chars)
         self.allow_repeat = kwargs['allow_repeat']
         self.answer = random.choice(self.WORD_LIST_BIN[str(self.num_chars)])
         remaining_chars_num = self.total_chars_num - self.num_chars

@@ -182,11 +182,11 @@ if __name__ == "__main__":
     elif game_id == "8":
         game = AnagramScribble()
         if difficulty_level == "1":
-            game.generate_new_game(num_chars=5, allow_repeat=True)
+            game.generate_new_game(low_num_chars=3, high_num_chars=5, allow_repeat=True)
         elif difficulty_level == "2":
-            game.generate_new_game(num_chars=7, allow_repeat=True)
+            game.generate_new_game(low_num_chars=6, high_num_chars=7, allow_repeat=True)
         elif difficulty_level == "3":
-            game.generate_new_game(num_chars=10, allow_repeat=False)
+            game.generate_new_game(low_num_chars=8, high_num_chars=10, allow_repeat=False)
         else:
             raise not_available_game_level
 
