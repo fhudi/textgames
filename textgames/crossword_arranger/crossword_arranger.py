@@ -4,7 +4,7 @@ from typing import List, Optional
 from itertools import chain
 
 from textgames.base_game import BaseGame
-from textgames.assets.word_list import WORDS_BY_LEN, PrefixTrie
+from textgames.assets.word_list import PrefixTrie, get_word_list_by_length
 
 #%%
 # len_count = dict(sorted([(k, len(v)) for k, v in WORDS_BY_LEN.items()]))
@@ -72,7 +72,9 @@ class CrosswordArrangerGame(BaseGame):
             raise NotImplementedError("Arranger with Duplicate word is not yet implemented")
 
         self.board_size = int(kwargs.get("board_size", self.board_size or 3))
-        self.full_word_list = kwargs.get("full_word_list", self.full_word_list or WORDS_BY_LEN[self.board_size])
+        self.full_word_list = kwargs.get("full_word_list", self.full_word_list or get_word_list_by_length(corpus=(
+            {"oxford5k_opal"} if self.board_size < 5 else {"oxford5k_opal", "nltk_words"}
+        ))[self.board_size])
 
         if ("preset_config" in kwargs) and (kwargs["preset_config"] == 1):
             # car
