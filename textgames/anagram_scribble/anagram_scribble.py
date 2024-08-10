@@ -37,23 +37,28 @@ class AnagramScribble(BaseGame):
             prompt = f"Construct a valid {self.num_chars}-character English word from the following letters:\n{self.total_chars}\nEach character can only be used once. Please write None if there is no valid combination."
         return prompt
     
-    def validate(self, answer: str) -> bool:
+    def validate(self, answer: str) -> (bool, str):
         answer = answer.lower()
         if self.answer != "" and answer == "none":
-            print("There is a valid answer.")
-            return False
+            val_msg = "There is a valid answer."
+            print(val_msg)
+            return False, val_msg
         if len(answer) != self.num_chars:
-            print(f"Your answer must be exactly {self.num_chars} characters long")
-            return False
+            val_msg = f"Your answer must be exactly {self.num_chars} characters long"
+            print(val_msg)
+            return False, val_msg
         for char in answer:
             if char not in self.total_chars:
-                print("Your answer must only contain the characters provided")
-                return False
+                val_msg = "Your answer must only contain the characters provided"
+                print(val_msg)
+                return False, val_msg
         if not self.allow_repeat and len(set(answer)) != len(answer) and len(self.answer) == len(set(self.answer)):
-            print("Your answer must not contain repeated characters")
-            return False
+            val_msg = "Your answer must not contain repeated characters"
+            print(val_msg)
+            return False, val_msg
         if answer not in self.WORD_LIST_BIN[str(self.num_chars)]:
-            print("Your answer is not a valid English word")
-            return False
+            val_msg = "Your answer is not a valid English word"
+            print(val_msg)
+            return False, val_msg
 
-        return True
+        return True, ""

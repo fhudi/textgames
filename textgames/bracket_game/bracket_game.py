@@ -16,13 +16,14 @@ class BracketGame(BaseGame):
         self.string = ""
         self.depth = None
 
-    def validate(self, answer: str) -> bool:
+    def validate(self, answer: str) -> (bool, str):
         for rule in self.rules:
             arr = answer.split(rule[0])
             
             if rule[1][1] not in arr[0] or rule[1][2] not in arr[1]:
-                print(f"{rule[0]} is not between the correct bracket, {rule[1][1]} not in {arr[0]} and {rule[1][2]} not in {arr[1]}")
-                return False
+                val_msg = f"{rule[0]} is not between the correct bracket, {rule[1][1]} not in {arr[0]} and {rule[1][2]} not in {arr[1]}"
+                print(val_msg)
+                return False, val_msg
             
         filter_answer = answer
         for i in range(0, 26):
@@ -50,14 +51,16 @@ class BracketGame(BaseGame):
                         count = len(st)
                     st.pop()
                 else:
-                    print("There is a closing bracket without an open bracket")
-                    return False
+                    val_msg = "There is a closing bracket without an open bracket"
+                    print(val_msg)
+                    return False, val_msg
         
         if count == self.depth:
-            return True
+            return True, ""
         else:       
-            print(f"The depth of the bracket is {count}. The expected depth is {self.depth}")
-            return False
+            val_msg = f"The depth of the bracket is {count}. The expected depth is {self.depth}"
+            print(val_msg)
+            return False, val_msg
 
     def generate_new_game(self, *args, **kwargs) -> None:
         num_words = kwargs["num_words"]

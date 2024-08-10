@@ -110,17 +110,19 @@ class CrosswordArrangerGame(BaseGame):
         prompt += "\nPrint only the answer."
         return prompt
 
-    def validate(self, answer: str) -> bool:
+    def validate(self, answer: str) -> (bool, str):
         ans_hor = list(filter(None, answer.lower().replace(' ', '\n').split("\n")))
+        val_msg = ""
         if len(ans_hor) != self.board_size:
-            print(f"Mismatch answer length found!! Expected size of {self.board_size}, got {len(ans_hor)}.")
+            val_msg = f"Mismatch answer length found!! Expected size of {self.board_size}, got {len(ans_hor)}."
+            print(val_msg)
         ans_ver = [''.join(ans_hor[r][c] for r in range(self.board_size)) for c in range(self.board_size)]
         word_set = set(self.word_list)
         for w in chain(ans_hor, ans_ver):
             if w not in word_set:
-                return False
+                return False, val_msg
             word_set.remove(w)
-        return True
+        return True, val_msg
 
 
 #%%

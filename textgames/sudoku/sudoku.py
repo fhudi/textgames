@@ -28,21 +28,23 @@ class Sudoku(BaseGame):
     
         return True
 
-    def validate(self, input):
+    def validate(self, input) -> (bool, str):
         mat = [[self.empty_character for i in range(self.size)] for j in range(self.size)]
 
-        arr = input.split(" ")
+        arr = input.split()
         for i in range(len(arr)):
             for j in range(len(arr[i])):
                 if arr[i][j] not in self.char_to_id:
-                    print("Found unrecognized character(s)")
-                    return False
+                    val_msg = "Found unrecognized character(s)"
+                    print(val_msg)
+                    return False, val_msg
                 
                 mat[i][j] = self.char_to_id[arr[i][j]]
                 if arr[i][j] != self.mat[i][j] and self.mat[i][j] != self.empty_character:
-                    print("One or more characters are replaced")
-                    return False
-        return self.is_valid_sudoku(mat)
+                    val_msg = "One or more characters are replaced"
+                    print(val_msg)
+                    return False, val_msg
+        return self.is_valid_sudoku(mat), ""
 
     def generate_new_game(self, *args, **kwargs) -> None:
         size=kwargs["size"]

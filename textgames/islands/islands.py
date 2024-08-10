@@ -66,7 +66,7 @@ class Islands(BaseGame):
         self.island_with_coconut = island_with_coconut
         self.total_coconuts = total_coconuts
 
-    def validate(self, answer: str) -> bool:
+    def validate(self, answer: str) -> (bool, str):
 
         # clean up the input, to make it more flexible towards formatting
         answer = answer.split("\n")
@@ -74,15 +74,17 @@ class Islands(BaseGame):
 
         # check the size
         if len(answer) != self.N or len(answer[0]) != self.N:
-            print(f"2D grid is not {self.N} x {self.N}. ({len(answer)} x {len(answer[0])})")
-            return False
+            val_msg = f"2D grid is not {self.N} x {self.N}. ({len(answer)} x {len(answer[0])})"
+            print(val_msg)
+            return False, val_msg
 
         # check the tiles, ensure they are valid
         for a in answer:
             for c in a:
                 if c != 'o' and c != '.' and c != '#':
-                    print(f'2D contains invalid character ({c})')
-                    return False
+                    val_msg = f'2D contains invalid character ({c})'
+                    print(val_msg)
+                    return False, val_msg
 
         islands = []
         # build the islands, denoted as a set of coordinate and tile
@@ -111,14 +113,16 @@ class Islands(BaseGame):
         
         # constraint 1: has exactly K islands
         if len(islands) != self.num_islands:
-            print(f"There must be exactly {self.num_islands} islands, but you provided {len(islands)} islands")
-            return False
+            val_msg = f"There must be exactly {self.num_islands} islands, but you provided {len(islands)} islands"
+            print(val_msg)
+            return False, val_msg
 
         # constraint 2: island size
         for island in islands:
             if len(island) < self.island_size_min or len(island) > self.island_size_max:
-                print(f"The size of each island must be from {self.island_size_min} to {self.island_size_max} tiles")
-                return False
+                val_msg = f"The size of each island must be from {self.island_size_min} to {self.island_size_max} tiles"
+                print(val_msg)
+                return False, val_msg
 
         # constraint 3: islands with coconut
         solution_island_with_coconut = 0
@@ -128,17 +132,19 @@ class Islands(BaseGame):
             if has_coconut:
                 solution_island_with_coconut += 1
         if solution_island_with_coconut != self.island_with_coconut:
-            print(f"There must be exactly {self.island_with_coconut} islands that have coconut trees on them")
-            return False
+            val_msg = f"There must be exactly {self.island_with_coconut} islands that have coconut trees on them"
+            print(val_msg)
+            return False, val_msg
 
         # constraint 4: total coconut trees
         solution_total_coconuts = sum(c == 'o' for island in islands for _, _, c in island)
 
         if solution_total_coconuts != self.total_coconuts:
-            print(f"There must be exactly {self.total_coconuts} total coconut trees.")
-            return False
+            val_msg = f"There must be exactly {self.total_coconuts} total coconut trees."
+            print(val_msg)
+            return False, val_msg
 
-        return True
+        return True, ""
 
     def get_prompt(self):
         if self.island_with_coconut == 0:
