@@ -80,15 +80,15 @@ if __name__ == "__main__":
         if difficulty_level == "1":
             setting = random.randint(0,1)
             if setting == 0:
-                game.generate_new_game(size=4, characters=["1","2","3","4"], empty_character="_", empty_ratio=0.2)
+                game.generate_new_game(size=4, characters=["1","2","3","4"], empty_character="_", empty_ratio=0.25)
             elif setting == 1:
-                game.generate_new_game(size=4, characters=["A","B","C","D"], empty_character="_", empty_ratio=0.2)
+                game.generate_new_game(size=4, characters=["A","B","C","D"], empty_character="_", empty_ratio=0.25)
         elif difficulty_level == "2":
             setting = random.randint(0,1)
             if setting == 0:
-                game.generate_new_game(size=4, characters=["1","2","3","4"], empty_character="_", empty_ratio=0.4)
+                game.generate_new_game(size=4, characters=["1","2","3","4"], empty_character="_", empty_ratio=0.5)
             elif setting == 1:
-                game.generate_new_game(size=4, characters=["A","B","C","D"], empty_character="_", empty_ratio=0.4)
+                game.generate_new_game(size=4, characters=["A","B","C","D"], empty_character="_", empty_ratio=0.5)
         elif difficulty_level == "3":
             setting = random.randint(0,1)
             if setting == 0:

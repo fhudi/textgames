@@ -29,9 +29,11 @@ class Sudoku(BaseGame):
         return True
 
     def validate(self, input):
+        answer = input.split("\n")
+        arr = [a.replace(" ", "").lower().strip() for a in answer]
+
         mat = [[self.empty_character for i in range(self.size)] for j in range(self.size)]
 
-        arr = input.split(" ")
         for i in range(len(arr)):
             for j in range(len(arr[i])):
                 if arr[i][j] not in self.char_to_id:
