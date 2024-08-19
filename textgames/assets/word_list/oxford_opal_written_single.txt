@@ -1,0 +1,1199 @@
+activity n.
+affect v.
+analysis n.
+apply v.
+approach n.
+area n.
+associate v.
+available adj.
+based adj.
+behaviour n.
+between prep.
+case n.
+change n., v.
+community n.
+compare v.
+condition n.
+context n.
+country n.
+cultural adj.
+culture n.
+data n.
+define v.
+develop v.
+development n.
+difference n.
+different adj.
+economic adj.
+effect n.
+environment n.
+environmental adj.
+example n.
+factor n.
+form n., v.
+function n., v.
+global adj.
+group n., v.
+growth n.
+high adj.
+human adj.
+identify v.
+important adj.
+increase v., n.
+individual n., adj.
+information n.
+interaction n.
+international adj.
+issue n.
+law n.
+level n.
+likely adj., adv.
+low adj.
+may modal v.
+measure n., v.
+method n.
+model n., v.
+national adj., n.
+number n.
+occur v.
+organization n.
+particular adj., n.
+policy n.
+population n.
+practice n.
+process n., v.
+product n.
+provide v.
+rate n., v.
+reduce v.
+region n.
+relation n.
+relationship n.
+require v.
+research n.
+resource n.
+result n., v.
+risk n.
+role n.
+sample n., v.
+significant adj.
+social adj.
+specific adj.
+state n., v.
+strategy n.
+structure n., v.
+study n., v.
+such det.
+suggest v.
+system n.
+term n., v.
+terms n.
+theory n.
+therefore adv.
+thus adv.
+treatment n.
+type n.
+use n., v.
+value n.
+variable n., adj.
+whether conj.
+within prep.
+application n.
+appropriate adj.
+argue v.
+aspect n.
+assess v.
+assessment n.
+basis n.
+benefit n., v.
+care n.
+category n.
+characteristic n., adj.
+common adj.
+complex adj., n.
+component n.
+concept n.
+consider v.
+control n., v.
+current adj., n.
+decision n.
+definition n.
+demand n.
+depend v.
+describe v.
+determine v.
+discuss v.
+distribution n.
+due adj.
+effective adj.
+element n.
+energy n.
+evidence n.
+examine v.
+exist v.
+extent n.
+finding n.
+generate v.
+however adv.
+identity n.
+impact n., v.
+include v.
+indicate v.
+intervention n.
+involve v.
+key adj.
+knowledge n.
+means n.
+mechanism n.
+nature n.
+negative adj.
+network n.
+observe v.
+often adv.
+outcome n.
+output n.
+participant n.
+pattern n.
+per prep.
+per cent adj., n.
+perspective n.
+physical adj.
+positive adj.
+possible adj.
+potential adj., n.
+pressure n.
+primary adj.
+principle n.
+problem n.
+procedure n.
+produce v.
+production n.
+programme n.
+public adj., n.
+quality n.
+range n., v.
+recent adj.
+refer v.
+related adj.
+relative adj., n.
+relatively adv.
+relevant adj.
+report v., n.
+represent v.
+response n.
+rule n.
+scale n., v.
+section n.
+sector n.
+sequence n.
+show v.
+similar adj.
+site n.
+size n.
+solution n.
+source n.
+technology n.
+test n., v.
+total adj., n.
+unit n.
+variation n.
+whereas conj.
+above adv., adj., n.
+access n., v.
+according to prep.
+achieve v.
+action n.
+additional adj.
+address v.
+analyse v.
+argument n.
+assume v.
+assumption n.
+basic adj.
+central adj.
+communication n.
+conflict n., v.
+consequence n.
+contain v.
+content n.
+contrast n., v.
+criterion n.
+critical adj.
+cycle n.
+decrease v., n.
+demonstrate v.
+derive v.
+differ v.
+direct adj., v.
+discussion n.
+domain n.
+education n.
+ensure v.
+estimate v., n.
+event n.
+experience n., v.
+express v.
+external adj.
+feature n., v.
+flow n., v.
+focus v., n.
+framework n.
+gender n.
+general adj., n.
+generally adv.
+government n.
+hence adv.
+imply v.
+importance n.
+improve v.
+influence v., n.
+input n.
+internal adj.
+interpretation n.
+interview n., v.
+language n.
+legal adj.
+less adv., det., pron.
+limit v., n.
+literature n.
+local adj.
+major adj.
+material n., adj.
+meaning n.
+media n.
+multiple adj.
+necessary adj.
+need n.
+note v.
+obtain v.
+order n.
+overall adj., adv.
+perform v.
+performance n.
+period n.
+phase n.
+present adj., v., n.
+probability n.
+project n., v.
+question n.
+ratio n.
+reaction n.
+reduction n.
+reference n.
+reflect v.
+requirement n.
+researcher n.
+right n.
+service n.
+set n.
+significantly adv.
+society n.
+standard n., adj.
+status n.
+survey n.
+technique n.
+tend v.
+text n.
+traditional adj.
+understanding n.
+useful adj.
+vary v.
+alternative adj., n.
+among prep.
+amount n., v.
+arise v.
+association n.
+average adj., n., v
+belief n.
+capacity n.
+century n.
+certain adj.
+challenge n., v.
+characterize v.
+claim n., v.
+climate n.
+comparison n.
+competition n.
+concern v., n.
+conduct v., n.
+consideration n.
+consist v.
+consistent adj.
+constitute v.
+consumption n.
+create v.
+difficult adj.
+dimension n.
+equal adj., v.
+error n.
+essential adj.
+ethnic adj.
+evaluate v.
+evolution n.
+experiment n.
+explore v.
+field n.
+formation n.
+functional adj.
+fundamental adj.
+goal n.
+history n.
+hypothesis n.
+illustrate v.
+implement v.
+indeed adv.
+independent adj.
+initial adj.
+integration n.
+interpret v.
+item n.
+large adj.
+learning n.
+loss n.
+majority n.
+modern adj.
+moreover adv.
+most det.
+natural adj.
+notion n.
+object n.
+objective n., adj.
+observation n.
+operate v.
+operation n.
+opportunity n.
+origin n.
+particularly adv.
+perceive v.
+phenomenon n.
+point n.
+possibility n.
+power n.
+predict v.
+proportion n.
+protection n.
+purpose n.
+rather adv.
+regard v., n.
+regional adj.
+regulation n.
+representation n.
+respect n.
+respectively adv.
+rise n.
+select v.
+selection n.
+sexual adj.
+similarly adv.
+situation n.
+stage n.
+target n., v.
+theoretical adj.
+tool n.
+transition n.
+trend n.
+typically adv.
+underlying adj.
+variety n.
+various adj.
+view n., v.
+ability n.
+actual adj.
+adopt v.
+advantage n.
+age n.
+agreement n.
+allow v.
+although conj.
+article n.
+attitude n.
+authority n.
+bias n., v.
+broad adj.
+can modal v.
+choice n.
+circumstance n.
+clear adj.
+combination n.
+combine v.
+commonly adv.
+complexity n.
+conclude v.
+conclusion n.
+construct v., n.
+core n.
+debate n.
+degree n.
+design n., v.
+directly adv.
+distinct adj.
+distinction n.
+distinguish v.
+dominant adj.
+efficiency n.
+emerge v.
+emphasis n.
+emphasize v.
+empirical adj.
+enable v.
+enhance v.
+establish v.
+evaluation n.
+exchange n.
+exclude v.
+expectation n.
+explanation n.
+facilitate v.
+fact n.
+failure n.
+female n., adj.
+financial adj.
+further adj.
+future adj., n.
+highly adv.
+implementation n.
+impose v.
+index n.
+indicator n.
+interest n.
+investigate v.
+investigation n.
+judgement n.
+lack n., v.
+limitation n.
+limited adj.
+link v., n.
+location n.
+main adj.
+maintain v.
+male n., adj.
+many det.
+mental adj.
+mode n.
+movement n.
+necessarily adv.
+norm n.
+other adj.
+participation n.
+perception n.
+prevent v.
+prior adj.
+propose v.
+regime n.
+relate v.
+rely v.
+resistance n.
+secondary adj.
+seek v.
+simple adj.
+single adj.
+specifically adv.
+specify v.
+stress n., v.
+subject adj., n., v.
+supply n., v.
+support n., v,
+task n.
+transfer n., v.
+urban adj.
+via prep.
+absence n.
+agent n.
+approximately adv.
+below adv., prep.
+cause v., n.
+chain n.
+channel n.
+clearly adv.
+code n., v.
+conception n.
+constant adj., n.
+constraint n.
+contribute v.
+contribution n.
+correlation n.
+correspond v.
+decade n.
+decline n., v.
+dependent adj.
+detail n.
+detailed adj.
+difficulty n.
+discrimination n.
+diverse adj.
+diversity n.
+divide v.
+early adj.
+educational adj.
+effectively adv.
+effectiveness n.
+effort n.
+employ v.
+entry n.
+ethical adj.
+evolve v.
+existence n.
+expand v.
+expansion n.
+experimental adj.
+extend v.
+force n.
+formal adj.
+furthermore adv.
+gain n., v.
+generation n.
+highlight v.
+identification n.
+image n.
+improvement n.
+including prep.
+induce v.
+inequality n.
+insight n.
+instance n.
+integrate v.
+introduce v.
+maximum adj., n.
+might modal v.
+migration n.
+minority n.
+modify v.
+must modal v.
+new adj.
+offer v.
+option n.
+part n.
+participate v.
+percentage n.
+potentially adv.
+preference n.
+presence n.
+previous adj.
+previously adv.
+primarily adv.
+psychological adj.
+qualitative adj.
+quantity n.
+reasonable adj.
+responsibility n.
+restrict v.
+restriction n.
+science n.
+scope n.
+sense n.
+shift n.
+should modal v.
+significance n.
+space n.
+spatial adj.
+stability n.
+stable adj.
+statement n.
+statistical adj.
+structural adj.
+sufficient adj.
+technological adj.
+treat v.
+violence n.
+welfare n.
+world n.
+act n., v.
+adaptation n.
+aim n., v.
+alter v.
+animal n.
+author n.
+availability n.
+awareness n.
+balance n., v.
+barrier n.
+base n., v.
+capability n.
+commercial adj.
+commitment n.
+composition n.
+consequently adv.
+construction n.
+contemporary adj.
+continuous adj.
+conventional adj.
+cooperation n.
+correlate v.
+corresponding adj.
+crucial adj.
+description n.
+device n.
+duration n.
+dynamic n., adj.
+encourage v.
+entity n.
+equivalent adj., n.
+especially adv.
+essentially adv.
+evolutionary adj.
+examination n.
+exception n.
+exercise n., v.
+expression n.
+facility n.
+federal adj.
+formula n.
+frequently adv.
+gap n.
+incorporate v.
+increasingly adv.
+instrument n.
+intensity n.
+interact v.
+interval n.
+justify v.
+largely adv.
+located adj.
+logic n.
+medical adj.
+monitor v.
+motivation n.
+namely adv.
+online adj.
+orientation n.
+original adj.
+position n., v.
+poverty n.
+prevention n.
+private adj.
+professional n., adj.
+profile n.
+rapid adj.
+rational adj.
+reality n.
+recently adv.
+recognition n.
+recognize v.
+rural adj.
+scenario n.
+second adv.
+security n.
+segment n.
+sex n.
+share v., n.
+skill n.
+software n.
+subsequent adj.
+summarize v.
+survival n.
+systematic adj.
+theme n.
+thereby adv.
+topic n.
+training n.
+transformation n.
+transport n., v.
+typical adj.
+uncertainty n.
+undergo v.
+unique adj.
+universal adj.
+validity n.
+visual adj.
+working n., adj.
+yield v., n.
+absolute adj.
+academic adj., n.
+adapt v.
+adequate adj.
+agricultural adj.
+anxiety n.
+apparent adj.
+arrangement n.
+background n.
+beyond prep.
+burden n.
+causal adj.
+centre n., v.
+classification n.
+classify v.
+column n.
+compete v.
+comprehensive adj.
+comprise v.
+confirm v.
+connect v.
+consensus n.
+consent n.
+correct adj.
+creation n.
+currently adv.
+desire n., v.
+discipline n.
+distribute v.
+document n., v.
+dominate v.
+during prep.
+efficient adj.
+eliminate v.
+emotional adj.
+engage v.
+equally adv.
+exceed v.
+excess n.
+explain v.
+govern v.
+identical adj.
+introduction n.
+involvement n.
+isolated adj.
+latter n.
+line n.
+list v., n.
+maximize v.
+medium n.
+member n.
+minimize v.
+minimum adj., n.
+nevertheless adv.
+normal adj.
+organize v.
+outline v.
+partial adj.
+permit v.
+personal adj.
+practical adj.
+practitioner n.
+priority n.
+promote v.
+promotion n.
+quantitative adj.
+random adj.
+reason n.
+reasoning n.
+reject v.
+responsible adj.
+reveal v.
+root n.
+sampling n.
+satisfy v.
+scheme n.
+separate adj., v.
+separation n.
+shape v., n.
+similarity n.
+simply adv.
+so-called adj.
+solve v.
+substance n.
+sum n.
+sustain v.
+technical adj.
+tendency n.
+transform v.
+transmission n.
+transmit v.
+ultimately adv.
+utility n.
+utilize v.
+variance n.
+version n.
+website n.
+weight n.
+whole n.
+widely adv.
+acceptable adj.
+acceptance n.
+accuracy n.
+accurate adj.
+active adj.
+addition n.
+adjust v.
+adjustment n.
+agenda n.
+avoid v.
+cite v.
+classical adj.
+commit v.
+communicate v.
+comparable adj.
+comparative adj.
+conceptual adj.
+connection n.
+considerable adj.
+contact n.
+coverage n.
+deal v.
+denote v.
+determinant n.
+differentiate v.
+differentiation n.
+digital adj.
+distance n.
+division n.
+ecological adj.
+emergence n.
+ethic n.
+expect v.
+expert n., adj.
+explicit adj.
+explicitly adj.
+extension n.
+extensive adj.
+extreme adj., n.
+fail v.
+flexibility n.
+flexible adj.
+fully adv.
+fund n., v.
+funding n.
+ideal adj., n.
+immediate adj.
+inclusion n.
+indirect adj.
+initially adv.
+initiate v.
+initiative n.
+instruction n.
+intention n.
+label v., n.
+leadership n.
+margin n.
+matter n.
+methodology n.
+mix v.
+mobility n.
+net adj.
+ongoing adj.
+optimal adj.
+ordinary adj.
+parallel adj., n.
+precise adj.
+precisely adv.
+prediction n.
+progress n.
+proposition n.
+protect v.
+race n.
+recommend v.
+record v., n.
+replace v.
+resolution n.
+resolve v.
+review n.
+safety n.
+scientific adj.
+series n.
+specialist n.
+statistic n.
+statistically adv.
+store v.
+strongly adv.
+substantial adj.
+substantially adv.
+successful adj.
+suitable adj.
+summary n.
+threat n.
+threshold n.
+unlikely adj.
+valid adj.
+versus prep.
+vertical adj.
+volume n.
+widespread adj.
+accordingly adv.
+accumulation n.
+acknowledge v.
+acquisition n.
+administrative adj.
+alternatively adv.
+analytical adj.
+annual adj.
+applicable adj.
+assert v.
+assign v.
+attribute n., v.
+beneficial adj.
+conservation n.
+continuity n.
+convention n.
+convert v.
+coordination n.
+dependence n.
+deviation n.
+disadvantage n., v.
+distinctive adj.
+donor n.
+elevate v.
+elsewhere adv.
+encode v.
+encounter v., n.
+ethnicity n.
+evident adj.
+exclusion n.
+exploit v.
+expose v.
+favour v.
+formulation n.
+generalize v.
+geographical adj.
+guidance n.
+harm n.
+hierarchy n.
+horizontal adj.
+independently adv.
+indication n.
+infer v.
+inference n.
+inherent adj.
+integrated adj.
+intermediate adj.
+interviewer n.
+intrinsic adj.
+justification n.
+meaningful adj.
+mediate v.
+methodological adj.
+modelling n.
+motivate v.
+neutral adj.
+novel adj.
+observer n.
+occupation n.
+occurrence n.
+otherwise adv.
+overlap v., n.
+overview n.
+pose v.
+precede v.
+presentation n.
+problematic adj.
+proportional adj.
+protocol n.
+rapidly adv.
+readily adv.
+recovery n.
+regardless of prep.
+reinforce v.
+release n.
+relevance n.
+reliability n.
+reliable adj.
+removal n.
+representative adj., n.
+resident n.
+selective adj.
+sensitive adj.
+simultaneously adv.
+socially adv.
+specialized adj.
+specification n.
+sphere n.
+stimulate v.
+stock n.
+subjective adj.
+substitution n.
+sufficiently adv.
+tension n.
+territory n.
+traditionally adv.
+undertake v.
+upper adj.
+voluntary adj.
+wealth n.
+abnormal adj.
+abnormality n.
+absent adj.
+accept v.
+accessible adj.
+accountability n.
+achievement n.
+actively adv.
+additionally adv.
+analyst n.
+appear v.
+appropriately adv.
+arguably adv.
+behave v.
+beneficiary n.
+broadly adv.
+categorize v.
+character n.
+characterization n.
+conceive v.
+conceptualize v.
+conditional adj.
+consistency n.
+consistently adv.
+consume v.
+creative adj.
+culturally adv.
+descriptive adj.
+determination n.
+differently adv.
+direction n.
+dominance n.
+economically adv.
+efficacy n.
+efficiently adv.
+essence n.
+estimation n.
+exclusive adj.
+exclusively adv.
+explanatory adj.
+exploration n.
+fundamentally adv.
+generalization n.
+governmental adj.
+historically adv.
+hypothesize v.
+hypothetical adj.
+implicit adj.
+implicitly adv.
+importantly adv.
+inappropriate adj.
+inconsistent adj.
+independence n.
+indirectly adv.
+inform v.
+informed adj.
+insufficient adj.
+integral adj.
+interactive adj.
+intervene v.
+interviewee n.
+investigator n.
+leader n.
+legally adv.
+localized adj.
+locally adv.
+mobile adj.
+mobilize v.
+modernity n.
+modernization n.
+necessity n.
+negatively adv.
+normally adv.
+operational adj.
+originally adv.
+originate v.
+positively adv.
+predominantly adv.
+procedural adj.
+productive adj.
+projection n.
+proposal n.
+reconstruct v.
+reconstruction n.
+recording n.
+reflection n.
+remove v.
+reporting n.
+respond v.
+secondly adv.
+sexuality n.
+simplify v.
+societal adj.
+systematically adv.
+terminology n.
+usage n.
+valuable adj.
+varied adj.
+viewer n.
+wide adj.
+accumulate v.
+accurately adv.
+acquire v.
+adaptive adj.
+adequately adv.
+administer v.
+administration n.
+alteration n.
+approximation n.
+assertion n.
+aware adj.
+capable adj.
+causation n.
+centralize v.
+certainty n.
+classic adj.
+conservative adj.
+conserve v.
+considerably adv.
+constrain v.
+constructive adj.
+conversion n.
+cooperative adj.
+coordinate n., v.
+correction n.
+correctly adv.
+critically adv.
+criticize v.
+cumulative adj.
+desirable adj.
+empirically adv.
+empower v.
+equivalence n.
+establishment n.
+excessive adj.
+exemplify v.
+expertise n.
+exploitation n.
+favourable adj.
+formulate v.
+frequent adj.
+harmful adj.
+hierarchical adj.
+ideally adv.
+inability n.
+inadequate adj.
+individually adv.
+induction n.
+initiation n.
+instability n.
+intend v.
+intensive adj.
+irrelevant adj.
+isolation n.
+logical adj.
+migrate v.
+minimal adj.
+minor adj.
+naturally adv.
+occupy v.
+orient v.
+partially adv.
+partly adv.
+precision n.
+progression n.
+progressive adj.
+quantify v.
+randomize v.
+randomly adv.
+rating n.
+rationale n.
+rationality n.
+reasonably adv.
+rejection n.
+reliance n.
+replacement n.
+resistant adj.
+restrictive adj.
+satisfaction n.
+sensory adj.
+separately adv.
+simultaneous adj.
+stabilize v.
+stimulation n.
+strength n.
+strengthen v.
+substantive adj.
+substitute v.
+successfully adv.
+theoretically adv.
+transportation n.
+ultimate adj.
+unclear adj.
+undertaking n.
+unrelated adj.
+unstable adj.
+utilization n.
+validate v.
+validation n.
+visible adj.

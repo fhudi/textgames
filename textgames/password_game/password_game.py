@@ -27,6 +27,7 @@ class PasswordGame(BaseGame):
         self.num_rules = None
         self.rules_ids = []
         self.rules = []
+        self.possible_ans = None
 
         self.WORD_LIST = []
         self.COUNTRY_LIST = []
@@ -139,7 +140,7 @@ class PasswordGame(BaseGame):
         output = ""
         for rule in self.rules:
             output = rule.generate_rule(output)
-        return output
+        self.possible_ans = output
 
     def get_prompt(self) -> str:
         prompt = "Please write a text string without any space by following a set of given rules. Please write only the answer and follow the following criteria:\n"
@@ -147,10 +148,11 @@ class PasswordGame(BaseGame):
             prompt += "- " + rule.generate_prompt() + "\n"
         return prompt
     
-    def validate(self, answer: str) -> bool:
+    def validate(self, answer: str) -> (bool, str):
         res = True
+        val_msgs = []
         for rule in self.rules:
             if not rule.validate(answer):
-                print(answer, " is not satisfying this rule:", rule.generate_prompt())
+                val_msgs.append(' '.join([answer, " is not satisfying this rule:", rule.generate_prompt()]))
                 res = False
-        return res
+        return res, "\n".join(val_msgs)

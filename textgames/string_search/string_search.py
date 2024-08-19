@@ -10,32 +10,36 @@ class StringSearch(BaseGame):
     def __init__(self):
         pass
 
-    def validate(self, answer: str) -> bool:
+    def validate(self, answer: str) -> (bool, str):
         answer = answer.strip().lower()
         if len(self.answer) != len(answer):
-            print(f"{answer} is not {len(self.answer)} characters long.")
-            return False
+            val_msg = f"{answer} is not {len(self.answer)} characters long."
+            print(val_msg)
+            return False, val_msg
 
         if answer not in self.input_text:
-            print(f"{answer} does not exist in {self.input_text}.")
-            return False
+            val_msg = f"{answer} does not exist in {self.input_text}."
+            print(val_msg)
+            return False, val_msg
 
         for c in self.contains_chars:
             if c not in answer:
-                print(f"{c} does not appear in {answer}.")
-                return False
+                val_msg = f"{c} does not appear in {answer}."
+                print(val_msg)
+                return False, val_msg
 
         for c in self.not_contain_chars:
             if c in answer:
-                print(f"{c} exists in {answer}.")
-                return False
+                val_msg = f"{c} exists in {answer}."
+                print(val_msg)
+                return False, val_msg
 
         if self.is_palindrome_answer and answer != answer[::-1]:
-            print(f"{answer} is not a palindrome.")
-            return False
+            val_msg = f"{answer} is not a palindrome."
+            print(val_msg)
+            return False, val_msg
 
-
-        return True
+        return True, ""
 
 
 

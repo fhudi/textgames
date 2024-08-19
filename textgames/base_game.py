@@ -5,5 +5,5 @@ class BaseGame:
     def get_prompt(self) -> str:
         raise NotImplementedError()
 
-    def validate(self, answer: str) -> bool:
+    def validate(self, answer: str) -> (bool, str):
         raise NotImplementedError()

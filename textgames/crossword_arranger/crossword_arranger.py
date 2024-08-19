@@ -4,7 +4,7 @@ from typing import List, Optional
 from itertools import chain
 
 from textgames.base_game import BaseGame
-from textgames.assets.word_list import WORDS_BY_LEN, PrefixTrie
+from textgames.assets.word_list import PrefixTrie, get_word_list_by_length
 
 #%%
 # len_count = dict(sorted([(k, len(v)) for k, v in WORDS_BY_LEN.items()]))
@@ -72,7 +72,9 @@ class CrosswordArrangerGame(BaseGame):
             raise NotImplementedError("Arranger with Duplicate word is not yet implemented")
 
         self.board_size = int(kwargs.get("board_size", self.board_size or 3))
-        self.full_word_list = kwargs.get("full_word_list", self.full_word_list or WORDS_BY_LEN[self.board_size])
+        self.full_word_list = kwargs.get("full_word_list", self.full_word_list or get_word_list_by_length(corpus=(
+            {"oxford5k_opal"} if self.board_size < 5 else {"oxford5k_opal", "nltk_words"}
+        ))[self.board_size])
 
         if ("preset_config" in kwargs) and (kwargs["preset_config"] == 1):
             # car
@@ -108,17 +110,19 @@ class CrosswordArrangerGame(BaseGame):
         prompt += "\nPrint only the answer."
         return prompt
 
-    def validate(self, answer: str) -> bool:
+    def validate(self, answer: str) -> (bool, str):
         ans_hor = list(filter(None, answer.lower().replace(' ', '\n').split("\n")))
+        val_msg = ""
         if len(ans_hor) != self.board_size:
-            print(f"Mismatch answer length found!! Expected size of {self.board_size}, got {len(ans_hor)}.")
+            val_msg = f"Mismatch answer length found!! Expected size of {self.board_size}, got {len(ans_hor)}."
+            print(val_msg)
         ans_ver = [''.join(ans_hor[r][c] for r in range(self.board_size)) for c in range(self.board_size)]
         word_set = set(self.word_list)
         for w in chain(ans_hor, ans_ver):
             if w not in word_set:
-                return False
+                return False, val_msg
             word_set.remove(w)
-        return True
+        return True, val_msg
 
 
 #%%

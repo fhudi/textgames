@@ -415,8 +415,14 @@ class OrderingTextGame(BaseGame):
             self.recalculate_all()
         return self.answer    # sorted(self.words, key=lambda word: (self.get_point(word), word))
 
-    def validate(self, answer: str) -> bool:
-        return answer.lower().replace(' ', '\n') == "\n".join(self.get_answer())
+    def validate(self, answer: str) -> (bool, str):
+        answer = answer.lower().replace(' ', '\n')
+        if answer != "\n".join(self.get_answer()):
+            for i, (a, b) in enumerate(zip(answer.split(), self.get_answer()), 1):
+                if a != b:
+                    return False, f"{a} is not supposed to be at index {i}."
+        else:
+            return True, ""
 
     def generate_new_game(self, *args, **kwargs) -> None:
         if "preset_config" in kwargs:
