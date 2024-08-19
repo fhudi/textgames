@@ -68,34 +68,33 @@ def new_game(game_id, level):
     elif game_id == "3":
         game = BracketGame()
         if level == "1":
-            game.generate_new_game(num_words=3, num_rules=3, depth=2)
+            game.generate_new_game(num_words=3, num_rules=3, depth=2, multi_word=False)
         elif level == "2":
-            game.generate_new_game(num_words=5, num_rules=5, depth=2)
+            game.generate_new_game(num_words=5, num_rules=5, depth=2, multi_word=False)
         elif level == "3":
-            game.generate_new_game(num_words=10, num_rules=7, depth=3)
+            game.generate_new_game(num_words=10, num_rules=7, depth=3, multi_word=True)
         else:
             raise not_available_game_level
 
     elif game_id == "4":
         game = OrderingTextGame()
-        match level:
-            case "0":
-                game.generate_new_game(preset_config=1)
-            case "00":
+        if level == "0":
+            game.generate_new_game(preset_config=1)
+        elif level == "00":
                 game.generate_new_game(preset_config=2)
-            case "1":
+        elif level == "1":
                 game.generate_new_game(num_rules=(2, 2), uniq_classrules=True, positive_only=False,
                                        num_words=(3, 3), word_length=(3, 8), word_dic_only=True)
-            case "2":
+        elif level == "2":
                 game.generate_new_game(num_rules=(2, 4), uniq_classrules=True, positive_only=False,
                                        num_words=(4, 6), word_length=(3, 8), word_dic_only=True)
-            case "3":
+        elif level == "3":
                 game.generate_new_game(num_rules=(4, 8), uniq_classrules=False, positive_only=False,
                                        num_words=(5, 10), word_length=(3, 15), word_dic_only=True)
-            case "4":
+        elif level == "4":
                 game.generate_new_game(num_rules=(8, 12), uniq_classrules=False, positive_only=False,
                                        num_words=(10, 20), word_length=(6, 15), word_dic_only=False)
-            case _:
+        else:
                 game.generate_new_game(preset_config=1)
 
 
@@ -116,18 +115,17 @@ def new_game(game_id, level):
 
     elif game_id == "7":
         game = CrosswordArrangerGame()
-        match level:
-            case "0":
+        if level == "0":
                 game.generate_new_game(preset_config=1)
-            case "1":
+        elif level == "1":
                 game.generate_new_game(board_size=3, noise_ratio=.25, no_ans_prob=.0, no_duplicate=True,)
-            case "2":
+        elif level == "2":
                 game.generate_new_game(board_size=4, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
-            case "3":
+        elif level == "3":
                 game.generate_new_game(board_size=5, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
-            case "4":
+        elif level == "4":
                 game.generate_new_game(board_size=6, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
-            case _:
+        else:
                 raise not_available_game_level
         print(f"Possible Answer: {game.possible_ans}\n")
 
