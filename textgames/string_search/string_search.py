@@ -7,36 +7,92 @@ from textgames.base_game import BaseGame
 from collections import defaultdict
 
 class StringSearch(BaseGame):
+    extra_artificial_constraints = []
     def __init__(self):
         pass
 
-    def validate(self, answer: str) -> (bool, str):
+    def validate(self, answer: str, quiet = False,) -> (bool, str):
         answer = answer.strip().lower()
         if len(self.answer) != len(answer):
             val_msg = f"{answer} is not {len(self.answer)} characters long."
-            print(val_msg)
+            if not quiet:
+                print(val_msg)
             return False, val_msg
 
         if answer not in self.input_text:
             val_msg = f"{answer} does not exist in {self.input_text}."
-            print(val_msg)
+            if not quiet:
+                print(val_msg)
             return False, val_msg
+
+        s = answer
+        if " - has 2 consecutive consonants\n" in self.extra_artificial_constraints:
+            if not (any(s[i].lower() not in 'aeiou' and s[i+1].lower() not in 'aeiou' for i in range(len(s)-1))):
+                val_msg = f"{answer} does not have 2 consecutive consonants"
+                if not quiet:
+                    print(val_msg)
+                return False, val_msg
+
+        if " - does not have 2 consecutive consonants\n" in self.extra_artificial_constraints:
+            if (any(s[i].lower() not in 'aeiou' and s[i+1].lower() not in 'aeiou' for i in range(len(s)-1))):
+                val_msg = f"{answer} has 2 consecutive consonants"
+                if not quiet:
+                    print(val_msg)
+                return False, val_msg 
+
+        if " - has 2 consecutive vowels\n" in self.extra_artificial_constraints:
+            if not(any(s[i].lower() in 'aeiou' and s[i+1].lower() in 'aeiou' for i in range(len(s)-1))):
+                val_msg = f"{answer} does not have 2 consecutive vowels"
+                if not quiet:
+                    print(val_msg)
+                return False, val_msg 
+
+        if " - does not have 2 consecutive vowels\n" in self.extra_artificial_constraints:
+            if (any(s[i].lower() in 'aeiou' and s[i+1].lower() in 'aeiou' for i in range(len(s)-1))):
+                val_msg = f"{answer} has 2 consecutive vowels"
+                if not quiet:
+                    print(val_msg)
+                return False, val_msg
+
+        if " - has more vowels than consonants\n" in self.extra_artificial_constraints:
+            if not(sum(1 for char in s.lower() if char in 'aeiou') > sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou')):
+                val_msg = f"{answer} has less or equal vowels than consonants"
+                if not quiet:
+                    print(val_msg)
+                return False, val_msg
+
+        if " - has less vowels than consonants\n" in self.extra_artificial_constraints:
+            if not(sum(1 for char in s.lower() if char in 'aeiou') < sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou')):
+                val_msg = f"{answer} has more or equal vowels than consonants"
+                if not quiet:
+                    print(val_msg)
+                return False, val_msg
+
+        if " - has the same amount of vowels and consonants\n" in self.extra_artificial_constraints:
+            if not(sum(1 for char in s.lower() if char in 'aeiou') == sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou')):
+                val_msg = f"{answer} does not have the same amount of vowels and consonants"
+                if not quiet:
+                    print(val_msg)
+                return False, val_msg
 
         for c in self.contains_chars:
             if c not in answer:
                 val_msg = f"{c} does not appear in {answer}."
-                print(val_msg)
+                if not quiet:
+                    print(val_msg)
                 return False, val_msg
 
         for c in self.not_contain_chars:
             if c in answer:
                 val_msg = f"{c} exists in {answer}."
-                print(val_msg)
+                if not quiet:
+                    print(val_msg)
                 return False, val_msg
 
         if self.is_palindrome_answer and answer != answer[::-1]:
             val_msg = f"{answer} is not a palindrome."
-            print(val_msg)
+            if not quiet:
+                print(val_msg)
             return False, val_msg
 
         return True, ""
@@ -132,13 +188,13 @@ class StringSearch(BaseGame):
         # randomly get the answer from a subset of the input text
         if difficulty == 1:
             answer_len = random.randint(3, 3)
-            self.input_text = self.input_text[:10]
+            self.input_text = self.input_text[:15]
         elif difficulty == 2:
-            answer_len = random.randint(4, 4)
-            self.input_text = self.input_text[:20]
+            answer_len = random.randint(4, 5)
+            self.input_text = self.input_text[:30]
         else:
-            answer_len = random.randint(5, 6)
-            self.input_text = self.input_text[:35]
+            answer_len = random.randint(5, 7)
+            self.input_text = self.input_text[:60]
             
         answer_start = random.randint(0, len(self.input_text) - answer_len)
         self.answer = self.input_text[answer_start: answer_start + answer_len]
@@ -148,6 +204,7 @@ class StringSearch(BaseGame):
         else:
             self.is_palindrome_answer = False
 
+        # make sure the answer is palindrome
         if (self.is_palindrome_answer):
             make_palindrome = lambda s: s[:(len(s) + 1) // 2] + s[:len(s) // 2][::-1]
             self.answer = make_palindrome(self.answer)
@@ -161,12 +218,25 @@ class StringSearch(BaseGame):
         not_contain_chars_options = list(set(self.input_text) - set(self.answer))
         self.not_contain_chars = random.sample(not_contain_chars_options, random.randint(1, min(1 + difficulty, len(not_contain_chars_options))))
 
-        
+        # set a flag to set which part of the string is editable (Valid = true)
+        # initially, all string is editable except for the answer, to ensure that the answer is still there 
         valid = [True] * len(self.input_text)
         valid = valid[:answer_start] + [False] * len(self.answer) + valid[answer_start + answer_len:]
-
-        for _ in range(difficulty):
+        # we will randomly insert fake answer on the text. But we only 
+        for _ in range(1 + difficulty):
             self.input_text, valid = self.replace_substring_with_validity_update(self.input_text, self.create_incorrect_answer(), valid)
+
+        # If difficulty is 3, we will remove 'accidental' answer that's not in the original location
+        if difficulty == 3:
+            for i in range(len(self.input_text) - answer_len):
+                # original answer, can't change and no need to check
+                if i >= answer_start and i < answer_start + answer_len:
+                    continue
+                is_valid, _ = self.validate(self.input_text[i: i + answer_len], quiet = True)
+                if is_valid:
+                    # print("Accident", self.input_text[i: i + answer_len])
+                    self.input_text = self.input_text[:i] + random.choice(self.not_contain_chars) + self.input_text[i + 1:]
+        # print(self.answer)
 
 
     def get_prompt(self):
@@ -197,9 +267,10 @@ class StringSearch(BaseGame):
                 artificial_constraints.append(" - has the same amount of vowels and consonants\n")
             
             if extra_constraints == "":
-                extra_constraints = extra_constraints + ''.join(random.sample(artificial_constraints, random.randint(1, 2)))
+                self.extra_artificial_constraints = random.sample(artificial_constraints, random.randint(1, 2))
             else:
-                extra_constraints = extra_constraints + ''.join(random.sample(artificial_constraints, 1))
+                self.extra_artificial_constraints = random.sample(artificial_constraints, 1)
+            extra_constraints = extra_constraints + ''.join(self.extra_artificial_constraints)
 
         prompt = f"""You are given the following string:
 {self.input_text}
