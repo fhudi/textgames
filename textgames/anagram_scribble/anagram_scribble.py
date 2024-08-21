@@ -20,19 +20,18 @@ class AnagramScribble(BaseGame):
         self.all_chars = list(string.ascii_lowercase)
         self.total_chars_num = 10
         self.total_chars = []
-        self.answer = ""
+        self.possible_ans = ""
 
     def generate_new_game(self, *args, **kwargs) -> None:
         self.low_num_chars = kwargs['low_num_chars']
         self.high_num_chars = kwargs['high_num_chars']
         self.num_chars = random.randint(self.low_num_chars, self.high_num_chars)
         self.allow_repeat = kwargs['allow_repeat']
-        self.answer = random.choice(self.WORD_LIST_BIN[str(self.num_chars)])
+        self.possible_ans = random.choice(self.WORD_LIST_BIN[str(self.num_chars)])
         remaining_chars_num = self.total_chars_num - self.num_chars
-        available_characters = [char for char in self.all_chars if char not in self.answer]
-        self.total_chars = list(self.answer) + random.sample(available_characters, remaining_chars_num)
+        available_characters = [char for char in self.all_chars if char not in self.possible_ans]
+        self.total_chars = list(self.possible_ans) + random.sample(available_characters, remaining_chars_num)
         random.shuffle(self.total_chars)
-        print(self.answer)
 
     def get_prompt(self) -> str:
         if self.allow_repeat:
@@ -43,7 +42,7 @@ class AnagramScribble(BaseGame):
     
     def validate(self, answer: str) -> (bool, str):
         answer = answer.lower()
-        if self.answer != "" and answer == "none":
+        if self.possible_ans != "" and answer == "none":
             val_msg = "There is a valid answer."
             print(val_msg)
             return False, val_msg
@@ -56,7 +55,8 @@ class AnagramScribble(BaseGame):
                 val_msg = "Your answer must only contain the characters provided"
                 print(val_msg)
                 return False, val_msg
-        if not self.allow_repeat and len(set(answer)) != len(answer) and len(self.answer) == len(set(self.answer)):
+        if (not self.allow_repeat and (len(set(answer)) != len(answer))
+                and (len(self.possible_ans) == len(set(self.possible_ans)))):
             val_msg = "Your answer must not contain repeated characters"
             print(val_msg)
             return False, val_msg

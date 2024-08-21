@@ -151,6 +151,7 @@ def new_game(game_name, level):
             game.generate_new_game(low_num_chars=8, high_num_chars=10, allow_repeat=False)
         else:
             raise not_available_game_level
+        print(f"Possible Answer: {game.possible_ans}\n")
 
     else:
         raise not_available_game_level
