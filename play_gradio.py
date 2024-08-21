@@ -6,7 +6,7 @@ os.environ.setdefault("GRADIO_SERVER_PORT", "1080")
 #%%
 import time
 import gradio as gr
-from play import GAME_IDS, GAME_NAMES, LEVEL_IDS, LEVELS, new_game
+from textgames import GAME_IDS, GAME_NAMES, LEVEL_IDS, LEVELS, new_game
 
 
 #%%
@@ -40,7 +40,7 @@ with (gr.Blocks() as demo):
         elapsed_text = gr.Textbox("N/A", label=f"{game_name}", info=f"{level}",)
         gr.Timer(.3).tick(calc_time_elapsed, [cur_game_start, elapsed_text, is_solved], [elapsed_text])
 
-        cur_game = new_game(cur_game_id, difficulty_level)
+        cur_game = new_game(game_name, difficulty_level)
 
         def add_msg(new_msg, prev_msg):
             user_input = '\n'.join(new_msg.split())

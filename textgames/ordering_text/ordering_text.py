@@ -388,6 +388,10 @@ SCORING_CLASSES = [ConsecutiveScoring, LengthScoring, AffixScoring, InfixScoring
 
 #%%
 class OrderingTextGame(BaseGame):
+    @staticmethod
+    def get_game_name() -> str:
+        return "📈\tOrdering Text"
+
     def __init__(self, rules=None, words=None):
         self.rules = rules or set()
         self.words = words or set()

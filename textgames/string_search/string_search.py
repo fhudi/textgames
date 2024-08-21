@@ -6,7 +6,12 @@ import string
 from textgames.base_game import BaseGame
 from collections import defaultdict
 
+
 class StringSearch(BaseGame):
+    @staticmethod
+    def get_game_name() -> str:
+        return "🔎\tString Search"
+
     extra_artificial_constraints = []
     def __init__(self):
         pass

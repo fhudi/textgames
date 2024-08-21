@@ -5,6 +5,10 @@ import json
 import string
 
 class AnagramScribble(BaseGame):
+    @staticmethod
+    def get_game_name() -> str:
+        return "🔤\tAnagram Scribble"
+
     def __init__(self):
         self.WORD_LIST_BIN = {}
         with open(str(Path(__file__).absolute()).replace("anagram_scribble/anagram_scribble.py","") + "assets/kb/words_by_length.json") as f:

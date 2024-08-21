@@ -57,6 +57,10 @@ def find_solution(size, word_list):
 
 #%%
 class CrosswordArrangerGame(BaseGame):
+    @staticmethod
+    def get_game_name() -> str:
+        return "📰\tCrossword Arranger"
+
     def __init__(self, board_size: Optional[int] = None, full_word_list: Optional[List[str]] = None):
         super().__init__()
         self.board_size = board_size

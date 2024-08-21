@@ -4,6 +4,10 @@ from textgames.password_game.rules import *
 from textgames.base_game import BaseGame
 
 class PasswordGame(BaseGame):
+    @staticmethod
+    def get_game_name() -> str:
+        return "🔑\tPassword Game"
+
     RULES = {
         "count_num_char": [CountNumCharRule, RuleType.NONREPEATABLE, 1],
         "count_num_upper_char": [CountNumUppercaseCharRule, RuleType.NONREPEATABLE, 3],

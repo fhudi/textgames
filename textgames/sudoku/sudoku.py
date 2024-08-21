@@ -2,7 +2,12 @@ import random
 import math
 from textgames.base_game import BaseGame
 
+
 class Sudoku(BaseGame):
+    @staticmethod
+    def get_game_name() -> str:
+        return "🧩\tText Sudoku"
+
     def __init__(self):
         pass
 

@@ -1,4 +1,8 @@
 class BaseGame:
+    @staticmethod
+    def get_game_name() -> str:
+        raise NotImplementedError()
+
     def generate_new_game(self, *args, **kwargs) -> None:
         raise NotImplementedError()
 

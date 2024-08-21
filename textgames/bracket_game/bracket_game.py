@@ -2,7 +2,12 @@ import random
 from pathlib import Path
 from textgames.base_game import BaseGame
 
+
 class BracketGame(BaseGame):
+    @staticmethod
+    def get_game_name() -> str:
+        return "🗳️\tBracket Game"
+
     def __init__(self):
         self.WORD_LIST = []
         self.MULTI_WORD_LIST = []

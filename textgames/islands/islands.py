@@ -34,7 +34,9 @@ Print only the answer
 
 #%%
 class Islands(BaseGame):
-
+    @staticmethod
+    def get_game_name() -> str:
+        return "🏝️\tIslands"
 
     def __init__(self):
         pass
