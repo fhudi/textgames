@@ -77,7 +77,6 @@ class Islands(BaseGame):
         # check the size
         if len(answer) != self.N or len(answer[0]) != self.N:
             val_msg = f"2D grid is not {self.N} x {self.N}. ({len(answer)} x {len(answer[0])})"
-            print(val_msg)
             return False, val_msg
 
         # check the tiles, ensure they are valid
@@ -85,7 +84,6 @@ class Islands(BaseGame):
             for c in a:
                 if c != 'o' and c != '.' and c != '#':
                     val_msg = f'2D contains invalid character ({c})'
-                    print(val_msg)
                     return False, val_msg
 
         islands = []
@@ -116,14 +114,12 @@ class Islands(BaseGame):
         # constraint 1: has exactly K islands
         if len(islands) != self.num_islands:
             val_msg = f"There must be exactly {self.num_islands} islands, but you provided {len(islands)} islands"
-            print(val_msg)
             return False, val_msg
 
         # constraint 2: island size
         for island in islands:
             if len(island) < self.island_size_min or len(island) > self.island_size_max:
                 val_msg = f"The size of each island must be from {self.island_size_min} to {self.island_size_max} tiles"
-                print(val_msg)
                 return False, val_msg
 
         # constraint 3: islands with coconut
@@ -135,7 +131,6 @@ class Islands(BaseGame):
                 solution_island_with_coconut += 1
         if solution_island_with_coconut != self.island_with_coconut:
             val_msg = f"There must be exactly {self.island_with_coconut} islands that have coconut trees on them"
-            print(val_msg)
             return False, val_msg
 
         # constraint 4: total coconut trees
@@ -143,7 +138,6 @@ class Islands(BaseGame):
 
         if solution_total_coconuts != self.total_coconuts:
             val_msg = f"There must be exactly {self.total_coconuts} total coconut trees."
-            print(val_msg)
             return False, val_msg
 
         return True, ""

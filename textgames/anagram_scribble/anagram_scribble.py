@@ -44,25 +44,20 @@ class AnagramScribble(BaseGame):
         answer = answer.lower()
         if self.possible_ans != "" and answer == "none":
             val_msg = "There is a valid answer."
-            print(val_msg)
             return False, val_msg
         if len(answer) != self.num_chars:
             val_msg = f"Your answer must be exactly {self.num_chars} characters long"
-            print(val_msg)
             return False, val_msg
         for char in answer:
             if char not in self.total_chars:
                 val_msg = "Your answer must only contain the characters provided"
-                print(val_msg)
                 return False, val_msg
         if (not self.allow_repeat and (len(set(answer)) != len(answer))
                 and (len(self.possible_ans) == len(set(self.possible_ans)))):
             val_msg = "Your answer must not contain repeated characters"
-            print(val_msg)
             return False, val_msg
         if answer not in self.WORD_LIST_BIN[str(self.num_chars)]:
             val_msg = "Your answer is not a valid English word"
-            print(val_msg)
             return False, val_msg
 
         return True, ""

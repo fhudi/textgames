@@ -41,13 +41,11 @@ class Sudoku(BaseGame):
             for j in range(len(arr[i])):
                 if arr[i][j] not in self.char_to_id:
                     val_msg = "Found unrecognized character(s)"
-                    print(val_msg)
                     return False, val_msg
                 
                 mat[i][j] = self.char_to_id[arr[i][j]]
                 if arr[i][j] != self.mat[i][j] and self.mat[i][j] != self.empty_character:
                     val_msg = "One or more characters are replaced"
-                    print(val_msg)
                     return False, val_msg
         return self.is_valid_sudoku(mat), ""
 

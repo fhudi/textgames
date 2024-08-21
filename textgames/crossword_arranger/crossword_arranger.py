@@ -119,7 +119,7 @@ class CrosswordArrangerGame(BaseGame):
         val_msg = ""
         if len(ans_hor) != self.board_size:
             val_msg = f"Mismatch answer length found!! Expected size of {self.board_size}, got {len(ans_hor)}."
-            print(val_msg)
+            return False, val_msg
         ans_ver = [''.join(ans_hor[r][c] for r in range(self.board_size)) for c in range(self.board_size)]
         word_set = set(self.word_list)
         for w in chain(ans_hor, ans_ver):

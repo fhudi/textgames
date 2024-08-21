@@ -76,6 +76,8 @@ if __name__ == "__main__":
 
         user_input = '\n'.join(contents)
         solved, val_msg = cur_game.validate(user_input)
+        if val_msg:
+            print(val_msg)
         if solved:
             print("Correct guess")
         else:

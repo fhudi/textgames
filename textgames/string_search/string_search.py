@@ -16,88 +16,64 @@ class StringSearch(BaseGame):
     def __init__(self):
         pass
 
-    def validate(self, answer: str, quiet = False,) -> (bool, str):
+    def validate(self, answer: str) -> (bool, str):
         answer = answer.strip().lower()
         if len(self.answer) != len(answer):
             val_msg = f"{answer} is not {len(self.answer)} characters long."
-            if not quiet:
-                print(val_msg)
             return False, val_msg
 
         if answer not in self.input_text:
             val_msg = f"{answer} does not exist in {self.input_text}."
-            if not quiet:
-                print(val_msg)
             return False, val_msg
 
         s = answer
         if " - has 2 consecutive consonants\n" in self.extra_artificial_constraints:
             if not (any(s[i].lower() not in 'aeiou' and s[i+1].lower() not in 'aeiou' for i in range(len(s)-1))):
                 val_msg = f"{answer} does not have 2 consecutive consonants"
-                if not quiet:
-                    print(val_msg)
                 return False, val_msg
 
         if " - does not have 2 consecutive consonants\n" in self.extra_artificial_constraints:
             if (any(s[i].lower() not in 'aeiou' and s[i+1].lower() not in 'aeiou' for i in range(len(s)-1))):
                 val_msg = f"{answer} has 2 consecutive consonants"
-                if not quiet:
-                    print(val_msg)
-                return False, val_msg 
+                return False, val_msg
 
         if " - has 2 consecutive vowels\n" in self.extra_artificial_constraints:
             if not(any(s[i].lower() in 'aeiou' and s[i+1].lower() in 'aeiou' for i in range(len(s)-1))):
                 val_msg = f"{answer} does not have 2 consecutive vowels"
-                if not quiet:
-                    print(val_msg)
-                return False, val_msg 
+                return False, val_msg
 
         if " - does not have 2 consecutive vowels\n" in self.extra_artificial_constraints:
             if (any(s[i].lower() in 'aeiou' and s[i+1].lower() in 'aeiou' for i in range(len(s)-1))):
                 val_msg = f"{answer} has 2 consecutive vowels"
-                if not quiet:
-                    print(val_msg)
                 return False, val_msg
 
         if " - has more vowels than consonants\n" in self.extra_artificial_constraints:
             if not(sum(1 for char in s.lower() if char in 'aeiou') > sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou')):
                 val_msg = f"{answer} has less or equal vowels than consonants"
-                if not quiet:
-                    print(val_msg)
                 return False, val_msg
 
         if " - has less vowels than consonants\n" in self.extra_artificial_constraints:
             if not(sum(1 for char in s.lower() if char in 'aeiou') < sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou')):
                 val_msg = f"{answer} has more or equal vowels than consonants"
-                if not quiet:
-                    print(val_msg)
                 return False, val_msg
 
         if " - has the same amount of vowels and consonants\n" in self.extra_artificial_constraints:
             if not(sum(1 for char in s.lower() if char in 'aeiou') == sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou')):
                 val_msg = f"{answer} does not have the same amount of vowels and consonants"
-                if not quiet:
-                    print(val_msg)
                 return False, val_msg
 
         for c in self.contains_chars:
             if c not in answer:
                 val_msg = f"{c} does not appear in {answer}."
-                if not quiet:
-                    print(val_msg)
                 return False, val_msg
 
         for c in self.not_contain_chars:
             if c in answer:
                 val_msg = f"{c} exists in {answer}."
-                if not quiet:
-                    print(val_msg)
                 return False, val_msg
 
         if self.is_palindrome_answer and answer != answer[::-1]:
             val_msg = f"{answer} is not a palindrome."
-            if not quiet:
-                print(val_msg)
             return False, val_msg
 
         return True, ""
@@ -237,7 +213,7 @@ class StringSearch(BaseGame):
                 # original answer, can't change and no need to check
                 if i >= answer_start and i < answer_start + answer_len:
                     continue
-                is_valid, _ = self.validate(self.input_text[i: i + answer_len], quiet = True)
+                is_valid, _ = self.validate(self.input_text[i: i + answer_len])
                 if is_valid:
                     # print("Accident", self.input_text[i: i + answer_len])
                     self.input_text = self.input_text[:i] + random.choice(self.not_contain_chars) + self.input_text[i + 1:]

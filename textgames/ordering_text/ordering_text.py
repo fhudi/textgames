@@ -424,7 +424,8 @@ class OrderingTextGame(BaseGame):
         if answer != "\n".join(self.get_answer()):
             for i, (a, b) in enumerate(zip(answer.split(), self.get_answer()), 1):
                 if a != b:
-                    return False, f"{a} is not supposed to be at index {i}."
+                    val_msg = f"{a} is not supposed to be at index {i}."
+                    return False, val_msg
         else:
             return True, ""
 
