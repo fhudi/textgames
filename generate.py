@@ -7,16 +7,14 @@ import json
 import cohere
 from openai import OpenAI
 
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from tqdm import tqdm
 
 from collections import Counter
 
-from utils import NusaXDataset, NusaTranslationDataset, TatoebaDataset, BUCCDataset, LinceMTDataset, PhincDataset, LinceSADataset, MassiveIntentDataset, Sib200Dataset, NollySentiDataset, MTOPIntentDataset, FIREDataset
-
 from transformers import LlamaForCausalLM, AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM
 import hashlib
+
+from textgames import GAME_NAMES, LEVELS, new_game
 
 OPENAI_TOKEN = ""
 COHERE_TOKEN = ""
@@ -175,28 +173,41 @@ def load_model(gen_model_checkpoint, load_in_8bit=False):
     
     if "mistralai/Mistral-7B-Instruct-v0.3" in gen_model_checkpoint or "meta-llama/Meta-Llama-3-8B-Instruct" in gen_model_checkpoint or "google/gemma-1.1-7b-it" in gen_model_checkpoint:
         if load_in_8bit:
-            gen_model = AutoModelForCausalLM.from_pretrained(gen_model_checkpoint token=HF_TOKEN, device_map="auto", load_in_8bit=True)
-            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint token=HF_TOKEN, device_map="auto", load_in_8bit=True)
+            gen_model = AutoModelForCausalLM.from_pretrained(gen_model_checkpoint, token=HF_TOKEN, device_map="auto", load_in_8bit=True)
+            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint, token=HF_TOKEN, device_map="auto", load_in_8bit=True)
         else:
             gen_model = AutoModelForCausalLM.from_pretrained(gen_model_checkpoint, token=HF_TOKEN)
-            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint token=HF_TOKEN)
+            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint, token=HF_TOKEN)
     elif "CohereForAI/aya-101" in gen_model_checkpoint or "bigscience/mt0" in gen_model_checkpoint:
         if load_in_8bit:
-            gen_model = AutoModelForSeq2SeqLM.from_pretrained(gen_model_checkpoint token=HF_TOKEN, device_map="auto", load_in_8bit=True)
-            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint token=HF_TOKEN, device_map="auto", load_in_8bit=True)
+            gen_model = AutoModelForSeq2SeqLM.from_pretrained(gen_model_checkpoint, token=HF_TOKEN, device_map="auto", load_in_8bit=True)
+            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint, token=HF_TOKEN, device_map="auto", load_in_8bit=True)
         else:
-            gen_model = AutoModelForSeq2SeqLM.from_pretrained(gen_model_checkpoint token=HF_TOKEN)
-            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint token=HF_TOKEN)
+            gen_model = AutoModelForSeq2SeqLM.from_pretrained(gen_model_checkpoint, token=HF_TOKEN)
+            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint, token=HF_TOKEN)
     elif "facebook/xglm" in gen_model_checkpoint or "bigscience/bloomz" in gen_model_checkpoint or "aya-23-8B" in args.gen_model_checkpoint:
         if load_in_8bit:
-            gen_model = AutoModelForCausalLM.from_pretrained(gen_model_checkpoint token=HF_TOKEN, device_map="auto", load_in_8bit=True)
-            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint token=HF_TOKEN, device_map="auto", load_in_8bit=True)
+            gen_model = AutoModelForCausalLM.from_pretrained(gen_model_checkpoint, token=HF_TOKEN, device_map="auto", load_in_8bit=True)
+            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint, token=HF_TOKEN, device_map="auto", load_in_8bit=True)
         else:
-            gen_model = AutoModelForCausalLM.from_pretrained(gen_model_checkpoint token=HF_TOKEN)
-            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint token=HF_TOKEN)
+            gen_model = AutoModelForCausalLM.from_pretrained(gen_model_checkpoint, token=HF_TOKEN)
+            tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint, token=HF_TOKEN)
     elif "gpt-3.5-turbo" in gen_model_checkpoint or "gpt-4" in gen_model_checkpoint:
         gen_model = OpenAI(api_key=OPENAI_TOKEN)
     elif "command-r" in gen_model_checkpoint:
         gen_model = cohere.Client(COHERE_TOKEN)
     
     return gen_model, tokenizer
+
+def generate(num_samples):
+    for game_name in GAME_NAMES:
+        count = 0
+        for difficulty_level in LEVELS:
+            print(game_name, difficulty_level)
+            for i in range(num_samples):
+                cur_game = new_game(game_name, difficulty_level)
+                prompt = cur_game.get_prompt()
+                print(prompt)
+                count += 1
+
+generate(100)

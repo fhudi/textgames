@@ -2,3 +2,7 @@ sympy
 numpy
 termcolor
 gradio
+openai
+cohere
+transformers
+torch
