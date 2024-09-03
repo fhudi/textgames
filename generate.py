@@ -205,7 +205,7 @@ def generate(num_samples, dir_path):
 
     count_duplicate = 0
     for game_name in GAME_NAMES:
-        for difficulty_level in LEVEL_IDS:
+        for difficulty_level in filter(lambda level_id: not level_id.startswith("0"), LEVEL_IDS):    # Sample test-caases start with '0'
             prompts_map = {}
             print(game_name, difficulty_level)
             prompts = []
