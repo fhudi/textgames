@@ -14,7 +14,7 @@ from collections import Counter
 from transformers import LlamaForCausalLM, AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM
 import hashlib
 
-from textgames import GAME_NAMES, LEVELS, new_game
+from textgames import GAME_NAMES, GAME_IDS, LEVELS, LEVELS_HIDDEN, LEVEL_IDS, new_game
 
 OPENAI_TOKEN = ""
 COHERE_TOKEN = ""
@@ -199,15 +199,26 @@ def load_model(gen_model_checkpoint, load_in_8bit=False):
     
     return gen_model, tokenizer
 
-def generate(num_samples):
+def generate(num_samples, dir_path):
+    print(GAME_NAMES, LEVELS)
+    os.system(f"mkdir -p {dir_path}")
+
+    count_duplicate = 0
     for game_name in GAME_NAMES:
-        count = 0
-        for difficulty_level in LEVELS:
+        for difficulty_level in GAME_IDS:
+            prompts_map = {}
             print(game_name, difficulty_level)
+            prompts = []
             for i in range(num_samples):
                 cur_game = new_game(game_name, difficulty_level)
                 prompt = cur_game.get_prompt()
-                print(prompt)
-                count += 1
+                prompts.append(prompt)
+                if prompt in prompts_map:
+                    count_duplicate += 1
+                prompts_map[prompt] = True
+            json_object = json.dumps(prompts, indent=4)
+            with open(f"{dir_path}/{game_name}_{difficulty_level}.json", "w") as outfile:
+                outfile.write(json_object)
+    print(f"duplicates:{count_duplicate}")
 
-generate(100)
+generate(1000, "games_data")
