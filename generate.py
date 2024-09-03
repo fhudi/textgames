@@ -205,7 +205,7 @@ def generate(num_samples, dir_path):
 
     count_duplicate = 0
     for game_name in GAME_NAMES:
-        for difficulty_level in GAME_IDS:
+        for difficulty_level in LEVEL_IDS:
             prompts_map = {}
             print(game_name, difficulty_level)
             prompts = []
