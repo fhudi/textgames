@@ -189,9 +189,12 @@ class LengthScoring(Scoring):
             if mode in {3, 4, 10}:
                 eq = random.randint(3, 10)
             if mode in {5, 7, 8, 9, 10}:
-                ne = random.randint((gt or 1) + 2, (lt or 12) - 2)
+                _min, _mak = (gt or 1) + 2, (lt or 12) - 2
+                if _min >= _mak:
+                    _min, _mak = 3, 10
+                ne = random.randint(_min, _mak)
                 while eq is not None and (ne == eq):
-                    ne = random.randint((gt or 1) + 2, (lt or 12) - 2)
+                    ne = random.randint(_min, _mak)
 
         self.lt, self.gt = lt or np.inf, gt or 0
         self.eq = eq if (lt is None) and (gt is None) else None
