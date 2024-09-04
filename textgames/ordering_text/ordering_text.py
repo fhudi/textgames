@@ -183,15 +183,14 @@ class LengthScoring(Scoring):
         if gt is None and lt is None and eq is None and ne is None:
             mode = random.randint(1, 10)    # gt; lt; eq(2); ne; gtlt; gt-ne; lt-ne; gtlt-ne; eq-ne;
             if mode in {1, 6, 7, 9}:
-                gt = random.randint(1, 8)
+                gt = random.randint(2, 8)
             if mode in {2, 6, 8, 9}:
-                lt = random.randint((gt or 3) + 2, 12)
+                lt = random.randint((gt or 2) + 3, 12)
             if mode in {3, 4, 10}:
-                eq = random.randint(3, 10)
+                eq = random.randint(3, 11)
             if mode in {5, 7, 8, 9, 10}:
-                _min, _mak = (gt or 1) + 2, (lt or 12) - 2
-                if _min >= _mak:
-                    _min, _mak = 3, 10
+                _min, _mak = (gt or 1) + 1, (lt or 12) - 1
+                assert _min < _mak, f"lhoooo ({_min}, {_mak})"
                 ne = random.randint(_min, _mak)
                 while eq is not None and (ne == eq):
                     ne = random.randint(_min, _mak)
@@ -200,7 +199,8 @@ class LengthScoring(Scoring):
         self.eq = eq if (lt is None) and (gt is None) else None
         self.ne = ne
         assert self.eq is None or self.ne is None or (self.eq != self.ne), "lhoo"
-        assert (self.gt+1 < self.lt) and ((self.gt+1 != self.ne) or (self.gt+2 < self.lt)), "lhooo"
+        assert (self.gt+1 < self.lt) and ((self.gt+1 != self.ne) or (self.gt+2 < self.lt)), \
+            f"lhooo ({self.gt} < x < {self.lt}; x == {self.eq}; x <> {self.ne})"
         self.prompt = None
 
     def __repr__(self):
@@ -473,7 +473,6 @@ class OrderingTextGame(BaseGame):
                 else:
                     word_length = random.randint(*kwargs["word_length"])
                     _words.append(''.join(random.choices(string.ascii_lowercase, k=word_length)))
-                    # TODO: change la, abuden (bad dist.) :')
             self.words = _words
 
         self.recalculate_all()

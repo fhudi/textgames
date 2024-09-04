@@ -213,9 +213,10 @@ def generate(num_samples, dir_path):
         #     continue
         # if "Text Sudoku" in game_name:
         #     continue
-        if not "Ordering Text" in game_name:
-            continue
-        for difficulty_level in ["1","2","3"]:
+        # if not "Ordering Text" in game_name:
+        #     continue
+        # for difficulty_level in ["1","2","3"]:
+        for difficulty_level in filter(lambda level_id: not level_id.startswith("0"), LEVEL_IDS):    # Sample test-caases start with '0'
             prompts_map = {}
             print(game_name, difficulty_level)
             prompts = []
