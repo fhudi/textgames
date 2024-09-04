@@ -205,17 +205,33 @@ def generate(num_samples, dir_path):
 
     count_duplicate = 0
     for game_name in GAME_NAMES:
-        for difficulty_level in GAME_IDS:
+        # if "Crossword" in game_name:
+        #     continue
+        # if "Islands" in game_name:
+        #     continue
+        # if "Password" in game_name:
+        #     continue
+        # if "Text Sudoku" in game_name:
+        #     continue
+        if not "Ordering Text" in game_name:
+            continue
+        for difficulty_level in ["1","2","3"]:
             prompts_map = {}
             print(game_name, difficulty_level)
             prompts = []
-            for i in range(num_samples):
+            for i in tqdm(range(num_samples)):
                 cur_game = new_game(game_name, difficulty_level)
                 prompt = cur_game.get_prompt()
-                prompts.append(prompt)
+                
                 if prompt in prompts_map:
                     count_duplicate += 1
+                    while prompt in prompts_map:
+                        cur_game = new_game(game_name, difficulty_level)
+                        prompt = cur_game.get_prompt()
+
+                prompts.append(prompt)
                 prompts_map[prompt] = True
+                print(game_name, difficulty_level, count_duplicate)
             json_object = json.dumps(prompts, indent=4)
             with open(f"{dir_path}/{game_name}_{difficulty_level}.json", "w") as outfile:
                 outfile.write(json_object)
