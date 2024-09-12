@@ -6,3 +6,5 @@ openai
 cohere
 transformers
 torch
+accelerate
+bitsandbytes

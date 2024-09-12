@@ -47,6 +47,7 @@ words:
 - hudi
 - alham
 - aji
+- ruochen
 
 Print only the answer.
 """
