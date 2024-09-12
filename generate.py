@@ -200,6 +200,7 @@ def load_model(gen_model_checkpoint, load_in_8bit=False):
     return gen_model, tokenizer
 
 def generate(num_samples, dir_path):
+    set_seed(42)
     print(GAME_NAMES, LEVELS)
     os.system(f"mkdir -p {dir_path}")
 
@@ -216,7 +217,7 @@ def generate(num_samples, dir_path):
         # if not "Ordering Text" in game_name:
         #     continue
         # for difficulty_level in ["1","2","3"]:
-        for difficulty_level in filter(lambda level_id: not level_id.startswith("0"), LEVEL_IDS):    # Sample test-caases start with '0'
+        for difficulty_level in filter(lambda level_id: not level_id.startswith("0") and level_id != "4", LEVEL_IDS):    # Sample test-caases start with '0'
             prompts_map = {}
             print(game_name, difficulty_level)
             prompts = []
