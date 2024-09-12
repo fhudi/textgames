@@ -397,6 +397,7 @@ class OrderingTextGame(BaseGame):
         return "📈\tOrdering Text"
 
     def __init__(self, rules=None, words=None):
+        super().__init__()
         self.rules = rules or set()
         self.words = words or set()
         self.points = dict()
@@ -423,7 +424,7 @@ class OrderingTextGame(BaseGame):
             self.recalculate_all()
         return self.answer    # sorted(self.words, key=lambda word: (self.get_point(word), word))
 
-    def validate(self, answer: str) -> (bool, str):
+    def _validate(self, answer: str) -> (bool, str):
         answer = answer.lower().replace(' ', '\n')
         if answer != "\n".join(self.get_answer()):
             for i, (a, b) in enumerate(zip(answer.split(), self.get_answer()), 1):
@@ -433,7 +434,7 @@ class OrderingTextGame(BaseGame):
         else:
             return True, ""
 
-    def generate_new_game(self, *args, **kwargs) -> None:
+    def _generate_new_game(self, *args, **kwargs) -> None:
         if "preset_config" in kwargs:
             self.rules, self.words = _game_preset_config(kwargs["preset_config"])
 
@@ -478,7 +479,7 @@ class OrderingTextGame(BaseGame):
 
         self.recalculate_all()
 
-    def get_prompt(self) -> str:
+    def _get_prompt(self) -> str:
         prompt = (
             "Given a set of rules to calculate point, sort the set of words in decreasing order.\n"
             "When there 2 or more words with same point, sort lexicographically.\n"

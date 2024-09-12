@@ -223,13 +223,13 @@ def generate(num_samples, dir_path):
             prompts = []
             for i in tqdm(range(num_samples)):
                 cur_game = new_game(game_name, difficulty_level)
-                prompt = cur_game.get_prompt()
+                prompt = cur_game._get_prompt()
                 
                 if prompt in prompts_map:
                     count_duplicate += 1
                     while prompt in prompts_map:
                         cur_game = new_game(game_name, difficulty_level)
-                        prompt = cur_game.get_prompt()
+                        prompt = cur_game._get_prompt()
 
                 prompts.append(prompt)
                 prompts_map[prompt] = True

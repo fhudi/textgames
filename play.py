@@ -78,11 +78,9 @@ if __name__ == "__main__":
         solved, val_msg = cur_game.validate(user_input)
         if val_msg:
             print(val_msg)
-        if solved:
-            print("Correct guess")
-        else:
-            print("Bad guess")
-    
+        print(f"Attempt #{len(cur_game.attempt_timestamps)}:", "Correct guess" if solved else "Bad guess", end="\n\n")
+
+    print(f"Time to solve: {round(cur_game.attempt_timestamps[-1] - cur_game.start_timestamp, 1)}s")
     print("Thank you for playing!")
             
 

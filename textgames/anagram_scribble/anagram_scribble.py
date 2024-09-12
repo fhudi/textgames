@@ -10,6 +10,7 @@ class AnagramScribble(BaseGame):
         return "🔤\tAnagram Scribble"
 
     def __init__(self):
+        super().__init__()
         self.WORD_LIST_BIN = {}
         with open(str(Path(__file__).absolute()).replace("anagram_scribble/anagram_scribble.py","") + "assets/kb/words_by_length.json") as f:
             self.WORD_LIST_BIN = json.load(f)
@@ -22,7 +23,7 @@ class AnagramScribble(BaseGame):
         self.total_chars = []
         self.possible_ans = ""
 
-    def generate_new_game(self, *args, **kwargs) -> None:
+    def _generate_new_game(self, *args, **kwargs) -> None:
         self.low_num_chars = kwargs['low_num_chars']
         self.high_num_chars = kwargs['high_num_chars']
         self.num_chars = random.randint(self.low_num_chars, self.high_num_chars)
@@ -33,14 +34,14 @@ class AnagramScribble(BaseGame):
         self.total_chars = list(self.possible_ans) + random.sample(available_characters, remaining_chars_num)
         random.shuffle(self.total_chars)
 
-    def get_prompt(self) -> str:
+    def _get_prompt(self) -> str:
         if self.allow_repeat:
             prompt = f"Construct a valid {self.num_chars}-character English word from the following letters:\n{self.total_chars}.\nEach character can be used multiple times. Please write None if there is no valid combination."
         else:
             prompt = f"Construct a valid {self.num_chars}-character English word from the following letters:\n{self.total_chars}\nEach character can only be used once. Please write None if there is no valid combination."
         return prompt
     
-    def validate(self, answer: str) -> (bool, str):
+    def _validate(self, answer: str) -> (bool, str):
         answer = answer.lower()
         if self.possible_ans != "" and answer == "none":
             val_msg = "There is a valid answer."

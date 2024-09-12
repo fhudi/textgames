@@ -9,7 +9,7 @@ class Sudoku(BaseGame):
         return "🧩\tText Sudoku"
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def is_valid_sudoku(self, mat):
         rows = [set() for _ in range(self.size)]
@@ -33,7 +33,7 @@ class Sudoku(BaseGame):
     
         return True
 
-    def validate(self, input) -> (bool, str):
+    def _validate(self, input) -> (bool, str):
         mat = [[self.empty_character for i in range(self.size)] for j in range(self.size)]
 
         arr = input.split()
@@ -49,7 +49,7 @@ class Sudoku(BaseGame):
                     return False, val_msg
         return self.is_valid_sudoku(mat), ""
 
-    def generate_new_game(self, *args, **kwargs) -> None:
+    def _generate_new_game(self, *args, **kwargs) -> None:
         size=kwargs["size"]
         characters=kwargs["characters"]
         empty_character=kwargs["empty_character"]
@@ -176,7 +176,7 @@ class Sudoku(BaseGame):
                 string += self.mat[i][j]
             print(string)
 
-    def get_prompt(self):
+    def _get_prompt(self):
         characters = ",".join(c for c in self.characters)
         prompt = f"Please solve the {self.size}x{self.size} sudoku with {characters} as the values and fill {self.empty_character} with the possible value and only print the answer. Follow the sudoku rule.\n"
         sudoku = ""

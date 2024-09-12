@@ -28,6 +28,7 @@ class PasswordGame(BaseGame):
     }
 
     def __init__(self):
+        super().__init__()
         self.num_rules = None
         self.rules_ids = []
         self.rules = []
@@ -118,7 +119,7 @@ class PasswordGame(BaseGame):
 
         self.rule_id_list = [key for key in PasswordGame.RULES]
 
-    def generate_new_game(self, *args, **kwargs) -> None:
+    def _generate_new_game(self, *args, **kwargs) -> None:
         self.rules = []
         self.rules_ids = []
         self.num_rules = kwargs["num_rules"]
@@ -146,13 +147,13 @@ class PasswordGame(BaseGame):
             output = rule.generate_rule(output)
         self.possible_ans = output
 
-    def get_prompt(self) -> str:
+    def _get_prompt(self) -> str:
         prompt = "Please write a text string without any space by following a set of given rules. Please write only the answer and follow the following criteria:\n"
         for rule in self.rules:
             prompt += "- " + rule.generate_prompt() + "\n"
         return prompt
     
-    def validate(self, answer: str) -> (bool, str):
+    def _validate(self, answer: str) -> (bool, str):
         res = True
         val_msgs = []
         for rule in self.rules:

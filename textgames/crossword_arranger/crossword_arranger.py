@@ -69,7 +69,7 @@ class CrosswordArrangerGame(BaseGame):
         self.noise_ratio = None
         self.word_list = None
 
-    def generate_new_game(self, *args, **kwargs) -> None:
+    def _generate_new_game(self, *args, **kwargs) -> None:
         if kwargs.get("no_ans_prob", .0) > .0:
             raise NotImplementedError("Arranger with No Answer is not yet implemented")
         if not kwargs.get("no_duplicate", True):
@@ -100,7 +100,7 @@ class CrosswordArrangerGame(BaseGame):
                 pass
             self.word_list.append(next_word)
 
-    def get_prompt(self) -> str:
+    def _get_prompt(self) -> str:
         prompt = (
             f"Given a board size of {self.board_size}x{self.board_size}, "
             "arrange a possible crossword puzzle answer from a list of words.\n"
@@ -114,7 +114,7 @@ class CrosswordArrangerGame(BaseGame):
         prompt += "\nPrint only the answer."
         return prompt
 
-    def validate(self, answer: str) -> (bool, str):
+    def _validate(self, answer: str) -> (bool, str):
         ans_hor = list(filter(None, answer.lower().replace(' ', '\n').split("\n")))
         val_msg = ""
         if len(ans_hor) != self.board_size:

@@ -9,6 +9,7 @@ class BracketGame(BaseGame):
         return "🗳️\tBracket Game"
 
     def __init__(self):
+        super().__init__()
         self.WORD_LIST = []
         self.MULTI_WORD_LIST = []
 
@@ -31,7 +32,7 @@ class BracketGame(BaseGame):
             if num1 != num2:
                 self.MULTI_WORD_LIST.append(self.WORD_LIST[num1] + self.WORD_LIST[num2])
 
-    def validate(self, answer: str) -> (bool, str):
+    def _validate(self, answer: str) -> (bool, str):
         for rule in self.rules:
             arr = answer.split(rule[0])
             
@@ -74,7 +75,7 @@ class BracketGame(BaseGame):
             val_msg = f"The depth of the bracket is {count}. The expected depth is {self.depth}"
             return False, val_msg
 
-    def generate_new_game(self, *args, **kwargs) -> None:
+    def _generate_new_game(self, *args, **kwargs) -> None:
         num_words = kwargs["num_words"]
         num_rules = kwargs["num_rules"]
         self.depth = kwargs["depth"]
@@ -110,7 +111,7 @@ class BracketGame(BaseGame):
             bracket = self.BRACKETS[random.randint(0, len(self.BRACKETS)-1)]
             self.rules.append([cur_word, bracket])
     
-    def get_prompt(self) -> str:
+    def _get_prompt(self) -> str:
         prompt = f"You are given a text {self.string} Your job is to put some valid parenthesis brackets in the text such that:\n"
         for rule in self.rules:
             prompt += f"- \"{rule[0]}\" is inside a {rule[1][0]} bracket\n"

@@ -39,9 +39,9 @@ class Islands(BaseGame):
         return "🏝️\tIslands"
 
     def __init__(self):
-        pass
+        super().__init__()
 
-    def generate_new_game(self, N = None, num_islands = None, island_size_min = None, island_size_max = None, island_with_coconut = None, total_coconuts = None):
+    def _generate_new_game(self, N = None, num_islands = None, island_size_min = None, island_size_max = None, island_with_coconut = None, total_coconuts = None):
         if N is None:
             N = random.randint(5, 8)
         if num_islands is None:
@@ -68,7 +68,7 @@ class Islands(BaseGame):
         self.island_with_coconut = island_with_coconut
         self.total_coconuts = total_coconuts
 
-    def validate(self, answer: str) -> (bool, str):
+    def _validate(self, answer: str) -> (bool, str):
 
         # clean up the input, to make it more flexible towards formatting
         answer = answer.split("\n")
@@ -142,7 +142,7 @@ class Islands(BaseGame):
 
         return True, ""
 
-    def get_prompt(self):
+    def _get_prompt(self):
         if self.island_with_coconut == 0:
             prompt = f"""Example Prompt
 You are asked to construct a 2D {self.N} x {self.N} grid, consisting of water tiles (denoted by ’.’), 

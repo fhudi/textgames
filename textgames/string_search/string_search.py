@@ -14,9 +14,9 @@ class StringSearch(BaseGame):
 
     extra_artificial_constraints = []
     def __init__(self):
-        pass
+        super().__init__()
 
-    def validate(self, answer: str) -> (bool, str):
+    def _validate(self, answer: str) -> (bool, str):
         answer = answer.strip().lower()
         if len(self.answer) != len(answer):
             val_msg = f"{answer} is not {len(self.answer)} characters long."
@@ -150,7 +150,7 @@ class StringSearch(BaseGame):
 
         return "".join(fake_answer)
 
-    def generate_new_game(self, difficulty=3):
+    def _generate_new_game(self, difficulty=3):
         self.dictionary_by_len = [[] for _ in range(9)]
         self.dictionary = []
 
@@ -213,14 +213,14 @@ class StringSearch(BaseGame):
                 # original answer, can't change and no need to check
                 if i >= answer_start and i < answer_start + answer_len:
                     continue
-                is_valid, _ = self.validate(self.input_text[i: i + answer_len])
+                is_valid, _ = self._validate(self.input_text[i: i + answer_len])
                 if is_valid:
                     # print("Accident", self.input_text[i: i + answer_len])
                     self.input_text = self.input_text[:i] + random.choice(self.not_contain_chars) + self.input_text[i + 1:]
         # print(self.answer)
 
 
-    def get_prompt(self):
+    def _get_prompt(self):
         def print_chars(X):
             return ", ".join(X[:-1]) + " and " + X[-1] if len(X) > 1 else X[0]
 
