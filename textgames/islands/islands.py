@@ -41,6 +41,29 @@ class Islands(BaseGame):
     def __init__(self):
         super().__init__()
 
+    def load_game(self, state_string):
+        pattern_N = re.compile(r"construct a 2D (\d+) x \d+ grid")
+        pattern_num_islands = re.compile(r"exactly (\d+) islands")
+        pattern_island_size_min = re.compile(r"from (\d+) to \d+ tiles")
+        pattern_island_size_max = re.compile(r"from \d+ to (\d+) tiles")
+        pattern_island_with_coconut = re.compile(r"exactly (\d+) islands that have coconut")
+        pattern_total_coconuts = re.compile(r"exactly (\d+) total coconut trees")
+        
+        def extract_variable(pattern, input_string):
+            match = pattern.search(input_string)
+            if match:
+                return int(match.group(1))
+            else:
+                return 0
+
+        self.N = extract_variable(pattern_N, state_string)
+        self.num_islands = extract_variable(pattern_num_islands, state_string)
+        self.island_size_min = extract_variable(pattern_island_size_min, state_string)
+        self.island_size_max = extract_variable(pattern_island_size_max, state_string)
+        self.island_with_coconut = extract_variable(pattern_island_with_coconut, state_string)
+        self.pattern_total_coconuts = extract_variable(pattern_total_coconuts, state_string)
+
+
     def _generate_new_game(self, N = None, num_islands = None, island_size_min = None, island_size_max = None, island_with_coconut = None, total_coconuts = None):
         if N is None:
             N = random.randint(5, 8)
@@ -144,8 +167,7 @@ class Islands(BaseGame):
 
     def _get_prompt(self):
         if self.island_with_coconut == 0:
-            prompt = f"""Example Prompt
-You are asked to construct a 2D {self.N} x {self.N} grid, consisting of water tiles (denoted by ’.’), 
+            prompt = f"""You are asked to construct a 2D {self.N} x {self.N} grid, consisting of water tiles (denoted by ’.’), 
 land tiles (denoted by ’#’). 
 
 A group of connected land tiles in 4 cardinal directions forms an island.
