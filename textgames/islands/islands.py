@@ -61,7 +61,7 @@ class Islands(BaseGame):
         self.island_size_min = extract_variable(pattern_island_size_min, state_string)
         self.island_size_max = extract_variable(pattern_island_size_max, state_string)
         self.island_with_coconut = extract_variable(pattern_island_with_coconut, state_string)
-        self.pattern_total_coconuts = extract_variable(pattern_total_coconuts, state_string)
+        self.total_coconuts = extract_variable(pattern_total_coconuts, state_string)
 
 
     def _generate_new_game(self, N = None, num_islands = None, island_size_min = None, island_size_max = None, island_with_coconut = None, total_coconuts = None):
