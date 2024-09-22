@@ -8,13 +8,56 @@ from collections import defaultdict
 
 
 class StringSearch(BaseGame):
+
     @staticmethod
     def get_game_name() -> str:
         return "🔎\tString Search"
 
     extra_artificial_constraints = []
     def __init__(self):
+        self.extra_artificial_constraints = []
         super().__init__()
+
+    def load_game(self, state_string):
+        pattern_input_string = re.compile(r'You are given the following string:\n([a-zA-Z]+)')
+        pattern_contains = re.compile(r'Contains ([a-z](?:, [a-z])*)(?: and ([a-z]))?')
+        pattern_not_contain = re.compile(r'not contain ([a-z](?:, [a-z])*)(?: and ([a-z]))?')
+        pattern_answer_length = re.compile(r'substring of exactly (\d+) characters long that')
+
+        def get_letter_constraint(pattern, input):
+            match = pattern.search(input)
+
+            #print(match.group(1))
+
+            letters = match.group(1).replace(", ", "")
+            if match.group(2):
+                letters = letters + match.group(2)
+            
+            return list(letters)
+
+        self.input_text = pattern_input_string.search(state_string).group(1)
+        self.contains_chars = get_letter_constraint(pattern_contains, state_string)
+        self.not_contain_chars =  get_letter_constraint(pattern_not_contain, state_string)
+
+        self.answer_len = int(pattern_answer_length.search(state_string).group(1))
+
+        self.is_palindrome_answer = "forms a palindrome" in state_string
+
+        potential_extra_constraints = [
+            " - has 2 consecutive consonants\n",
+            " - does not have 2 consecutive consonants\n",
+            " - has 2 consecutive vowels\n",
+            " - does not have 2 consecutive vowels\n",
+            " - has more vowels than consonants\n",
+            " - has less vowels than consonants\n",
+            " - has the same amount of vowels and consonants\n"]
+
+        for c in potential_extra_constraints:
+            if c in state_string:
+                self.extra_artificial_constraints.append(c)
+
+        self.extra_artificial_constraints.sort()
+
 
     def _validate(self, answer: str) -> (bool, str):
         answer = answer.strip().lower()
@@ -151,8 +194,7 @@ class StringSearch(BaseGame):
         return "".join(fake_answer)
 
     def _generate_new_game(self, difficulty=3):
-        self.dictionary_by_len = [[] for _ in range(9)]
-        self.dictionary = []
+        dictionary = []
 
         self.difficulty = difficulty
         
@@ -160,25 +202,24 @@ class StringSearch(BaseGame):
             for line in file:
                 line = line.strip()
                 if len(line) <= 8:
-                    self.dictionary_by_len[len(line)].append(line)
-                    self.dictionary.append(line)
+                    dictionary.append(line)
 
         # generate the input text. To make it (kinda) readable, we use a combination of random strings
-        self.input_text = "".join([random.choice(self.dictionary) for _ in range(10)])
+        self.input_text = "".join([random.choice(dictionary) for _ in range(10)])
 
         # randomly get the answer from a subset of the input text
         if difficulty == 1:
-            answer_len = random.randint(3, 3)
+            self.answer_len = random.randint(3, 3)
             self.input_text = self.input_text[:15]
         elif difficulty == 2:
-            answer_len = random.randint(4, 5)
+            self.answer_len = random.randint(4, 5)
             self.input_text = self.input_text[:30]
         else:
-            answer_len = random.randint(5, 7)
+            self.answer_len = random.randint(5, 7)
             self.input_text = self.input_text[:60]
             
-        answer_start = random.randint(0, len(self.input_text) - answer_len)
-        self.answer = self.input_text[answer_start: answer_start + answer_len]
+        answer_start = random.randint(0, len(self.input_text) - self.answer_len)
+        self.answer = self.input_text[answer_start: answer_start + self.answer_len]
 
         if difficulty == 3 and random.randint(1, 100) % 2 == 1:
             self.is_palindrome_answer = True
@@ -189,7 +230,7 @@ class StringSearch(BaseGame):
         if (self.is_palindrome_answer):
             make_palindrome = lambda s: s[:(len(s) + 1) // 2] + s[:len(s) // 2][::-1]
             self.answer = make_palindrome(self.answer)
-            self.input_text = self.input_text[: answer_start] + self.answer + self.input_text[answer_start + answer_len:]
+            self.input_text = self.input_text[: answer_start] + self.answer + self.input_text[answer_start + self.answer_len:]
 
         # find random character as a constraint, for both appearing and not appearing one
         char_in_answers = list(set(self.answer))
@@ -202,20 +243,20 @@ class StringSearch(BaseGame):
         # set a flag to set which part of the string is editable (Valid = true)
         # initially, all string is editable except for the answer, to ensure that the answer is still there 
         valid = [True] * len(self.input_text)
-        valid = valid[:answer_start] + [False] * len(self.answer) + valid[answer_start + answer_len:]
+        valid = valid[:answer_start] + [False] * len(self.answer) + valid[answer_start + self.answer_len:]
         # we will randomly insert fake answer on the text. But we only 
         for _ in range(1 + difficulty):
             self.input_text, valid = self.replace_substring_with_validity_update(self.input_text, self.create_incorrect_answer(), valid)
 
         # If difficulty is 3, we will remove 'accidental' answer that's not in the original location
         if difficulty == 3:
-            for i in range(len(self.input_text) - answer_len):
+            for i in range(len(self.input_text) - self.answer_len):
                 # original answer, can't change and no need to check
-                if i >= answer_start and i < answer_start + answer_len:
+                if i >= answer_start and i < answer_start + self.answer_len:
                     continue
-                is_valid, _ = self._validate(self.input_text[i: i + answer_len])
+                is_valid, _ = self._validate(self.input_text[i: i + self.answer_len])
                 if is_valid:
-                    # print("Accident", self.input_text[i: i + answer_len])
+                    # print("Accident", self.input_text[i: i + self.answer_len])
                     self.input_text = self.input_text[:i] + random.choice(self.not_contain_chars) + self.input_text[i + 1:]
         # print(self.answer)
 
@@ -251,7 +292,10 @@ class StringSearch(BaseGame):
                 self.extra_artificial_constraints = random.sample(artificial_constraints, random.randint(1, 2))
             else:
                 self.extra_artificial_constraints = random.sample(artificial_constraints, 1)
+
             extra_constraints = extra_constraints + ''.join(self.extra_artificial_constraints)
+
+            self.extra_artificial_constraints.sort()
 
         prompt = f"""You are given the following string:
 {self.input_text}

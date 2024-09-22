@@ -124,8 +124,6 @@ def new_game(game_name, level):
         prompt = game.get_prompt()
         check_game = Islands()
         check_game.load_game(prompt)
-        print(vars(game))
-        print(vars(check_game))
 
         exlude_state = ['start_timestamp', 'chat_log', 'attempt_timestamps', 'is_solved']
         original_game_state = {k: v for k, v in vars(game).items() if k not in exlude_state}
@@ -136,6 +134,15 @@ def new_game(game_name, level):
     elif game_name == StringSearch.get_game_name():
         game = StringSearch()
         game.generate_new_game(difficulty=int(level))
+
+        prompt = game.get_prompt()
+        check_game = StringSearch()
+        check_game.load_game(prompt)
+
+        exlude_state = ['start_timestamp', 'chat_log', 'attempt_timestamps', 'is_solved', 'answer', 'difficulty']
+        original_game_state = {k: v for k, v in vars(game).items() if k not in exlude_state}
+        loaded_game_state = {k: v for k, v in vars(check_game).items() if k not in exlude_state}
+        assert original_game_state == loaded_game_state, "Game loader fails to load the correct game state"
 
     elif game_name == CrosswordArrangerGame.get_game_name():
         game = CrosswordArrangerGame()
