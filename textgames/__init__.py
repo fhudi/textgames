@@ -36,6 +36,12 @@ if _show_hidden_level_:
     LEVELS, LEVELS_HIDDEN = LEVELS + LEVELS_HIDDEN, []
 
 
+def _reload(prompt, game_cls):
+    game = game_cls()
+    game.load_game(prompt)
+    return game
+
+
 def new_game(game_name, level):
     not_available_game_level = NotImplementedError(
         f"The difficulty level is not available for this game: {game_name} - {level}"
@@ -160,6 +166,9 @@ def new_game(game_name, level):
 
     else:
         raise not_available_game_level
+
+    if game.is_game_reloadable():
+        game = _reload(game.get_prompt(), game.__class__)    # Let's use the reloaded state
 
     return game
 
