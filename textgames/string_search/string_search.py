@@ -14,11 +14,13 @@ class StringSearch(BaseGame):
         return "🔎\tString Search"
 
     extra_artificial_constraints = []
-    def __init__(self):
-        self.extra_artificial_constraints = []
-        super().__init__()
 
-    def load_game(self, state_string):
+    def __init__(self):
+        super().__init__()
+        self.extra_artificial_constraints = []
+        self.exclude_states = ['answer', 'difficulty']
+
+    def _load_game(self, state_string):
         pattern_input_string = re.compile(r'You are given the following string:\n([a-zA-Z]+)')
         pattern_contains = re.compile(r'Contains ([a-z](?:, [a-z])*)(?: and ([a-z]))?')
         pattern_not_contain = re.compile(r'not contain ([a-z](?:, [a-z])*)(?: and ([a-z]))?')

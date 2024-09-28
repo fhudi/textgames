@@ -3,6 +3,7 @@ import time
 
 class BaseGame:
     def __init__(self):
+        self.exclude_states = None
         self.start_timestamp = None
         self.chat_log = None
         self.attempt_timestamps = None
@@ -13,6 +14,9 @@ class BaseGame:
         raise NotImplementedError()
 
     def _generate_new_game(self, *args, **kwargs) -> None:
+        raise NotImplementedError()
+
+    def _load_game(self, *args, **kwargs) -> None:
         raise NotImplementedError()
 
     def _get_prompt(self) -> str:
@@ -31,6 +35,10 @@ class BaseGame:
         self._generate_new_game(*args, **kwargs)
         self.init_stats_()
 
+    def load_game(self, *args, **kwargs) -> None:
+        self._load_game(*args, **kwargs)
+        self.init_stats_()
+
     def get_prompt(self) -> str:
         prompt = self._get_prompt()
         self.chat_log.append((-2, prompt,))
@@ -43,3 +51,24 @@ class BaseGame:
         solved, val_msg = self._validate(answer)
         self.chat_log.append((solved, val_msg,))
         return solved, val_msg
+
+    def is_game_reloadable(self) -> bool:
+        return _is_game_reloadable(self)
+
+
+def _is_game_reloadable(original_game: BaseGame) -> bool:
+    check_game = original_game.__class__()
+    try:
+        check_game.load_game(original_game.get_prompt())
+    except NotImplementedError:
+        print("..... lhooooo: Load Game not implemented..\n")
+        return False
+
+    exclude_states = [
+        'start_timestamp', 'chat_log', 'attempt_timestamps', 'is_solved',
+        *(original_game.exclude_states or [])
+    ]
+    original_game_states = {k: v for k, v in vars(original_game).items() if k not in exclude_states}
+    loaded_game_states = {k: v for k, v in vars(check_game).items() if k not in exclude_states}
+
+    return original_game_states == loaded_game_states

@@ -40,8 +40,9 @@ class Islands(BaseGame):
 
     def __init__(self):
         super().__init__()
+        self.exclude_states = []
 
-    def load_game(self, state_string):
+    def _load_game(self, state_string):
         pattern_N = re.compile(r"construct a 2D (\d+) x \d+ grid")
         pattern_num_islands = re.compile(r"exactly (\d+) islands")
         pattern_island_size_min = re.compile(r"from (\d+) to \d+ tiles")
