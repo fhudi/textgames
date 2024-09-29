@@ -260,49 +260,50 @@ class StringSearch(BaseGame):
                 if is_valid:
                     # print("Accident", self.input_text[i: i + self.answer_len])
                     self.input_text = self.input_text[:i] + random.choice(self.not_contain_chars) + self.input_text[i + 1:]
-        # print(self.answer)
 
+            # create artificial constraints
+            self._generate_artificial_constraints()
+
+    def _generate_artificial_constraints(self):
+        # artificial constriants: constraint that does not change anything since it's been there already anyway
+        artificial_constraints = []
+        s = self.answer
+        if any(s[i].lower() not in 'aeiou' and s[i+1].lower() not in 'aeiou' for i in range(len(s)-1)):
+            artificial_constraints.append(" - has 2 consecutive consonants\n")
+        else:
+            artificial_constraints.append(" - does not have 2 consecutive consonants\n")
+        if any(s[i].lower() in 'aeiou' and s[i+1].lower() in 'aeiou' for i in range(len(s)-1)):
+            artificial_constraints.append(" - has 2 consecutive vowels\n")
+        else:
+            artificial_constraints.append(" - does not have 2 consecutive vowels\n")
+        if sum(1 for char in s.lower() if char in 'aeiou') > sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
+            artificial_constraints.append(" - has more vowels than consonants\n")
+        if sum(1 for char in s.lower() if char in 'aeiou') < sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
+            artificial_constraints.append(" - has less vowels than consonants\n")
+        if sum(1 for char in s.lower() if char in 'aeiou') == sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
+            artificial_constraints.append(" - has the same amount of vowels and consonants\n")
+        
+        if self.is_palindrome_answer:
+            self.extra_artificial_constraints = random.sample(artificial_constraints, random.randint(1, 2))
+        else:
+            self.extra_artificial_constraints = random.sample(artificial_constraints, 1)
+
+        self.extra_artificial_constraints.sort()
 
     def _get_prompt(self):
         def print_chars(X):
             return ", ".join(X[:-1]) + " and " + X[-1] if len(X) > 1 else X[0]
 
         extra_constraints = ""
-        if self.difficulty == 3:
-            if self.is_palindrome_answer:
-                extra_constraints = " - forms a palindrome\n"
-            
-            # artificial constriants: constraint that does not change anything since it's been there already anyway
-            artificial_constraints = []
-            s = self.answer
-            if any(s[i].lower() not in 'aeiou' and s[i+1].lower() not in 'aeiou' for i in range(len(s)-1)):
-                artificial_constraints.append(" - has 2 consecutive consonants\n")
-            else:
-                artificial_constraints.append(" - does not have 2 consecutive consonants\n")
-            if any(s[i].lower() in 'aeiou' and s[i+1].lower() in 'aeiou' for i in range(len(s)-1)):
-                artificial_constraints.append(" - has 2 consecutive vowels\n")
-            else:
-                artificial_constraints.append(" - does not have 2 consecutive vowels\n")
-            if sum(1 for char in s.lower() if char in 'aeiou') > sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
-                artificial_constraints.append(" - has more vowels than consonants\n")
-            if sum(1 for char in s.lower() if char in 'aeiou') < sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
-                artificial_constraints.append(" - has less vowels than consonants\n")
-            if sum(1 for char in s.lower() if char in 'aeiou') == sum(1 for char in s.lower() if char.isalpha() and char not in 'aeiou'):
-                artificial_constraints.append(" - has the same amount of vowels and consonants\n")
-            
-            if extra_constraints == "":
-                self.extra_artificial_constraints = random.sample(artificial_constraints, random.randint(1, 2))
-            else:
-                self.extra_artificial_constraints = random.sample(artificial_constraints, 1)
-
-            extra_constraints = extra_constraints + ''.join(self.extra_artificial_constraints)
-
-            self.extra_artificial_constraints.sort()
+        # len(self.input_text) > 50 is to indirectly check the difficulty == 3
+        if len(self.input_text) > 50 and self.is_palindrome_answer:
+            extra_constraints = " - forms a palindrome\n"
+        extra_constraints = extra_constraints + ''.join(self.extra_artificial_constraints)
 
         prompt = f"""You are given the following string:
 {self.input_text}
 
-Find a substring of exactly {len(self.answer)} characters long that:
+Find a substring of exactly {self.answer_len} characters long that:
  - Contains {print_chars(self.contains_chars)}
  - Does not contain {print_chars(self.not_contain_chars)}
 {extra_constraints}
