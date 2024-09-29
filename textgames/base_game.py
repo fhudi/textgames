@@ -57,11 +57,11 @@ class BaseGame:
 
 
 def _is_game_reloadable(original_game: BaseGame) -> bool:
-    check_game = original_game.__class__()
+    loaded_game = original_game.__class__()
     try:
-        check_game.load_game(original_game.get_prompt())
+        loaded_game.load_game(original_game.get_prompt())
     except NotImplementedError:
-        print("..... lhooooo: Load Game not implemented..\n")
+        print("..... lhooooo: Load Game not implemented .....\n")
         return False
 
     exclude_states = [
@@ -69,6 +69,6 @@ def _is_game_reloadable(original_game: BaseGame) -> bool:
         *(original_game.exclude_states or [])
     ]
     original_game_states = {k: v for k, v in vars(original_game).items() if k not in exclude_states}
-    loaded_game_states = {k: v for k, v in vars(check_game).items() if k not in exclude_states}
+    loaded_game_states = {k: v for k, v in vars(loaded_game).items() if k not in exclude_states}
 
     return original_game_states == loaded_game_states
