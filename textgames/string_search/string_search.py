@@ -63,8 +63,8 @@ class StringSearch(BaseGame):
 
     def _validate(self, answer: str) -> (bool, str):
         answer = answer.strip().lower()
-        if len(self.answer) != len(answer):
-            val_msg = f"{answer} is not {len(self.answer)} characters long."
+        if self.answer_len != len(answer):
+            val_msg = f"{answer} is not {self.answer_len} characters long."
             return False, val_msg
 
         if answer not in self.input_text:
@@ -182,15 +182,15 @@ class StringSearch(BaseGame):
         else:
             fake_answer = [random.choice(self.not_contain_chars)] + fake_answer
 
-        while len(fake_answer) < len(self.answer):
+        while len(fake_answer) < self.answer_len:
             fake_answer.append(random.choice(neutral_char))
 
         if self.is_palindrome_answer:
-            fake_answer = fake_answer[:(len(self.answer) + 1)// 2]
+            fake_answer = fake_answer[:(self.answer_len + 1)// 2]
             random.shuffle(fake_answer)
-            fake_answer = fake_answer[:len(self.answer)// 2] + fake_answer[::-1]
+            fake_answer = fake_answer[:self.answer_len// 2] + fake_answer[::-1]
         else:
-            fake_answer = fake_answer[:len(self.answer)]
+            fake_answer = fake_answer[:self.answer_len]
             random.shuffle(fake_answer)
 
         return "".join(fake_answer)
@@ -245,7 +245,7 @@ class StringSearch(BaseGame):
         # set a flag to set which part of the string is editable (Valid = true)
         # initially, all string is editable except for the answer, to ensure that the answer is still there 
         valid = [True] * len(self.input_text)
-        valid = valid[:answer_start] + [False] * len(self.answer) + valid[answer_start + self.answer_len:]
+        valid = valid[:answer_start] + [False] * self.answer_len + valid[answer_start + self.answer_len:]
         # we will randomly insert fake answer on the text. But we only 
         for _ in range(1 + difficulty):
             self.input_text, valid = self.replace_substring_with_validity_update(self.input_text, self.create_incorrect_answer(), valid)
