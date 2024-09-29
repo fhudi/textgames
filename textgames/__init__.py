@@ -10,20 +10,22 @@ from textgames.anagram_scribble.anagram_scribble import AnagramScribble
 import random
 import os
 
+# ["🔑\tPassword Game", "🧩\tText Sudoku", "🗳️\tBracket Game", "📈\tOrdering Text",
+#  "🏝️\tIslands", "🔎\tString Search", "📰\tCrossword Arranger", "🔤\tAnagram Scribble",]
 THE_GAMES = {
-    "1": CrosswordArrangerGame.get_game_name(),
-    "2": Sudoku.get_game_name(),
-    "3": Islands.get_game_name(),
-    "4": PasswordGame.get_game_name(),
-    "5": OrderingTextGame.get_game_name(),
-    "6": AnagramScribble.get_game_name(),
-    "7": BracketGame.get_game_name(),
-    "8": StringSearch.get_game_name(),
+    k: v.get_game_name() for k, v in [
+        ("1", CrosswordArrangerGame),
+        ("2", Sudoku),
+        ("3", Islands),
+        ("4", PasswordGame),
+        ("5", OrderingTextGame),
+        ("6", AnagramScribble),
+        ("7", BracketGame),
+        ("8", StringSearch),
+    ]
 }
 GAME_IDS = list(THE_GAMES.keys())
 GAME_NAMES = list(THE_GAMES.values())
-# ["🔑\tPassword Game", "🧩\tText Sudoku", "🗳️\tBracket Game", "📈\tOrdering Text",
-#  "🏝️\tIslands", "🔎\tString Search", "📰\tCrossword Arranger", "🔤\tAnagram Scribble",]
 SINGLE_LINE_GAME_IDS = list(map(lambda g: GAME_IDS[GAME_NAMES.index(g.get_game_name())],
                                 [PasswordGame, BracketGame, StringSearch, AnagramScribble]
                                 ))
@@ -150,7 +152,7 @@ def new_game(game_name, level):
             game.generate_new_game(board_size=6, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
         else:
             raise not_available_game_level
-        print(f"Possible Answer: {game.possible_ans}\n")
+        print(f"Possible Answer: {game.possible_ans}")
 
     elif game_name == AnagramScribble.get_game_name():
         game = AnagramScribble()
@@ -162,7 +164,7 @@ def new_game(game_name, level):
             game.generate_new_game(low_num_chars=8, high_num_chars=10, allow_repeat=False)
         else:
             raise not_available_game_level
-        print(f"Possible Answer: {game.possible_ans}\n")
+        print(f"Possible Answer: {game.possible_ans}")
 
     else:
         raise not_available_game_level
