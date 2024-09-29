@@ -1,4 +1,5 @@
 #%%
+import re
 import random
 from typing import List, Optional
 from itertools import chain
@@ -68,6 +69,7 @@ class CrosswordArrangerGame(BaseGame):
         self.possible_ans = None
         self.noise_ratio = None
         self.word_list = None
+        self.exclude_states = ['full_word_list', 'possible_ans', 'noise_ratio']
 
     def _generate_new_game(self, *args, **kwargs) -> None:
         if kwargs.get("no_ans_prob", .0) > .0:
@@ -99,6 +101,14 @@ class CrosswordArrangerGame(BaseGame):
             while (next_word := random.choice(self.full_word_list)) in self.word_list:
                 pass
             self.word_list.append(next_word)
+        self.word_list = sorted(self.word_list)
+
+    def _load_game(self, state_string):
+        pat_board_size = re.compile(r"Given a board size of (\d+)x\d+,")
+        self.board_size = int(pat_board_size.search(state_string).group(1))
+        pat_word_list = re.compile(r"List of words:\n((- [a-z]+\n)+)\nPrint only the answer.")
+        word_list_str = pat_word_list.search(state_string).group(1).strip()
+        self.word_list = sorted(map(lambda t: t.strip("- "), word_list_str.split('\n')))
 
     def _get_prompt(self) -> str:
         prompt = (
@@ -108,7 +118,7 @@ class CrosswordArrangerGame(BaseGame):
         )
 
         prompt += "\nList of words:\n"
-        for word in sorted(self.word_list):
+        for word in self.word_list:
             prompt += f"- {word}\n"
 
         prompt += "\nPrint only the answer."
