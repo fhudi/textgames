@@ -170,7 +170,10 @@ def new_game(game_name, level):
         raise not_available_game_level
 
     if game.is_game_reloadable():
+        print("reloading the game ..")
         game = _reload(game.get_prompt(), game.__class__)    # Let's use the reloaded state
+    else:
+        print("!! game is NOT reloaded.. !!")
 
     return game
 
