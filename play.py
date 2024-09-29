@@ -56,8 +56,9 @@ if __name__ == "__main__":
     this_difficulty_level = (LEVELS + LEVELS_HIDDEN)[LEVEL_IDS.index(difficulty_level)].replace("\t", " ")
     print_text_green(f"Game chosen: {this_game_name} and Difficulty Level: {this_difficulty_level}")
 
-    cur_game = new_game(this_game_name, difficulty_level)
     solved = False
+    cur_game = new_game(this_game_name, difficulty_level)
+    print(colored("########  Game Start !!  ########", "light_green"))
     print(cur_game.get_prompt())
     while not solved:
         contents = []
