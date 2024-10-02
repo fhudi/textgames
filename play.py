@@ -1,6 +1,8 @@
 from termcolor import colored
 from textgames import GAME_IDS, GAME_NAMES, LEVEL_IDS, LEVELS, new_game, LEVELS_HIDDEN, SINGLE_LINE_GAME_IDS
 
+import os
+
 
 def print_text_green(string):
     print(colored(string, "light_green"))
@@ -22,8 +24,8 @@ if __name__ == "__main__":
         print_text_green(f"{i+1}. {game_name}")
     print_text_green("#" * 20)
 
-    cur_game_id = None
-    difficulty_level = None
+    cur_game_id = os.getenv("GAME_ID", None)
+    difficulty_level = os.getenv("GAME_LEVEL", None)
     while cur_game_id is None:
         user_input = str(input(f"Choose the game> "))
 
