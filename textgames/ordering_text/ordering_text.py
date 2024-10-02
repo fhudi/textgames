@@ -65,9 +65,6 @@ from textgames.base_game import BaseGame
 #%%
 from textgames.assets.word_list import WORDS_LIST, WORDS_BY_LEN
 
-#%%
-
-
 
 #%%
 class Scoring:
@@ -93,20 +90,62 @@ class Scoring:
     def text_sampler(self, valid: bool = True, *args, **kwargs) -> str:
         raise NotImplementedError()
 
+    def __eq__(self, other) -> bool:
+        return isinstance(other, Scoring) and (repr(self) == repr(other))
+
+
+#%%
+def load_scoring_from_prompt(prompt: str) -> Scoring:
+    if match := re.search(r"(.*) gets (-?\d+) points?", prompt):
+        point, pattern = int(match.group(2)), match.group(1)
+    elif match := re.search(r"add (-?\d+) points? if (.*)", prompt):
+        point, pattern = int(match.group(1)), match.group(2)
+    else:
+        raise AssertionError(f"Failed to parse prompt. prompt: \"{prompt}\"")
+    scoring = None
+    for scoring_cls in SCORING_CLASSES:
+        try:
+            scoring = scoring_cls(point=point, pattern_text=pattern)
+        except AssertionError:
+            pass
+    return scoring
+
 
 #%%
 class ConsecutiveScoring(Scoring):
-    regex_pattern = {
-        'c': "[^aeiou]",
+    _regex_pattern = {
+        'c': "[bcdfghjklmnpqrstvwxyz]",
         'v': "[aeiou]",
     }
 
-    def __init__(self, point=1, seq=None):
+    _seq_to_prompt = {
+        "c": "every consonant",
+        "v": "every vowel",
+        "cc": "every pair of consecutive consonant",
+        "vv": "every pair of consecutive vowel",
+        "vc": "every consonant right after a vowel",
+        "cv": "every vowel right after a consonant",
+    }
+    _prompt_to_seq = {v: k for k, v in _seq_to_prompt.items()}
+
+    def __init__(self, point=1, seq=None, pattern_text=None, allow_no_match_pattern=False):
         super().__init__(point)
+
+        # Reload from pattern of prompt text
+        if pattern_text is not None:
+            if pattern_text in self._prompt_to_seq:
+                seq = self._prompt_to_seq[pattern_text]
+            elif match := re.search(r"every (\d+) consecutive (consonant|vowel)", pattern_text):
+                seq = ('v' if match.group(2) == "vowel" else 'c') * int(match.group(1))
+            else:
+                if not allow_no_match_pattern:
+                    raise AssertionError("Failed to load the pattern")
+                # else:
+                #     print("Pattern text can't be loaded, regenerating the pattern ..")
 
         # random initialisation
         if seq is None:
-            mode = random.randint(1, 6)    # c/v, cc, vv, vc, cv, [cv]{3}
+            mode = random.randint(1, 6)    # [cv], [cv]{2}, (c{x}|v{x})
             match mode:
                 case 1:
                     seq = random.choice(["c", "v"])
@@ -114,8 +153,11 @@ class ConsecutiveScoring(Scoring):
                     seq = ["cc", "vv", "vc", "cv"][mode-2]
                 case 6:
                     seq = random.choice(["ccc", "vvv"])
-
         # print("seq", seq)
+        assert all(c in self._regex_pattern.keys() for c in seq), \
+            f"Please use only the allowed pattern: {self._regex_pattern.keys()}"
+        self._seq = seq
+
         pattern = ""
         n = 1
         for a, b in zip(seq, seq[1:] + '$'):
@@ -123,15 +165,13 @@ class ConsecutiveScoring(Scoring):
                 n += 1
                 continue
             else:
-                cur_pattern = self.regex_pattern.get(a, None)
+                cur_pattern = self._regex_pattern.get(a, None)
                 if cur_pattern:
                     pattern += cur_pattern
                     pattern += f"{{{n}}}" if (n > 1) else ""
                 n = 1
         self._pattern = re.compile(pattern)
-        assert all(c in self.regex_pattern.keys() for c in seq), \
-            f"Please use only the allowed pattern: {self.regex_pattern.keys()}"
-        self._seq = seq
+
         self.prompt = None
 
     def __repr__(self):
@@ -145,18 +185,10 @@ class ConsecutiveScoring(Scoring):
             return self.prompt
 
         prompt = None
-        if len(self._seq) == 1 and self._seq[0] in {'c', 'v'}:
-            prompt = f"every {'consonant' if self._seq == 'c' else 'vowel'}"
-        elif self._seq == "cc":
-            prompt = f"every pair of consecutive consonant"
-        elif self._seq == "vv":
-            prompt = f"every pair of consecutive vowel"
-        elif self._seq == "vc":
-            prompt = f"every consonant right after a vowel"
-        elif self._seq == "cv":
-            prompt = f"every vowel right after a consonant"
+        if self._seq in self._seq_to_prompt:
+            prompt = self._seq_to_prompt[self._seq]
         elif len(set(self._seq)) == 1 and self._seq[0] in {'c', 'v'}:
-            prompt = f"every {len(self._seq)} consecutive {'consonant' if self._seq == 'c' else 'vowel'}s"
+            prompt = f"every {len(self._seq)} consecutive {'consonant' if self._seq[0] == 'c' else 'vowel'}s"
 
         if prompt is None:
             raise NotImplementedError(repr(self))
@@ -168,7 +200,7 @@ class ConsecutiveScoring(Scoring):
         def randomise(c):
             while True:
                 ret = random.choice(string.ascii_lowercase)
-                check = re.search(c, ret)
+                check = re.search(self._regex_pattern[c], ret)
                 if (valid and check) or (not valid and not check):
                     return ret
         return ''.join(map(randomise, self._seq))
@@ -176,9 +208,30 @@ class ConsecutiveScoring(Scoring):
 
 #%%
 class LengthScoring(Scoring):
-    def __init__(self, point=1, lt=None, gt=None, eq=None, ne=None):
+    def __init__(self, point=1, lt=None, gt=None, eq=None, ne=None, pattern_text=None, allow_no_match_pattern=False):
         super().__init__(point)
-        self.point = point
+
+        # Reload from pattern of prompt text
+        if pattern_text is not None:
+            match, prompt = None, None
+            if match := re.search(r"word more than (\d+) characters?", pattern_text):
+                gt = int(match.group(1))
+                prompt = match.group(0)
+
+            if match := re.search(rf"{'word' if prompt is None else f'{prompt} and'} less than (\d+) characters", pattern_text):
+                lt = int(match.group(1))
+                prompt = match.group(0)
+
+            if match := re.search(rf"{'word' if prompt is None else f'{prompt} but'} not equal to (\d+) characters?", pattern_text):
+                ne = int(match.group(1))
+                prompt = match.group(0)
+
+            if match := re.search(r"word that has exactly (\d+) characters?", pattern_text):
+                eq = int(match.group(1))
+                prompt = match.group(0)
+
+            if prompt is None and not allow_no_match_pattern:
+                raise AssertionError("Failed to load the pattern")
 
         # random initialisation
         if gt is None and lt is None and eq is None and ne is None:
@@ -197,9 +250,9 @@ class LengthScoring(Scoring):
                     ne = random.randint(_min, _mak)
 
         self.lt, self.gt = lt or np.inf, gt or 0
-        self.eq = eq if (lt is None) and (gt is None) else None
         self.ne = ne
-        assert self.eq is None or self.ne is None or (self.eq != self.ne), "lhoo"
+        self.eq = eq if (lt is None) and (gt is None) and (ne is None) else None
+        assert self.eq is None or self.ne is None, "lhoo"
         assert (self.gt+1 < self.lt) and ((self.gt+1 != self.ne) or (self.gt+2 < self.lt)), \
             f"lhooo ({self.gt} < x < {self.lt}; x == {self.eq}; x <> {self.ne})"
         self.prompt = None
@@ -248,9 +301,20 @@ class LengthScoring(Scoring):
 
 #%%
 class AffixScoring(Scoring):
-    def __init__(self, point=1, prefix=None, suffix=None):
+    def __init__(self, point=1, prefix=None, suffix=None, pattern_text=None, allow_no_match_pattern=False):
         super().__init__(point)
-        self.point = point
+
+        # Reload from pattern of prompt text
+        if pattern_text is not None:
+            if match := re.search(r"word starts with ([a-z]+) and ends with ([a-z]+)", pattern_text):
+                prefix, suffix = match.group(1), match.group(2)
+            elif match := re.search(r"word starts with ([a-z]+)", pattern_text):
+                prefix = match.group(1)
+            elif match := re.search(r"word ends with ([a-z]+)", pattern_text):
+                suffix = match.group(1)
+            else:
+                if not allow_no_match_pattern:
+                    raise AssertionError("Failed to load the pattern")
 
         # random initialisation
         if prefix is None and suffix is None:
@@ -307,9 +371,18 @@ class AffixScoring(Scoring):
 
 #%%
 class InfixScoring(Scoring):
-    def __init__(self, point=1, infix=None, n=None):
+    def __init__(self, point=1, infix=None, n=None, pattern_text=None, allow_no_match_pattern=False):
         super().__init__(point)
-        self.point = point
+
+        # Reload from pattern of prompt text
+        if pattern_text is not None:
+            if match := re.search(r"there exists '([a-z]+)' in the word", pattern_text):
+                infix, n = match.group(1), None
+            elif match := re.search(r"there exists exactly (\d+) '([a-z]+)' in the word", pattern_text):
+                infix, n = match.group(2), int(match.group(1))
+            else:
+                if not allow_no_match_pattern:
+                    raise AssertionError("Failed to load the pattern")
 
         # random initialisation
         if infix is None:
@@ -415,6 +488,7 @@ class OrderingTextGame(BaseGame):
         return self.points[word]
 
     def recalculate_all(self):
+        self.points, self.answer = dict(), None
         for word in self.words:
             self.points[word] = self.calc_point(word)
         self.answer = sorted(self.words, key=lambda x: (-self.points[x], x))
@@ -477,6 +551,15 @@ class OrderingTextGame(BaseGame):
                     _words.append(''.join(random.choices(string.ascii_lowercase, k=word_length)))
             self.words = _words
 
+        self.recalculate_all()
+
+    def _load_game(self, state_string) -> None:
+        pat_rules = re.compile(r"Rules:\n((- [^\n]+\n)+)\n")
+        rules_str = pat_rules.search(state_string).group(1).strip()
+        self.rules = list(map(lambda t: load_scoring_from_prompt(t.strip("- ")), rules_str.split('\n')))
+        pat_words = re.compile(r"Words:\n((- [^\n]+\n)+)\n")
+        words_str = pat_words.search(state_string).group(1).strip()
+        self.words = list(map(lambda t: t.strip("- "), words_str.split('\n')))
         self.recalculate_all()
 
     def _get_prompt(self) -> str:
