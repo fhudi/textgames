@@ -40,7 +40,7 @@ class AnagramScribble(BaseGame):
         self.total_chars = []
         total_chars_extraction = extract_variable(letters_pattern, state_string)
         if total_chars_extraction != "Error loading game state.":
-            characters = total_chars_extraction.split(", ")
+            characters = total_chars_extraction.split(",")
             self.total_chars = [char.strip() for char in characters]
 
     def _generate_new_game(self, *args, **kwargs) -> None:
