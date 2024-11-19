@@ -3,6 +3,7 @@ from pathlib import Path
 from textgames.base_game import BaseGame
 import json
 import string
+import re
 
 class AnagramScribble(BaseGame):
     @staticmethod
@@ -23,6 +24,25 @@ class AnagramScribble(BaseGame):
         self.total_chars = []
         self.possible_ans = ""
 
+    def _load_game(self, state_string) -> None:
+        num_chars_pattern = re.compile(r'Construct a valid (\d+)-character English word')
+        repeat_pattern = r'Each character can be used multiple times\.'
+        letters_pattern = re.compile(r'from the following letters:\n\[(.*?)\]')
+        def extract_variable(pattern, input_string):
+            match = pattern.search(input_string)
+            if match:
+                return match.group(1)
+            else:
+                return "Error loading game state."
+        
+        self.num_chars = int(extract_variable(num_chars_pattern, state_string))
+        self.allow_repeat = bool(re.search(repeat_pattern, state_string))
+        self.total_chars = []
+        total_chars_extraction = extract_variable(letters_pattern, state_string)
+        if total_chars_extraction != "Error loading game state.":
+            characters = total_chars_extraction.split(", ")
+            self.total_chars = [char.strip() for char in characters]
+
     def _generate_new_game(self, *args, **kwargs) -> None:
         self.low_num_chars = kwargs['low_num_chars']
         self.high_num_chars = kwargs['high_num_chars']
@@ -38,7 +58,7 @@ class AnagramScribble(BaseGame):
         if self.allow_repeat:
             prompt = f"Construct a valid {self.num_chars}-character English word from the following letters:\n{self.total_chars}.\nEach character can be used multiple times. Please write None if there is no valid combination."
         else:
-            prompt = f"Construct a valid {self.num_chars}-character English word from the following letters:\n{self.total_chars}\nEach character can only be used once. Please write None if there is no valid combination."
+            prompt = f"Construct a valid {self.num_chars}-character English word from the following letters:\n{self.total_chars}.\nEach character can only be used once. Please write None if there is no valid combination."
         return prompt
     
     def _validate(self, answer: str) -> (bool, str):
