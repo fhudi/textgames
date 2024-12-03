@@ -1,8 +1,15 @@
 import random
 import math
+import re
 from textgames.base_game import BaseGame
+#%%
+"""Example Prompt
+Please solve the 9x9 sudoku with 1,2,3,4,5,6,7,8,9 as the values and fill _ with the possible value. Follow the sudoku rule.
+74_13__8_ __189_247 968247_1_ 1235_9_68 5_6_1__3_ 489_2____ 8_496217_ __7351__4 _1__8__96
+Print only the answer.
+"""
 
-
+#%%
 class Sudoku(BaseGame):
     @staticmethod
     def get_game_name() -> str:
@@ -189,3 +196,23 @@ class Sudoku(BaseGame):
             sudoku += sudoku_row
         prompt += sudoku
         return prompt
+    
+    def _load_game(self, state_string):
+        pattern_size = re.compile(r"Please solve the (\d+)x\d+ sudoku")
+        pattern_characters = re.compile(r"with (\d+) as")
+        self.empty_character = "_"
+        
+        def extract_variable(pattern, input_string):
+            match = pattern.search(input_string)
+            if match:
+                return int(match.group(1))
+            else:
+                return 0
+
+        self.size = extract_variable(pattern_size, state_string)
+        characters = extract_variable(pattern_characters, state_string).split(",")
+
+        self.char_to_id = {}
+        for c_id in range(len(characters)):
+            self.char_to_id[characters[c_id]] = c_id
+        
