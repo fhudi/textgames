@@ -1,7 +1,18 @@
 import random
+import re
 from pathlib import Path
 from textgames.base_game import BaseGame
+#%%
+"""Example Prompt
+You are given a text archigasterbalersnitrosylsulfuric Your job is to put some valid parenthesis brackets in the text such that:
+- \"archigaster\" is inside a curly bracket
+- \"balers\" is inside a curly bracket
+- \"nitrosylsulfuric\" is inside a angle bracket
+The bracket depth must be 2.
+Print only the answer.
+"""
 
+#%%
 
 class BracketGame(BaseGame):
     @staticmethod
@@ -110,6 +121,7 @@ class BracketGame(BaseGame):
             
             bracket = self.BRACKETS[random.randint(0, len(self.BRACKETS)-1)]
             self.rules.append([cur_word, bracket])
+
     
     def _get_prompt(self) -> str:
         prompt = f"You are given a text {self.string} Your job is to put some valid parenthesis brackets in the text such that:\n"
@@ -117,3 +129,46 @@ class BracketGame(BaseGame):
             prompt += f"- \"{rule[0]}\" is inside a {rule[1][0]} bracket\n"
         prompt += f"The bracket depth must be {self.depth} and print only the answer\n"
         return prompt
+
+    def _load_game(self, state_string):
+        pattern_str = re.compile(r"text ([a-zA-Z0-9]+) Your")
+        pattern_str_rule = re.compile(r"- \"([a-zA-Z]+)\" is")
+        pattern_depth = re.compile(r"must be ([0-9]+).")
+        
+        def extract_variable(pattern, input_string, mode):
+            match = pattern.search(input_string)
+            if match:
+                if mode == "number":
+                    return int(match.group(1))
+                else:
+                    return match.group(1)
+            else:
+                return 0
+            
+        content = state_string.split("the text such that:")[1].split("\nThe bracket depth must be")[0].split("\n")
+
+        self.words = []
+        self.rules = []
+        self.chosen_words = []
+
+        self.string = extract_variable(pattern_str, state_string, "string")
+        for row in content[1:]:
+            word = extract_variable(pattern_str_rule, row, "string")
+
+            bracket = row.split("inside a")[1].split("bracket")[0].strip()
+            self.words.append(word)
+            bracket_obj = None
+            for obj in self.BRACKETS:
+                if obj[0] == bracket:
+                    bracket_obj = obj
+                    break
+            self.chosen_words.append(word)
+            self.rules.append([word, bracket_obj])
+
+        self.depth = extract_variable(pattern_depth, state_string, "number")
+
+        with open(str(Path(__file__).absolute()).replace("bracket_game/bracket_game.py","") + "assets/kb/word_list.txt") as f:
+            for line in f:
+                self.WORD_LIST.append(line.replace("\n", ""))
+
+        self.create_multiple_words()        

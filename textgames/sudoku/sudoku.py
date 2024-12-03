@@ -199,20 +199,33 @@ class Sudoku(BaseGame):
     
     def _load_game(self, state_string):
         pattern_size = re.compile(r"Please solve the (\d+)x\d+ sudoku")
-        pattern_characters = re.compile(r"with (\d+) as")
+        pattern_characters = re.compile(r"with ([0-9A-Z,]+) as")
         self.empty_character = "_"
         
-        def extract_variable(pattern, input_string):
+        def extract_variable(pattern, input_string, mode):
             match = pattern.search(input_string)
             if match:
-                return int(match.group(1))
+                if mode == "number":
+                    return int(match.group(1))
+                else:
+                    return match.group(1)
             else:
                 return 0
 
-        self.size = extract_variable(pattern_size, state_string)
-        characters = extract_variable(pattern_characters, state_string).split(",")
+        self.size = extract_variable(pattern_size, state_string, "number")
+        self.characters = extract_variable(pattern_characters, state_string, "string").split(",")
+        content = state_string.split("rule.\n")[1].split("Print only")[0].split(" ")
+        self.mat = []
+        self.srn = int(math.sqrt(self.size))
+        self.num_empty_block = 0
+
+        for row in content:
+            self.mat.append(list(row))
+            for cc in list(row):
+                if cc == "_":
+                    self.num_empty_block += 1
 
         self.char_to_id = {}
-        for c_id in range(len(characters)):
-            self.char_to_id[characters[c_id]] = c_id
+        for c_id in range(len(self.characters)):
+            self.char_to_id[self.characters[c_id]] = c_id
         

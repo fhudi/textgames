@@ -1,7 +1,16 @@
 import random
+import re
 from pathlib import Path
 from textgames.password_game.rules import *
 from textgames.base_game import BaseGame
+
+"""
+Please write a text string without any space by following a set of given rules. Please write only the answer and follow the following criteria:
+- the text has 0 uppercase characters
+- the text has 0 lowercase characters
+
+Print only the answer.
+"""
 
 class PasswordGame(BaseGame):
     @staticmethod
@@ -24,8 +33,12 @@ class PasswordGame(BaseGame):
         # "consist_antonym_of": [ConsistAntonymOfRule, RuleType.REPEATABLE, 5],
         # "arithmetic_sum_all_digits": [ArithmeticSumAllDigitsRule, RuleType.NONREPEATABLE, 2],
         "arithmetic_consist_math_expression": [ArithmeticMathExpressionRule, RuleType.REPEATABLE, 5],
-        "arithmetic_consist_math_expression": [ArithmeticMathWordExpressionRule, RuleType.REPEATABLE, 5],
+        "arithmetic_consist_math_word_expression": [ArithmeticMathWordExpressionRule, RuleType.REPEATABLE, 5],
     }
+
+    RULES_IDS = [
+        rule for rule in RULES
+    ]
 
     def __init__(self):
         super().__init__()
@@ -112,7 +125,7 @@ class PasswordGame(BaseGame):
             "arithmetic_consist_math_expression": {
                 "max_num_operator": 5
             },
-            "arithmetic_consist_math_expression": {
+            "arithmetic_consist_math_word_expression": {
                 "max_num_operator": 5
             }
         }
@@ -161,3 +174,64 @@ class PasswordGame(BaseGame):
                 val_msgs.append(' '.join([answer, " is not satisfying this rule:", rule.generate_prompt()]))
                 res = False
         return res, "\n".join(val_msgs)
+    
+    def _load_game(self, state_string):
+        patterns = [re.compile(r"the text has only ([0-9]+) characters"), re.compile(r"the text has ([0-9]+) uppercase characters"), re.compile(r"the text has ([0-9]+) lowercase characters"), re.compile(r"the text has ([0-9]+ '[a-zA-Z]+') character"), re.compile(r"the text has ([0-9]+) english character"), re.compile(r"the text has ([0-9]+) number digits"), re.compile(r"the text has ([0-9]+) special characters"), re.compile(r"the text has ([0-9]+) roman digits"), re.compile(r"the text has \"([0-9a-zA-Z!@#$%^&*]+)\" string"), re.compile(r"the text has the capital city of ([0-9a-zA-Z!@#$%^&*]+)"), re.compile(r"the text has the continent of ([0-9a-zA-Z!@#$%^&*]+)"), re.compile(r"the text has a number that equals to ([0-9a-zA-Z!@#$%^&*+-x/ ]+)"), re.compile(r"the text has a number that equals to ([a-zA-Z ]+)")]
+        
+        def extract_variable(pattern, input_string, mode):
+            match = pattern.search(input_string)
+            if match:
+                if mode == "number":
+                    return int(match.group(1))
+                else:
+                    return match.group(1)
+            else:
+                return None
+            
+        self.rules = []
+        self.rules_ids = []
+        self.num_rules = 0
+        
+        rule_args = []
+        string = state_string.split("Please write a text string without any space by following a set of given rules. Please write only the answer and follow the following criteria:")[1]
+        string = string.split("Print only the answer.")[0].replace("\n\n","").split("\n")
+
+        rule_chosen = {}
+
+        for s in range(len(string)):
+            contents = [extract_variable(patterns[i], string[s], mode="string") for i in range(len(patterns))]
+
+            for rule_num_id in range(len(contents)):
+                rule_id = self.rule_id_list[rule_num_id]
+                content = contents[rule_num_id]
+                if content is not None:
+                    rule_chosen[rule_num_id] = True
+                    rule_args.append(content)
+                    self.rules_ids.append(rule_id)
+
+                    rule_key = PasswordGame.RULES_IDS[rule_num_id]
+                    self.rules.append([PasswordGame.RULES[rule_key][0], PasswordGame.RULES[rule_key][2], rule_id, content, rule_num_id])
+
+        self.rule_id_list = [key for key in PasswordGame.RULES]
+
+        self.rules.sort(key=lambda l: l[1], reverse=True)
+        new_rules = []
+        for rule_id in range(len(self.rules)):
+            rule = self.rules[rule_id].copy()
+            content = rule[3]
+            rule_obj = rule[0](self.rules_args[rule[2]])
+            if rule[4] == 3:
+                params = content.split(" '")
+                rule_obj.num_char = int(params[0])
+                rule_obj.char = params[1].split("'")[0].strip()
+            elif rule[4] <= 7:
+                rule_obj.num_char = int(content)
+            elif 8 <= rule[4] <= 10:
+                rule_obj.str = str(content)
+            else:
+                value = parse_expr(content)
+                rule_obj.expression = content
+                rule_obj.num = value
+            new_rules.append(rule_obj)
+
+        self.rules = [rule for rule in new_rules]

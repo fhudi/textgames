@@ -344,29 +344,7 @@ class ConsistAntonymOfRule(Rule):
     def generate_prompt(self):
         return f"the text has the antonym of {self.str}"
 
-
-# # Rule 14
-# class ArithmeticSumAllDigitsRule(Rule):
-#     def __init__(self, args):
-#         self.num = random.randint(0, 10)
-
-#     def generate_rule(self, input):
-#         output = input + str(self.num)
-#         return output
-
-#     def validate(self, input):
-#         value = 0
-#         s = input
-#         for c in s:
-#             if "0" <= c <= "9":
-#                 value += int(c)
-#         return self.num == value
-    
-#     def generate_prompt(self):
-#         return "the text has the sum of all numeral digits"
-    
-
-# Rule 15
+# Rule 14
 class ArithmeticMathExpressionRule(Rule):
     def __init__(self, args):
         self.operators = ["+", '-', "/", "*"]
@@ -378,12 +356,13 @@ class ArithmeticMathExpressionRule(Rule):
         value = None
 
         while value is None or int(value) != value:
+            restart = False
             for i in range(num_operator):
                 if i == 0:
                     expression = str(random.randint(0, 9))
                 next_num = random.randint(0, 9)
                 next_operator = self.operators[random.randint(0,len(self.operators)-1)]
-                expression += " " + next_operator + " " + next_num
+                expression += " " + next_operator + " " + str(next_num)
 
                 if next_operator == "/" and next_num == 0:
                     restart = True
@@ -407,7 +386,7 @@ class ArithmeticMathExpressionRule(Rule):
         return f"the text has a number that equals to {self.expression}"
     
 
-# Rule 16
+# Rule 15
 class ArithmeticMathWordExpressionRule(Rule):
     def __init__(self, args):
         self.num_to_word = {
