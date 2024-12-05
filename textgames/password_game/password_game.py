@@ -12,6 +12,17 @@ Please write a text string without any space by following a set of given rules. 
 Print only the answer.
 """
 
+
+def sort_game_states(game):
+    game_states = {k: v for k, v in vars(game).items() if k not in game.exclude_states}
+    for k in game_states.keys():
+        if isinstance(game_states[k], list):
+            try:
+                game_states[k].sort()
+            except:
+                print("ignore the sort")
+
+
 class PasswordGame(BaseGame):
     @staticmethod
     def get_game_name() -> str:
@@ -162,6 +173,8 @@ class PasswordGame(BaseGame):
             output = rule.generate_rule(output)
         self.possible_ans = output
 
+        sort_game_states(self)
+
     def _get_prompt(self) -> str:
         prompt = "Please write a text string without any space by following a set of given rules. Please write only the answer and follow the following criteria:\n"
         for rule in self.rules:
@@ -237,3 +250,5 @@ class PasswordGame(BaseGame):
             new_rules.append(rule_obj)
 
         self.rules = [rule for rule in new_rules]
+
+        sort_game_states(self)

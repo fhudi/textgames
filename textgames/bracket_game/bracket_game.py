@@ -12,8 +12,19 @@ The bracket depth must be 2.
 Print only the answer.
 """
 
-#%%
 
+#%%
+def sort_game_states(game):
+    game_states = {k: v for k, v in vars(game).items() if k not in game.exclude_states}
+    for k in game_states.keys():
+        if isinstance(game_states[k], list):
+            try:
+                game_states[k].sort()
+            except:
+                print("ignore the sort")
+
+
+#%%
 class BracketGame(BaseGame):
     @staticmethod
     def get_game_name() -> str:
@@ -124,7 +135,8 @@ class BracketGame(BaseGame):
             bracket = self.BRACKETS[random.randint(0, len(self.BRACKETS)-1)]
             self.rules.append([cur_word, bracket])
 
-    
+        sort_game_states(self)
+
     def _get_prompt(self) -> str:
         prompt = f"You are given a text {self.string} Your job is to put some valid parenthesis brackets in the text such that:\n"
         for rule in self.rules:
@@ -174,3 +186,5 @@ class BracketGame(BaseGame):
                 self.WORD_LIST.append(line.replace("\n", ""))
 
         self.create_multiple_words()        
+
+        sort_game_states(self)

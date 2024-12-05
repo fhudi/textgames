@@ -70,11 +70,4 @@ def _is_game_reloadable(original_game: BaseGame) -> bool:
     original_game_states = {k: v for k, v in vars(original_game).items() if k not in exclude_states}
     loaded_game_states = {k: v for k, v in vars(loaded_game).items() if k not in exclude_states}
 
-    for k in original_game_states.keys():
-        if isinstance(original_game_states[k], list):
-            try:
-                original_game_states[k].sort()
-                loaded_game_states[k].sort()
-            except:
-                print("ignore the sort")
     return (original_game_states == loaded_game_states) and (original_game.get_prompt() == loaded_game.get_prompt())
