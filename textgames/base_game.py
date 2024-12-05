@@ -64,7 +64,7 @@ def _is_game_reloadable(original_game: BaseGame) -> bool:
         print("..... lhooooo: Load Game not implemented .....\n")
         return False
     exclude_states = [
-        "possible_ans", "rules", "num_rules", "WORD_LIST", "MULTI_WORD_LIST", "multi_word", 'start_timestamp', 'chat_log', 'attempt_timestamps', 'is_solved',
+        'start_timestamp', 'chat_log', 'attempt_timestamps', 'is_solved',
         *(original_game.exclude_states or [])
     ]
     original_game_states = {k: v for k, v in vars(original_game).items() if k not in exclude_states}

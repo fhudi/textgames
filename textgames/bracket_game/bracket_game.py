@@ -21,6 +21,8 @@ class BracketGame(BaseGame):
 
     def __init__(self):
         super().__init__()
+        self.exclude_states = ["possible_ans", "rules", "num_rules", "WORD_LIST", "MULTI_WORD_LIST", "multi_word",]
+
         self.WORD_LIST = []
         self.MULTI_WORD_LIST = []
 

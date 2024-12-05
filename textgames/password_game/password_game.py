@@ -42,6 +42,8 @@ class PasswordGame(BaseGame):
 
     def __init__(self):
         super().__init__()
+        self.exclude_states = ["possible_ans", "rules", "num_rules", "WORD_LIST", "MULTI_WORD_LIST", "multi_word",]
+
         self.num_rules = None
         self.rules_ids = []
         self.rules = []
