@@ -25,7 +25,7 @@ function island() {{
     container.style.border = '2px solid black';
     container.style.width = 'max-content';
     container.style.margin = '5px 0px 5px 40px';
-    container.id = 'lintao-island-container';
+    container.id = 'lintao-container';
 
     for (let i = 0; i < grid_N; ++i) {{
         for (let j = 0; j < grid_N; ++j) {{
@@ -101,7 +101,7 @@ function sudoku() {{
     container.style.border = '2px solid white';
     container.style.width = 'max-content';
     container.style.margin = '5px 0px 5px 40px';
-    container.id = 'lintao-island-container';
+    container.id = 'lintao-container';
 
     // Generate the grid
     for (let i = 0; i < grid_N; ++i) {{
@@ -193,14 +193,15 @@ function island_submit(textarea, io_history) {{
 
 
 #%%
-with (gr.Blocks() as demo):
+with gr.Blocks() as demo:
     # input_text = gr.Textbox(label="input")
     game_radio = gr.Radio(GAME_NAMES,label="Game")
     level_radio = gr.Radio(LEVELS, label="Level")
     new_game_btn = gr.Button("Start New Game")
 
     cur_game_start = gr.State()
-    new_game_btn.click(lambda: time.time(), None, cur_game_start)
+    new_game_btn.click(lambda: time.time(), None, cur_game_start,
+                       js="() => {var el = document.getElementById('lintao-container'); if (el) el.remove();}")
 
     io_history = None
 
