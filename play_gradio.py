@@ -177,7 +177,7 @@ function sudoku() {{
 
 
 js_sudoku_submit = """
-function island_submit(textarea, io_history) {{
+function sudoku_submit(textarea, io_history) {{
     const N = {N};
     const grid_N = N*N;
     var ret = "";
@@ -193,10 +193,80 @@ function island_submit(textarea, io_history) {{
 
 
 #%%
+from textgames.crossword_arranger.crossword_arranger import CrosswordArrangerGame
+
+js_crossword = """
+function crossword() {{
+    const grid_N = {N};
+          grid_px = 40;
+
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gridTemplateColumns = container.style.gridTemplateRows = `repeat(${{grid_N}}, ${{grid_px}}px)`;
+    container.style.gap = '1px';
+    container.style.border = '2px solid white';
+    container.style.width = 'max-content';
+    container.style.margin = '5px 0px 5px 40px';
+    container.id = 'lintao-container';
+
+    // Generate the grid
+    for (let i = 0; i < grid_N; ++i) {{
+        for (let j = 0; j < grid_N; ++j) {{
+            const cell = document.createElement('input');
+            //cell.textContent = '';
+            cell.type = 'text';
+            cell.maxLength = 1;
+            cell.style.width = cell.style.height = `${{grid_px}}px`;
+            cell.style.display = 'flex';
+            cell.style.alignItems = 'center';
+            cell.style.justifyContent = 'center';
+            cell.style.textAlign = 'center';
+            cell.style.fontSize = `${{grid_px/2}}px`;
+            cell.style.border = '1px solid #c0c0c0';
+            cell.style.backgroundColor = 'black'
+            cell.style.cursor = 'pointer';
+            cell.id = `lintao-cell-${{i}}-${{j}}`;
+            
+            // Allow only a-z
+            cell.addEventListener('input', (e) => {{
+                if (!/^[a-z]$/.test(e.target.value)) {{
+                    e.target.value = '';
+                }}
+            }});
+    
+            container.appendChild(cell);
+        }}
+    }}
+
+    var submitBtn = document.getElementById("lintao-submit-btn");
+    submitBtn.parentElement.insertBefore(container, submitBtn);
+    
+    var helperBtn = document.getElementById("lintao-helper-btn");
+    helperBtn.style.display = 'none';
+}}
+"""
+
+
+js_crossword_submit = """
+function crossword_submit(textarea, io_history) {{
+    const grid_N = {N};
+    var ret = "";
+    for (let i = 0; i < grid_N; ++i) {{
+        if (i > 0) ret += '\\n';
+        for (let j = 0; j < grid_N; ++j) {{
+            ret += document.getElementById(`lintao-cell-${{i}}-${{j}}`).value;
+        }}
+    }}
+    return [ret, io_history];
+}}
+"""
+
+
+#%%
 with gr.Blocks() as demo:
     # input_text = gr.Textbox(label="input")
-    game_radio = gr.Radio(GAME_NAMES,label="Game")
-    level_radio = gr.Radio(LEVELS, label="Level")
+    game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
+    level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
     new_game_btn = gr.Button("Start New Game")
 
     cur_game_start = gr.State()
@@ -240,17 +310,20 @@ with gr.Blocks() as demo:
         io_textbox = gr.Textbox("\n\n".join(io_history.value), label="Prompt>", interactive=False)
         textarea = gr.Textbox(label="Guess>", lines=5, info=f"(Shift + Enter to submit)")
         textarea.submit(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved])
-        if isinstance(cur_game, Islands) or isinstance(cur_game, Sudoku):
-            showhide_helper_btn = gr.Button("Show Input Helper", elem_id="lintao-helper-btn")
-            submit_btn = gr.Button("Submit", elem_id="lintao-submit-btn")
+        js_submit = "(a,b) => [a,b]"
+        if any([isinstance(cur_game, cls) for cls in (Islands, Sudoku, CrosswordArrangerGame)]):
             if isinstance(cur_game, Islands):
                 js, js_submit = js_island.format(N=cur_game.N), js_island_submit.format(N=cur_game.N)
             elif isinstance(cur_game, Sudoku):
                 js, js_submit = js_sudoku.format(N=cur_game.srn), js_sudoku_submit.format(N=cur_game.srn)
+            elif isinstance(cur_game, CrosswordArrangerGame):
+                js, js_submit = js_crossword.format(N=cur_game.board_size), js_crossword_submit.format(N=cur_game.board_size)
             else:
                 raise NotImplementedError(cur_game)
+            showhide_helper_btn = gr.Button("Show Input Helper", elem_id="lintao-helper-btn")
             showhide_helper_btn.click(lambda: gr.update(interactive=False), None, textarea, js=js)
-            submit_btn.click(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved], js=js_submit)
+        submit_btn = gr.Button("Submit", elem_id="lintao-submit-btn")
+        submit_btn.click(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved], js=js_submit)
 
 
 demo.launch()
