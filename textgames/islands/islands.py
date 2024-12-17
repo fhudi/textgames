@@ -180,8 +180,7 @@ Your 2D grid must follow the following rules:
 Print only the answer.
 """
         else:
-            prompt = f"""Example Prompt
-You are asked to construct a 2D {self.N} x {self.N} grid, consisting of water tiles (denoted by ’.’), 
+            prompt = f"""You are asked to construct a 2D {self.N} x {self.N} grid, consisting of water tiles (denoted by ’.’), 
 land tiles (denoted by ’#’), and coconut tree tiles (denoted by ’o’). 
 Coconut tree tiles are also considered as land tiles. 
 

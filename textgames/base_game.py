@@ -5,7 +5,9 @@ class BaseGame:
     def __init__(self):
         self.exclude_states = None
         self.start_timestamp = None
+        self.end_timestamp = None
         self.chat_log = None
+        self.attempt_count = 0
         self.attempt_timestamps = None
         self.is_solved = None
 
@@ -28,8 +30,13 @@ class BaseGame:
     def init_stats_(self):
         self.start_timestamp = time.time()
         self.chat_log = []
+        self.attempt_count = 0
         self.attempt_timestamps = []
         self.is_solved = False
+
+    def finish_stats_(self):
+        self.end_timestamp = time.time()
+        self.is_solved = True
 
     def generate_new_game(self, *args, **kwargs) -> None:
         self._generate_new_game(*args, **kwargs)
@@ -47,9 +54,12 @@ class BaseGame:
     def validate(self, answer: str) -> (bool, str):
         # print(self.start_timestamp, self.attempt_timestamps, self.is_solved, sep="\n", end="\n\n")
         self.chat_log.append((-1, answer,))
+        self.attempt_count += 1
         self.attempt_timestamps.append(time.time())
         solved, val_msg = self._validate(answer)
         self.chat_log.append((solved, val_msg,))
+        if solved:
+            self.finish_stats_()
         return solved, val_msg
 
     def is_game_reloadable(self) -> bool:
@@ -64,7 +74,7 @@ def _is_game_reloadable(original_game: BaseGame) -> bool:
         print("..... lhooooo: Load Game not implemented .....\n")
         return False
     exclude_states = [
-        'start_timestamp', 'chat_log', 'attempt_timestamps', 'is_solved',
+        'start_timestamp', 'end_timestamp', 'chat_log', 'attempt_count', 'attempt_timestamps', 'is_solved',
         *(original_game.exclude_states or [])
     ]
     original_game_states = {k: v for k, v in vars(original_game).items() if k not in exclude_states}

@@ -182,7 +182,6 @@ class Sudoku(BaseGame):
             string = ""
             for j in range(self.size):
                 string += self.mat[i][j]
-            print(string)
 
     def _get_prompt(self):
         characters = ",".join(c for c in self.characters)
