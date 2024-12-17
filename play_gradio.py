@@ -86,6 +86,113 @@ function island_submit(textarea, io_history) {{
 
 
 #%%
+from textgames.sudoku.sudoku import Sudoku
+
+js_sudoku = """
+function sudoku() {{
+    const N = {N};
+    const grid_N = N*N;
+          grid_px = 40;
+
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gridTemplateColumns = container.style.gridTemplateRows = `repeat(${{grid_N}}, ${{grid_px}}px)`;
+    container.style.gap = '1px';
+    container.style.border = '2px solid white';
+    container.style.width = 'max-content';
+    container.style.margin = '5px 0px 5px 40px';
+    container.id = 'lintao-island-container';
+
+    // Generate the grid
+    for (let i = 0; i < grid_N; ++i) {{
+        for (let j = 0; j < grid_N; ++j) {{
+            const cell = document.createElement('input');
+            //cell.textContent = '';
+            cell.type = 'text';
+            cell.maxLength = 1;
+            cell.style.width = cell.style.height = `${{grid_px}}px`;
+            cell.style.display = 'flex';
+            cell.style.alignItems = 'center';
+            cell.style.justifyContent = 'center';
+            cell.style.textAlign = 'center';
+            cell.style.fontSize = `${{grid_px/2}}px`;
+            cell.style.border = '1px solid #c0c0c0';
+            cell.style.backgroundColor = 'black'
+            cell.style.cursor = 'pointer';
+            cell.id = `lintao-cell-${{i}}-${{j}}`;
+            
+            //cell.style.color = 'black';
+            //cell.style.outline = 'none';
+    
+            if (j % N === 0) cell.style.borderLeft = `${{grid_px/10}}px solid white`;
+            if (j % N === (N-1)) cell.style.borderRight = `${{grid_px/10}}px solid white`;
+            if (i % N === 0) cell.style.borderTop = `${{grid_px/10}}px solid white`;
+            if (i % N === (N-1)) cell.style.borderBottom = `${{grid_px/10}}px solid white`;
+    
+            // Allow only numbers 1-9 or A-I
+            cell.addEventListener('input', (e) => {{
+                if ((N === 2  &&  (!/^[1-4A-D]$/.test(e.target.value))) || 
+                    (N === 3  &&  (!/^[1-9A-I]$/.test(e.target.value)))) {{
+                    e.target.value = '';
+                }}
+            }});
+    
+            container.appendChild(cell);
+        }}
+    }}
+
+    container.addEventListener('focusin', (e) => {{
+        const index = Array.from(container.children).indexOf(e.target);
+        if (index === -1) return;
+
+        const row = Math.floor(index / grid_N);
+        const col = index % grid_N;
+
+        for (let i = 0; i < grid_N * grid_N; ++i) {{
+            const cell = container.children[i];
+            const currentRow = Math.floor(i / grid_N);
+            const currentCol = i % grid_N;
+
+            if (currentRow === row || currentCol === col || (Math.floor(currentRow / N) === Math.floor(row / N) && Math.floor(currentCol / N) === Math.floor(col / N))) {{
+                cell.style.backgroundColor = '#b0b6bb';
+            }} else {{
+                cell.style.backgroundColor = 'black';
+            }}
+        }}
+    }});
+
+    container.addEventListener('focusout', () => {{
+        for (let i = 0; i < grid_N * grid_N; i++) {{
+            container.children[i].style.backgroundColor = 'black';
+        }}
+    }});
+
+    var submitBtn = document.getElementById("lintao-submit-btn");
+    submitBtn.parentElement.insertBefore(container, submitBtn);
+    
+    var helperBtn = document.getElementById("lintao-helper-btn");
+    helperBtn.style.display = 'none';
+}}
+"""
+
+
+js_sudoku_submit = """
+function island_submit(textarea, io_history) {{
+    const N = {N};
+    const grid_N = N*N;
+    var ret = "";
+    for (let i = 0; i < grid_N; ++i) {{
+        if (i > 0) ret += '\\n';
+        for (let j = 0; j < grid_N; ++j) {{
+            ret += document.getElementById(`lintao-cell-${{i}}-${{j}}`).value;
+        }}
+    }}
+    return [ret, io_history];
+}}
+"""
+
+
+#%%
 with (gr.Blocks() as demo):
     # input_text = gr.Textbox(label="input")
     game_radio = gr.Radio(GAME_NAMES,label="Game")
@@ -132,11 +239,13 @@ with (gr.Blocks() as demo):
         io_textbox = gr.Textbox("\n\n".join(io_history.value), label="Prompt>", interactive=False)
         textarea = gr.Textbox(label="Guess>", lines=5, info=f"(Shift + Enter to submit)")
         textarea.submit(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved])
-        if isinstance(cur_game, Islands):
+        if isinstance(cur_game, Islands) or isinstance(cur_game, Sudoku):
             showhide_helper_btn = gr.Button("Show Input Helper", elem_id="lintao-helper-btn")
             submit_btn = gr.Button("Submit", elem_id="lintao-submit-btn")
             if isinstance(cur_game, Islands):
                 js, js_submit = js_island.format(N=cur_game.N), js_island_submit.format(N=cur_game.N)
+            elif isinstance(cur_game, Sudoku):
+                js, js_submit = js_sudoku.format(N=cur_game.srn), js_sudoku_submit.format(N=cur_game.srn)
             else:
                 raise NotImplementedError(cur_game)
             showhide_helper_btn.click(lambda: gr.update(interactive=False), None, textarea, js=js)
