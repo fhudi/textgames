@@ -44,39 +44,40 @@ def _reload(prompt, game_cls):
     return game
 
 
-def new_game(game_name, level):
+def new_game(game_name, level_id):
     not_available_game_level = NotImplementedError(
-        f"The difficulty level is not available for this game: {game_name} - {level}"
+        f"The difficulty level is not available for this game: {game_name} - {level_id}"
     )
 
     if game_name == PasswordGame.get_game_name():
         game = PasswordGame()
-        if level == "1":
+        if level_id == "1":
             num_rules = 2
-        elif level == "2":
+        elif level_id == "2":
             num_rules = 4
-        elif level == "3":
+        elif level_id == "3":
             num_rules = 6
         else:
             raise not_available_game_level
         game.generate_new_game(num_rules=num_rules)
-        print(f"possible answer: {game.possible_ans}")
+        if os.getenv("TEXTGAMES_NEWGAME_VERBOSE", False):
+            print(f"possible answer: {game.possible_ans}")
 
     elif game_name == Sudoku.get_game_name():
         game = Sudoku()
-        if level == "1":
+        if level_id == "1":
             setting = random.randint(0,1)
             if setting == 0:
                 game.generate_new_game(size=4, characters=["1","2","3","4"], empty_character="_", empty_ratio=0.25)
             elif setting == 1:
                 game.generate_new_game(size=4, characters=["A","B","C","D"], empty_character="_", empty_ratio=0.25)
-        elif level == "2":
+        elif level_id == "2":
             setting = random.randint(0,1)
             if setting == 0:
                 game.generate_new_game(size=4, characters=["1","2","3","4"], empty_character="_", empty_ratio=0.5)
             elif setting == 1:
                 game.generate_new_game(size=4, characters=["A","B","C","D"], empty_character="_", empty_ratio=0.5)
-        elif level == "3":
+        elif level_id == "3":
             setting = random.randint(0,1)
             if setting == 0:
                 game.generate_new_game(size=9, characters=["1","2","3","4","5","6","7","8","9"], empty_character="_", empty_ratio=0.4)
@@ -88,31 +89,31 @@ def new_game(game_name, level):
 
     elif game_name == BracketGame.get_game_name():
         game = BracketGame()
-        if level == "1":
+        if level_id == "1":
             game.generate_new_game(num_words=3, num_rules=3, depth=2, multi_word=False)
-        elif level == "2":
+        elif level_id == "2":
             game.generate_new_game(num_words=5, num_rules=5, depth=2, multi_word=False)
-        elif level == "3":
+        elif level_id == "3":
             game.generate_new_game(num_words=10, num_rules=7, depth=3, multi_word=True)
         else:
             raise not_available_game_level
 
     elif game_name == OrderingTextGame.get_game_name():
         game = OrderingTextGame()
-        if level == "0":
+        if level_id == "0":
             game.generate_new_game(preset_config=1)
-        elif level == "00":
+        elif level_id == "00":
             game.generate_new_game(preset_config=2)
-        elif level == "1":
+        elif level_id == "1":
             game.generate_new_game(num_rules=(2, 2), uniq_classrules=True, positive_only=False,
                                    num_words=(3, 3), word_length=(3, 8), word_dic_only=True)
-        elif level == "2":
+        elif level_id == "2":
             game.generate_new_game(num_rules=(2, 4), uniq_classrules=True, positive_only=False,
                                    num_words=(4, 6), word_length=(3, 8), word_dic_only=True)
-        elif level == "3":
+        elif level_id == "3":
             game.generate_new_game(num_rules=(4, 8), uniq_classrules=False, positive_only=False,
                                    num_words=(5, 10), word_length=(3, 15), word_dic_only=True)
-        elif level == "4":
+        elif level_id == "4":
             game.generate_new_game(num_rules=(8, 12), uniq_classrules=False, positive_only=False,
                                    num_words=(10, 20), word_length=(6, 15), word_dic_only=False)
         else:
@@ -120,11 +121,11 @@ def new_game(game_name, level):
 
     elif game_name == Islands.get_game_name():
         game = Islands()
-        if level == "1":
+        if level_id == "1":
             game.generate_new_game(num_islands=1, island_with_coconut=0)
-        elif level == "2":
+        elif level_id == "2":
             game.generate_new_game(num_islands=random.randint(1, 3))
-        elif level == "3":
+        elif level_id == "3":
             game.generate_new_game(num_islands=random.randint(3, 6))
         else:
             raise not_available_game_level
@@ -133,47 +134,61 @@ def new_game(game_name, level):
 
     elif game_name == StringSearch.get_game_name():
         game = StringSearch()
-        game.generate_new_game(difficulty=int(level))
-        print(f"possible answer: {game.answer}")
+        game.generate_new_game(difficulty=int(level_id))
+        if os.getenv("TEXTGAMES_NEWGAME_VERBOSE", False):
+            print(f"possible answer: {game.answer}")
         assert game.is_game_reloadable(), \
             "Game loader fails to load the correct game state"
 
     elif game_name == CrosswordArrangerGame.get_game_name():
         game = CrosswordArrangerGame()
-        if level == "0":
+        if level_id == "0":
             game.generate_new_game(preset_config=1)
-        elif level == "1":
+        elif level_id == "1":
             game.generate_new_game(board_size=3, noise_ratio=.25, no_ans_prob=.0, no_duplicate=True,)
-        elif level == "2":
+        elif level_id == "2":
             game.generate_new_game(board_size=4, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
-        elif level == "3":
+        elif level_id == "3":
             game.generate_new_game(board_size=5, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
-        elif level == "4":
+        elif level_id == "4":
             game.generate_new_game(board_size=6, noise_ratio=.5, no_ans_prob=.0, no_duplicate=True,)
         else:
             raise not_available_game_level
-        print(f"Possible Answer: {game.possible_ans}")
+        if os.getenv("TEXTGAMES_NEWGAME_VERBOSE", False):
+            print(f"Possible Answer: {game.possible_ans}")
 
     elif game_name == AnagramScribble.get_game_name():
         game = AnagramScribble()
-        if level == "1":
+        if level_id == "1":
             game.generate_new_game(low_num_chars=3, high_num_chars=5, allow_repeat=True)
-        elif level == "2":
+        elif level_id == "2":
             game.generate_new_game(low_num_chars=6, high_num_chars=7, allow_repeat=True)
-        elif level == "3":
+        elif level_id == "3":
             game.generate_new_game(low_num_chars=8, high_num_chars=10, allow_repeat=False)
         else:
             raise not_available_game_level
-        print(f"Possible Answer: {game.possible_ans}")
+        if os.getenv("TEXTGAMES_NEWGAME_VERBOSE", False):
+            print(f"Possible Answer: {game.possible_ans}")
 
     else:
         raise not_available_game_level
 
     if game.is_game_reloadable():
-        print("reloading the game ..")
+        if os.getenv("TEXTGAMES_NEWGAME_VERBOSE", False):
+            print("reloading the game ..")
         game = _reload(game.get_prompt(), game.__class__)    # Let's use the reloaded state
     else:
-        print("!! game is NOT reloaded.. !!")
+        _out_str_ =(
+            "!! game is NOT reloaded.. !!\n"
+            + f"[{game_name}_{level_id}]\n"
+            + game.get_prompt()
+        )
+        outpath = os.getenv("TEXTGAMES_NEWGAME_ERRFILE", "")
+        if outpath:
+            with open(outpath, "a") as f:
+                f.write(_out_str_)
+        else:
+            print(_out_str_)
 
     return game
 
