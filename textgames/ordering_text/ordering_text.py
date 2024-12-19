@@ -321,14 +321,18 @@ class AffixScoring(Scoring):
             mode = random.randint(1, 3)  # prefix_only, suffix_only, both
             if mode % 2 == 1:
                 word_len = random.randint(1, 3)
-                while len(prefix := random.choice(WORDS_LIST)) < word_len:
-                    pass
-                prefix = prefix[:word_len]
+                prefix = '-'
+                while re.search(r"[^a-z]", prefix) is not None:
+                    while len(prefix := random.choice(WORDS_LIST)) < word_len:
+                        pass
+                    prefix = prefix[:word_len]
             if mode // 2 == 1:
                 word_len = random.randint(1, 3)
-                while len(suffix := random.choice(WORDS_LIST)) < word_len:
-                    pass
-                suffix = suffix[-word_len:]
+                suffix = '-'
+                while re.search(r"[^a-z]", suffix) is not None:
+                    while len(suffix := random.choice(WORDS_LIST)) < word_len:
+                        pass
+                    suffix = suffix[-word_len:]
 
         self.prefix_txt, self.suffix_txt = prefix, suffix
         self.prefix = None if prefix is None else re.compile(f"^{prefix}")
@@ -388,10 +392,12 @@ class InfixScoring(Scoring):
         if infix is None:
             mode = random.randint(1, 2)    # with or without n
             word_length = random.choices([1, 2, 3], weights=[4, 5, 1])[0]
-            while len(infix := random.choice(WORDS_LIST)) < word_length:
-                pass
-            split_idx = random.randint(0, len(infix) - word_length)
-            infix = infix[split_idx:split_idx + word_length]
+            infix = '-'
+            while re.search(r"[^a-z]", infix) is not None:
+                while len(infix := random.choice(WORDS_LIST)) < word_length:
+                    pass
+                split_idx = random.randint(0, len(infix) - word_length)
+                infix = infix[split_idx:split_idx + word_length]
             n = random.randint(1, 2) if (mode == 1) else None
 
         self.infix = infix
