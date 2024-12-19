@@ -263,6 +263,95 @@ function crossword_submit(textarea, io_history) {{
 
 
 #%%
+from textgames.ordering_text.ordering_text import OrderingTextGame
+
+js_ordering = """
+function ordering() {{          
+    const listContainer = document.createElement('ul');
+    listContainer.style.listStyle = 'none';
+    listContainer.style.padding = '0';
+    listContainer.style.width = '20em';
+    listContainer.style.border = '2px solid white';
+    listContainer.style.margin = '5px 0px 5px 40px';
+    listContainer.id = 'lintao-container';
+    
+    document.body.appendChild(listContainer);
+    
+    const items = {items};
+    
+    items.forEach((itemText, index) => {{
+        const listItem = document.createElement('li');
+        listItem.textContent = itemText;
+        listItem.draggable = true;
+        listItem.style.padding = '10px';
+        listItem.style.border = '1px solid #c0c0c0';
+        listItem.style.margin = '3px';
+        listItem.style.backgroundColor = 'black';
+        listItem.style.cursor = 'grab';
+        listItem.id = `lintao-item-${{index}}`;
+    
+        // Drag and drop events
+        listItem.addEventListener('dragstart', (e) => {{
+            const draggedIndex = Array.from(listContainer.children).indexOf(listItem);
+            e.dataTransfer.setData('text/plain', draggedIndex);
+            listItem.style.backgroundColor = '#1f1811';
+        }});
+    
+        listItem.addEventListener('dragover', (e) => {{
+            e.preventDefault();
+            listItem.style.backgroundColor = '#303030';
+        }});
+    
+        listItem.addEventListener('dragleave', () => {{
+            listItem.style.backgroundColor = 'black';
+        }});
+    
+        listItem.addEventListener('drop', (e) => {{
+            e.preventDefault();
+            const draggedIndex = e.dataTransfer.getData('text/plain');
+            const draggedItem = listContainer.children[draggedIndex];
+            const targetIndex = Array.from(listContainer.children).indexOf(listItem);
+            console.log(draggedIndex, draggedItem, targetIndex);
+    
+            if (draggedIndex !== targetIndex) {{
+                listContainer.insertBefore(draggedItem, targetIndex > draggedIndex ? listItem.nextSibling : listItem);
+            }}
+    
+            listItem.style.backgroundColor = 'black';
+        }});
+    
+        listItem.addEventListener('dragend', () => {{
+            listItem.style.backgroundColor = 'black';
+        }});
+    
+        listContainer.appendChild(listItem);
+    }});
+    
+    var submitBtn = document.getElementById("lintao-submit-btn");
+    submitBtn.parentElement.insertBefore(listContainer, submitBtn);
+    
+    var helperBtn = document.getElementById("lintao-helper-btn");
+    helperBtn.style.display = 'none';
+}}
+"""
+
+
+js_ordering_submit = """
+function ordering_submit(textarea, io_history) {{
+    var ret = "";
+    const container = 
+    document.getElementById("lintao-container").childNodes.forEach(
+        (c, i) => {{
+            if (i>0) ret += '\\n';
+            ret += c.textContent;
+        }}
+    )
+    return [ret, io_history];
+}}
+"""
+
+
+#%%
 with gr.Blocks() as demo:
     # input_text = gr.Textbox(label="input")
     game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
@@ -311,16 +400,18 @@ with gr.Blocks() as demo:
         textarea = gr.Textbox(label="Guess>", lines=5, info=f"(Shift + Enter to submit)")
         textarea.submit(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved])
         js_submit = "(a,b) => [a,b]"
-        if any([isinstance(cur_game, cls) for cls in (Islands, Sudoku, CrosswordArrangerGame)]):
+        if any([isinstance(cur_game, cls) for cls in (Islands, Sudoku, CrosswordArrangerGame, OrderingTextGame)]):
             if isinstance(cur_game, Islands):
                 js, js_submit = js_island.format(N=cur_game.N), js_island_submit.format(N=cur_game.N)
             elif isinstance(cur_game, Sudoku):
                 js, js_submit = js_sudoku.format(N=cur_game.srn), js_sudoku_submit.format(N=cur_game.srn)
             elif isinstance(cur_game, CrosswordArrangerGame):
                 js, js_submit = js_crossword.format(N=cur_game.board_size), js_crossword_submit.format(N=cur_game.board_size)
+            elif isinstance(cur_game, OrderingTextGame):
+                js, js_submit = js_ordering.format(items=f"{cur_game.words}"), js_ordering_submit.format()
             else:
                 raise NotImplementedError(cur_game)
-            showhide_helper_btn = gr.Button("Show Input Helper", elem_id="lintao-helper-btn")
+            showhide_helper_btn = gr.Button("Show Input Helper (disabling manual input)", elem_id="lintao-helper-btn")
             showhide_helper_btn.click(lambda: gr.update(interactive=False), None, textarea, js=js)
         submit_btn = gr.Button("Submit", elem_id="lintao-submit-btn")
         submit_btn.click(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved], js=js_submit)
