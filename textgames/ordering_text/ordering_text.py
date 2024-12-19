@@ -328,7 +328,7 @@ class AffixScoring(Scoring):
                 word_len = random.randint(1, 3)
                 while len(suffix := random.choice(WORDS_LIST)) < word_len:
                     pass
-                suffix = suffix[:word_len]
+                suffix = suffix[-word_len:]
 
         self.prefix_txt, self.suffix_txt = prefix, suffix
         self.prefix = None if prefix is None else re.compile(f"^{prefix}")
