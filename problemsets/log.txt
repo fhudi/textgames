@@ -1,37 +1,43 @@
-📰	Crossword Arranger_1: 100%|██████████| 100/100 [00:00<00:00, 195.45it/s]
+📰	Crossword Arranger_1: 100%|██████████| 100/100 [00:00<00:00, 202.97it/s]
 [📰	Crossword Arranger_1]  Duplicate #:    0
-📰	Crossword Arranger_3: 100%|██████████| 100/100 [00:32<00:00,  3.10it/s]
-🧩	Text Sudoku_1: 100%|██████████| 100/100 [00:00<00:00, 6852.54it/s]
+📰	Crossword Arranger_3: 100%|██████████| 100/100 [00:31<00:00,  3.14it/s]
+🧩	Text Sudoku_1: 100%|██████████| 100/100 [00:00<00:00, 7321.69it/s]
 [📰	Crossword Arranger_3]  Duplicate #:    0
 [🧩	Text Sudoku_1]  Duplicate #:    0
-🧩	Text Sudoku_3: 100%|██████████| 100/100 [00:00<00:00, 126.63it/s]
+🧩	Text Sudoku_3: 100%|██████████| 100/100 [00:00<00:00, 127.40it/s]
+🏝️	Islands_1: 100%|██████████| 100/100 [00:00<00:00, 18037.69it/s]
+🏝️	Islands_3: 100%|██████████| 100/100 [00:00<00:00, 20206.70it/s]
 [🧩	Text Sudoku_3]  Duplicate #:    0
 [🏝️	Islands_1]  Duplicate #:    6
-🏝️	Islands_1: 100%|██████████| 100/100 [00:00<00:00, 21095.99it/s]
-🏝️	Islands_3: 100%|██████████| 100/100 [00:00<00:00, 20593.63it/s]
-🔑	Password Game_1:   0%|          | 0/100 [00:00<?, ?it/s][🏝️	Islands_3]  Duplicate #:   11
-🔑	Password Game_1: 100%|██████████| 100/100 [00:20<00:00,  4.88it/s]
+[🏝️	Islands_3]  Duplicate #:   11
+🔑	Password Game_1: 100%|██████████| 100/100 [00:19<00:00,  5.23it/s]
 [🔑	Password Game_1]  Duplicate #:   12
-🔑	Password Game_3: 100%|██████████| 100/100 [00:16<00:00,  6.06it/s]
+🔑	Password Game_3: 100%|██████████| 100/100 [00:16<00:00,  6.08it/s]
 📈	Ordering Text_1:   0%|          | 0/100 [00:00<?, ?it/s][🔑	Password Game_3]  Duplicate #:   12
 can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
+can't find matching word
+can't find matching word
+can't find matching word
+can't find matching word
 [📈	Ordering Text_1]  Duplicate #:   12
-📈	Ordering Text_1: 100%|██████████| 100/100 [00:00<00:00, 2087.90it/s]
-📈	Ordering Text_3: 100%|██████████| 100/100 [00:00<00:00, 1953.67it/s]
+📈	Ordering Text_1: 100%|██████████| 100/100 [00:00<00:00, 1962.09it/s]
+📈	Ordering Text_3: 100%|██████████| 100/100 [00:00<00:00, 2043.62it/s]
 🔤	Anagram Scribble_1:   0%|          | 0/100 [00:00<?, ?it/s][📈	Ordering Text_3]  Duplicate #:   12
-🔤	Anagram Scribble_1: 100%|██████████| 100/100 [00:06<00:00, 15.31it/s]
-🔤	Anagram Scribble_3:   0%|          | 0/100 [00:00<?, ?it/s][🔤	Anagram Scribble_1]  Duplicate #:   12
-🔤	Anagram Scribble_3: 100%|██████████| 100/100 [00:06<00:00, 15.02it/s]
-[🔤	Anagram Scribble_3]  Duplicate #:   12
+🔤	Anagram Scribble_1: 100%|██████████| 100/100 [00:06<00:00, 15.22it/s]
+[🔤	Anagram Scribble_1]  Duplicate #:   12
+🔤	Anagram Scribble_3: 100%|██████████| 100/100 [00:06<00:00, 15.03it/s]
+🗳️	Bracket Game_1:   0%|          | 0/100 [00:00<?, ?it/s][🔤	Anagram Scribble_3]  Duplicate #:   12
 🗳️	Bracket Game_1: 100%|██████████| 100/100 [00:31<00:00,  3.13it/s]
-[🗳️	Bracket Game_1]  Duplicate #:   12
-🗳️	Bracket Game_3: 100%|██████████| 100/100 [00:18<00:00,  5.39it/s]
+🗳️	Bracket Game_3:   0%|          | 0/100 [00:00<?, ?it/s][🗳️	Bracket Game_1]  Duplicate #:   12
+🗳️	Bracket Game_3: 100%|██████████| 100/100 [00:18<00:00,  5.44it/s]
 🔎	String Search_1:   0%|          | 0/100 [00:00<?, ?it/s][🗳️	Bracket Game_3]  Duplicate #:   12
-🔎	String Search_1: 100%|██████████| 100/100 [00:04<00:00, 21.12it/s]
-🔎	String Search_3:   0%|          | 0/100 [00:00<?, ?it/s][🔎	String Search_1]  Duplicate #:   12
-🔎	String Search_3: 100%|██████████| 100/100 [00:04<00:00, 20.89it/s]
+🔎	String Search_1: 100%|██████████| 100/100 [00:04<00:00, 21.60it/s]
+[🔎	String Search_1]  Duplicate #:   12
+🔎	String Search_3: 100%|██████████| 100/100 [00:04<00:00, 21.03it/s]
 [🔎	String Search_3]  Duplicate #:   12
 duplicates:12
+
+Process finished with exit code 0

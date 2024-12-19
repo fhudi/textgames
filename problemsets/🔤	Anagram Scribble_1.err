@@ -1,401 +1,401 @@
 !! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['r', 'x', 'i', 'c', 'k', 'h', 'q', 'a', 'd', 'u'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
 Construct a valid 5-character English word from the following letters:
-['p', 'b', 'z', 'm', 'e', 'a', 't', 'l', 'n', 'h'].
+['m', 'l', 'x', 'g', 'p', 'r', 'd', 's', 'a', 'v'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['p', 'q', 'r', 'z', 'j', 'h', 's', 'u', 'a', 'b'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['n', 'u', 'o', 'j', 'b', 'v', 'i', 'f', 't', 'l'].
+['f', 'w', 'k', 'q', 's', 'o', 'r', 'a', 'p', 'g'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['u', 'q', 'v', 'j', 'r', 'a', 'u', 'n', 'g', 'l'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['p', 'n', 't', 'h', 'z', 'b', 'a', 'w', 'v', 'k'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['y', 'e', 'm', 'h', 'u', 'k', 'w', 'o', 'f', 'd'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['a', 'j', 't', 'n', 'l', 'e', 'm', 'w', 'o', 'i'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['a', 'o', 'p', 'f', 'r', 'm', 'o', 's', 'g', 'h'].
+['m', 'z', 'o', 's', 'u', 'y', 'k', 'r', 'v', 'n'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['v', 'e', 'm', 'p', 'p', 'b', 'e', 'y', 'w', 'k'].
+['m', 'q', 't', 'a', 'i', 'o', 'c', 'l', 'h', 'n'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['o', 'a', 'v', 'k', 'g', 'c', 'z', 'y', 'i', 'd'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 5-character English word from the following letters:
-['u', 't', 'r', 'm', 'z', 'a', 'o', 'k', 'v', 'l'].
+['s', 'j', 'd', 'h', 'l', 'a', 'f', 'n', 't', 'w'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['q', 'v', 'g', 'd', 'u', 'l', 'k', 'y', 'r', 'c'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['o', 'i', 'c', 'l', 'h', 'h', 'j', 'u', 't', 'q'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['h', 'f', 'n', 'x', 'c', 'w', 'b', 'l', 'm', 'a'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['s', 'n', 'u', 'm', 'x', 'v', 'y', 'e', 'f', 'd'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['a', 'e', 't', 'e', 'x', 'y', 'v', 'm', 'u', 's'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['k', 'f', 'e', 'i', 'c', 'u', 'x', 'l', 'p', 's'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['r', 'v', 'f', 'p', 'e', 's', 'd', 'i', 'y', 'j'].
+['p', 'v', 'd', 'f', 'l', 'u', 's', 'e', 'c', 'x'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['t', 'a', 'g', 'i', 'e', 'r', 'm', 'b', 'n', 'e'].
+['n', 'a', 'y', 'i', 'e', 'k', 't', 'a', 'f', 'h'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['e', 'k', 'l', 'y', 'i', 'c', 'u', 'n', 'f', 'x'].
+['r', 'p', 'n', 'u', 'w', 'd', 'v', 'f', 's', 'x'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['k', 'e', 'g', 'a', 'v', 'q', 'y', 'l', 'd', 'j'].
+['n', 'q', 'j', 'h', 'f', 'p', 'i', 'r', 'b', 'a'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['l', 'm', 'i', 'r', 'u', 'j', 'k', 'o', 'z', 'v'].
+['l', 't', 'b', 'x', 'i', 'o', 'w', 'g', 's', 'u'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['l', 'x', 'm', 'c', 'i', 's', 'v', 'p', 'h', 'y'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['k', 'r', 'c', 'i', 'x', 'g', 'w', 'p', 't', 'm'].
+['t', 'm', 'i', 'h', 'x', 'u', 'w', 'o', 'g', 'z'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['p', 'w', 'l', 'a', 'c', 'y', 'u', 'g', 'o', 'm'].
+['y', 'n', 'e', 'f', 'w', 's', 'o', 'm', 'q', 'u'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['j', 'd', 'o', 'v', 'g', 'f', 'm', 'i', 'h', 'w'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['e', 'p', 'b', 'g', 'w', 'u', 'l', 'f', 'm', 'a'].
+['r', 's', 'k', 'a', 'm', 'b', 't', 'z', 'j', 'l'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['a', 'f', 'r', 'l', 'c', 'l', 'm', 'y', 'd', 'z'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['n', 'v', 't', 'o', 'm', 'y', 'l', 'g', 'y', 'f'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['a', 'i', 't', 'l', 'f', 'o', 'j', 'e', 'g', 'm'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['y', 's', 'r', 'e', 'f', 'd', 'x', 'e', 'v', 'g'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['p', 'f', 'l', 'w', 'a', 'e', 'q', 's', 'g', 'r'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['u', 'p', 'e', 'l', 'a', 'b', 'i', 'c', 'r', 't'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['d', 'a', 'i', 'j', 'c', 'h', 'b', 'y', 'g', 'o'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['s', 'g', 'f', 't', 'u', 'a', 'd', 'j', 'b', 'o'].
+['i', 'k', 'e', 't', 'q', 'v', 'r', 'p', 'g', 'l'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 5-character English word from the following letters:
-['n', 'm', 'e', 's', 'h', 'i', 'l', 'r', 'c', 'z'].
+['f', 'c', 'z', 'e', 'p', 'd', 'u', 'e', 's', 'q'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 5-character English word from the following letters:
-['e', 'q', 'r', 's', 'l', 'b', 'h', 't', 'u', 'a'].
+['e', 'i', 'e', 'w', 'a', 'l', 's', 'x', 'h', 'f'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['r', 't', 'o', 'l', 'o', 's', 'v', 'd', 'k', 'y'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['q', 'j', 'h', 'n', 'x', 'v', 'e', 'm', 'l', 'z'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['p', 'z', 'o', 'i', 'h', 'x', 't', 'c', 'm', 'l'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['j', 'r', 'l', 'b', 'x', 'f', 'o', 'z', 'g', 'i'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['u', 'k', 'w', 'a', 's', 'b', 'x', 'm', 'z', 'a'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['n', 'v', 'a', 'b', 's', 'p', 'w', 'e', 'u', 'h'].
+['m', 't', 'h', 'k', 'c', 'a', 'f', 'y', 'd', 'x'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['h', 'k', 't', 'i', 'g', 'z', 'x', 'y', 'a', 'e'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['d', 'x', 'h', 'e', 't', 'd', 'z', 's', 'o', 'd'].
+['x', 'z', 'o', 'r', 'f', 'l', 'e', 's', 'l', 't'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 5-character English word from the following letters:
-['q', 'i', 't', 's', 'm', 'a', 'k', 'j', 'w', 'h'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['g', 't', 's', 'o', 'e', 'j', 'v', 'h', 'w', 'p'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['d', 'i', 'r', 'u', 't', 'p', 'o', 'p', 'b', 's'].
+['a', 'e', 'd', 'k', 'e', 'v', 'c', 'g', 'b', 'w'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 5-character English word from the following letters:
-['r', 'u', 'm', 'p', 'e', 'i', 'g', 'x', 'j', 'a'].
+['f', 'w', 'e', 'o', 'y', 'z', 'r', 'r', 'b', 'a'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['l', 'b', 'd', 'a', 's', 'n', 'i', 'f', 'k', 'm'].
+['s', 'o', 'e', 'c', 'j', 'b', 'l', 'r', 'v', 'a'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['g', 'h', 'b', 'v', 'd', 't', 'p', 'o', 'i', 'z'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['p', 'e', 'n', 'd', 't', 'w', 'g', 'i', 'z', 'u'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['l', 's', 'f', 'w', 'e', 'j', 'q', 'm', 'y', 'u'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['x', 'r', 'd', 'z', 'h', 'e', 'o', 'a', 'n', 'm'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['d', 's', 'e', 'g', 't', 'y', 'k', 'r', 'j', 'n'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['u', 'p', 's', 't', 'b', 'r', 'o', 'm', 'f', 'g'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['f', 't', 'y', 'b', 'k', 'v', 'w', 'j', 'n', 'z'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['o', 'z', 'e', 'x', 'j', 'm', 'q', 'k', 'y', 'd'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['a', 'v', 'r', 'q', 's', 'd', 'b', 'o', 'h', 'p'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['d', 'u', 'e', 'p', 'r', 'x', 'i', 'j', 'z', 's'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['g', 't', 'r', 'k', 'l', 'u', 's', 'e', 'f', 'x'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['w', 'a', 'h', 'x', 'u', 't', 'z', 'c', 'l', 'o'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['k', 'a', 'm', 's', 'n', 'l', 'a', 't', 'g', 'q'].
+['d', 'a', 'g', 's', 'l', 'a', 'j', 'v', 'i', 'k'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['o', 'g', 'j', 'y', 'k', 'l', 'x', 'w', 'n', 'a'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['a', 'x', 'p', 's', 'w', 'h', 'd', 'q', 'b', 'c'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['i', 'y', 'l', 'x', 'o', 'p', 'j', 'b', 'd', 't'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['i', 'p', 'l', 'e', 'x', 'm', 'o', 'j', 'a', 'd'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['q', 'd', 'n', 'v', 'e', 'o', 's', 'l', 'i', 'u'].
+['q', 'h', 'l', 'e', 'g', 'k', 'e', 'r', 's', 'z'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['q', 'k', 't', 'o', 'j', 'i', 'y', 'g', 's', 'm'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['l', 'c', 'a', 'h', 't', 'g', 'w', 'o', 'z', 'f'].
+['v', 'n', 'z', 'r', 'i', 'o', 'd', 'p', 'k', 's'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 5-character English word from the following letters:
-['s', 'm', 'l', 'j', 'h', 's', 'p', 't', 'u', 'x'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['p', 'v', 'a', 'j', 'e', 'w', 'r', 'z', 'i', 'f'].
+['h', 'u', 'c', 'k', 'a', 'z', 'e', 's', 'r', 'w'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['o', 'q', 'w', 'p', 't', 'f', 'v', 'e', 'y', 'm'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['t', 'z', 'o', 'u', 'j', 'i', 'a', 'm', 'l', 'c'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['c', 'p', 'f', 'a', 'r', 'q', 'i', 'd', 't', 'b'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['d', 'q', 's', 'p', 'g', 'a', 't', 'o', 'a', 't'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['l', 'i', 'm', 'c', 'p', 'h', 'a', 'u', 'm', 'b'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['b', 'a', 'm', 'q', 'z', 'g', 'i', 'r', 'j', 'x'].
+['o', 'g', 'k', 'l', 'a', 'i', 'q', 'x', 'p', 'n'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['a', 'g', 'h', 'e', 'k', 'i', 'y', 'u', 'a', 'p'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['u', 'j', 'h', 'm', 'd', 'k', 'n', 'o', 'a', 'c'].
+['u', 'c', 'a', 'g', 's', 'k', 'r', 'o', 'w', 'q'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 5-character English word from the following letters:
-['q', 'o', 'k', 'j', 'r', 'v', 'm', 'o', 'r', 'p'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['x', 's', 'v', 'c', 'e', 'w', 'f', 't', 'q', 'k'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['z', 'v', 'a', 'e', 'l', 'p', 'f', 'a', 'n', 'c'].
+['a', 'c', 'j', 'l', 'z', 'q', 'x', 's', 'i', 'h'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['j', 'o', 'p', 's', 'k', 'r', 'd', 'f', 't', 'i'].
+['k', 'i', 'z', 'm', 'q', 'u', 'l', 'o', 'a', 'r'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['d', 'w', 'a', 'd', 'r', 'p', 'y', 'v', 'b', 'd'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['b', 'i', 't', 'o', 'g', 's', 'p', 'c', 'h', 'w'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['t', 'b', 'c', 's', 'u', 'w', 'm', 'r', 'c', 'v'].
+['p', 'v', 'q', 'g', 'z', 'y', 'l', 'w', 's', 's'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 5-character English word from the following letters:
-['a', 'g', 'm', 'a', 'j', 'o', 'x', 'z', 'n', 'h'].
+['c', 'n', 'e', 'r', 'j', 'm', 'p', 's', 'g', 'e'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['a', 'i', 'z', 'u', 'm', 'f', 'b', 'k', 'o', 'w'].
+['q', 'm', 'b', 'p', 'd', 'z', 'a', 'w', 'k', 'i'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['f', 'q', 'i', 'a', 'f', 'x', 'n', 'm', 'r', 'e'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['o', 'b', 'x', 'y', 'm', 'r', 'j', 'g', 't', 's'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['s', 'c', 'p', 'o', 'z', 'v', 'v', 'i', 'a', 'w'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['h', 'n', 'o', 'e', 's', 'r', 'k', 'u', 'q', 'y'].
+['w', 'o', 'r', 'g', 'f', 'u', 'c', 'l', 't', 'h'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['r', 'u', 'n', 'g', 'v', 'h', 'e', 'f', 'j', 't'].
+['w', 's', 'y', 'r', 'j', 'a', 'p', 'k', 'g', 'd'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['w', 'z', 'q', 'r', 'v', 'k', 'p', 'l', 'o', 's'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 4-character English word from the following letters:
+['v', 'n', 'a', 'l', 's', 'z', 'y', 'p', 'o', 'b'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['c', 'r', 'f', 'j', 's', 'k', 'm', 'o', 't', 'e'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['g', 'd', 'a', 'i', 'b', 'a', 'h', 'e', 'm', 'c'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['d', 'j', 'f', 'o', 's', 'q', 'b', 's', 'n', 'h'].
+['j', 'w', 'd', 'y', 't', 'k', 'u', 's', 't', 'm'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['h', 'k', 'o', 'a', 'z', 'w', 'd', 'n', 'h', 'j'].
+['w', 'y', 'b', 'o', 'u', 'k', 'j', 'q', 'l', 'l'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 5-character English word from the following letters:
-['r', 'e', 'z', 'q', 'm', 'c', 'd', 'i', 'h', 'b'].
+['x', 'e', 'b', 'c', 'o', 'p', 'y', 's', 'v', 'u'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 4-character English word from the following letters:
+['x', 'u', 'r', 'i', 'z', 'j', 't', 'n', 's', 'k'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['x', 'e', 'y', 'v', 'l', 'p', 'q', 'o', 'm', 'z'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['b', 't', 'c', 'l', 'h', 'g', 'i', 'u', 'o', 's'].
+['k', 'g', 'a', 'u', 'u', 's', 'b', 'f', 't', 'v'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 5-character English word from the following letters:
-['e', 'w', 't', 'm', 'r', 'p', 'g', 'q', 'l', 'u'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['s', 'j', 'u', 'x', 'm', 'a', 'e', 'i', 'n', 'y'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['q', 'i', 'n', 'p', 'k', 's', 'h', 't', 'a', 'u'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['a', 'g', 'f', 'h', 'j', 's', 'v', 'b', 'e', 'c'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['j', 'b', 'y', 'm', 'h', 'd', 'e', 's', 'z', 'e'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['n', 'r', 't', 'a', 'o', 'i', 'w', 's', 'q', 'y'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['o', 'q', 'p', 'j', 't', 's', 'r', 'f', 'g', 'l'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['z', 'x', 'r', 'i', 'a', 'r', 'o', 'e', 'y', 't'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['c', 'b', 'o', 'k', 't', 'f', 'u', 'm', 'r', 'h'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 4-character English word from the following letters:
-['q', 'p', 'e', 'g', 'x', 'y', 'j', 't', 'c', 'a'].
+['u', 'n', 's', 'b', 'i', 'z', 'd', 'j', 't', 'e'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['b', 'u', 'd', 'j', 'f', 't', 'e', 'c', 'v', 'i'].
+['o', 'b', 'z', 'e', 'g', 'm', 'x', 'c', 't', 's'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['i', 'a', 'x', 'u', 'w', 'q', 't', 'd', 's', 'v'].
+['k', 'h', 'c', 'c', 'j', 'y', 'z', 'v', 'm', 's'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 3-character English word from the following letters:
-['p', 'x', 'g', 'i', 't', 'l', 'a', 'c', 'u', 'k'].
+['u', 'g', 'n', 'f', 'l', 'e', 'k', 'h', 'q', 'w'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['x', 'r', 'j', 'h', 'a', 'q', 'v', 'e', 'c', 'y'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['z', 'r', 't', 'e', 'w', 'i', 'o', 'm', 'x', 'a'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['n', 'a', 'q', 'k', 'o', 'x', 'n', 'v', 'p', 'y'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['c', 'q', 'r', 'b', 'g', 'u', 'w', 'y', 'a', 'k'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['p', 'k', 'w', 'a', 'y', 'e', 'u', 'u', 'v', 'h'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['a', 'g', 'e', 'p', 'n', 't', 'i', 'i', 's', 'q'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 3-character English word from the following letters:
-['g', 'w', 'm', 'f', 't', 'h', 'c', 'q', 'u', 'z'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['k', 'h', 'm', 'l', 'v', 'a', 'd', 'c', 'j', 'e'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['b', 'm', 'j', 's', 'z', 'e', 'l', 'a', 'd', 'i'].
-Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
-[🔤	Anagram Scribble_1]
-Construct a valid 5-character English word from the following letters:
-['k', 'e', 'm', 'o', 'v', 'l', 'y', 'n', 'b', 'l'].
+['b', 'k', 'o', 'p', 'd', 'y', 'e', 'o', 'c', 'g'].
 Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
 [🔤	Anagram Scribble_1]
 Construct a valid 4-character English word from the following letters:
-['k', 'j', 'd', 'm', 's', 'f', 'u', 'e', 'm', 'o'].
+['m', 's', 'l', 'q', 'e', 'w', 'b', 'f', 'r', 'o'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['j', 'c', 'w', 'n', 't', 'm', 'a', 'p', 'a', 'c'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['l', 't', 'n', 'j', 'a', 'e', 'm', 'e', 'z', 'o'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['e', 'f', 'r', 's', 'g', 'o', 'm', 'a', 'p', 'x'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['a', 'b', 'e', 'j', 'm', 'a', 'h', 'z', 'f', 't'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 4-character English word from the following letters:
+['u', 'w', 'c', 't', 'j', 'o', 'v', 'z', 'k', 'r'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 4-character English word from the following letters:
+['d', 'e', 'i', 'z', 's', 'g', 'l', 'o', 'a', 'w'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['g', 'o', 'e', 'a', 'f', 'p', 'v', 't', 's', 'r'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['n', 'm', 'h', 's', 'p', 'a', 'v', 'a', 'f', 'w'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['v', 'y', 'z', 'r', 'a', 'c', 'j', 'd', 'l', 'h'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 4-character English word from the following letters:
+['q', 'w', 'v', 'f', 'd', 'z', 'c', 'l', 'r', 'h'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['c', 'd', 'y', 'h', 'f', 'z', 'l', 'j', 'g', 'p'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['w', 'j', 's', 'n', 'h', 'c', 'a', 'z', 'v', 'y'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['p', 'z', 'm', 'v', 'w', 'b', 'a', 's', 'n', 'k'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['g', 'z', 'j', 's', 'd', 'b', 'e', 'h', 'r', 't'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['n', 'u', 'f', 'r', 'q', 'w', 'i', 'm', 'd', 'e'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 4-character English word from the following letters:
+['n', 'c', 'h', 'i', 'z', 'y', 's', 'o', 'p', 'w'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['u', 's', 'g', 'y', 'a', 'v', 'w', 'n', 'l', 'x'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 4-character English word from the following letters:
+['d', 'h', 'a', 'o', 'i', 'w', 'l', 's', 'p', 'k'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['h', 'w', 'u', 'y', 'z', 'g', 'p', 'b', 'l', 'f'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['y', 'u', 'd', 'g', 'r', 'c', 's', 'h', 'o', 'i'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['m', 'k', 'c', 'w', 'g', 'n', 'p', 'e', 'o', 'z'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 4-character English word from the following letters:
+['r', 'h', 'k', 'a', 'd', 't', 'a', 'x', 'g', 'l'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 3-character English word from the following letters:
+['r', 'n', 'x', 'l', 'g', 'p', 'z', 't', 'v', 'e'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['j', 'y', 'o', 'l', 'z', 'm', 'x', 'l', 's', 'h'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 5-character English word from the following letters:
+['a', 'h', 'u', 'p', 'n', 'r', 's', 'c', 't', 'x'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 4-character English word from the following letters:
+['b', 'n', 'u', 'a', 'm', 's', 'z', 'g', 'y', 'd'].
+Each character can be used multiple times. Please write None if there is no valid combination.!! game is NOT reloaded.. !!
+[🔤	Anagram Scribble_1]
+Construct a valid 4-character English word from the following letters:
+['u', 'z', 'a', 't', 'o', 's', 'l', 'k', 'x', 'h'].
 Each character can be used multiple times. Please write None if there is no valid combination.
