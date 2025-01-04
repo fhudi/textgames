@@ -5,6 +5,7 @@ os.environ.setdefault("TEXTGAMES_SHOW_HIDDEN_LEVEL", "1")
 os.environ.setdefault("TEXTGAMES_LOADGAME_DIR", "problemsets")
 os.environ.setdefault("TEXTGAMES_LOADGAME_ID", "42")
 os.environ.setdefault("TEXTGAMES_MOCKUSER", "")
+favicon_path = "textgames-scrabble-black2-ss.png"
 
 #%%
 import time
@@ -429,8 +430,9 @@ with gr.Blocks(title="TextGames") as demo:
     def _start_new_game(game_name, level):
         start_new_game(game_name, level)
 
-demo.launch()
-
+#%%
+if __name__ == "__main__":
+    demo.launch(favicon_path=favicon_path if os.path.exists(favicon_path) else None)
 
 
 #%%
