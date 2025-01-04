@@ -1,14 +1,15 @@
 #%%
 import os
-os.environ.setdefault("TEXTGAMES_SHOW_HIDDEN_LEVEL", "1")
 os.environ.setdefault("GRADIO_SERVER_PORT", "1080")
+os.environ.setdefault("TEXTGAMES_SHOW_HIDDEN_LEVEL", "1")
 os.environ.setdefault("TEXTGAMES_LOADGAME_DIR", "problemsets")
 os.environ.setdefault("TEXTGAMES_LOADGAME_ID", "42")
+os.environ.setdefault("TEXTGAMES_MOCKUSER", "")
 
 #%%
 import time
 import gradio as gr
-from textgames import GAME_IDS, GAME_NAMES, LEVEL_IDS, LEVELS, new_game
+from textgames import GAME_IDS, GAME_NAMES, LEVEL_IDS, LEVELS, new_game, preload_game
 
 
 #%%
@@ -352,72 +353,84 @@ function ordering_submit(textarea, io_history) {{
 
 
 #%%
-with gr.Blocks() as demo:
-    # input_text = gr.Textbox(label="input")
+def _calc_time_elapsed(start_time, cur_text, is_solved):
+    if not is_solved:
+        return f"Time Elapsed (sec): {time.time() - start_time:8.1f}"
+    else:
+        return cur_text
+
+
+#%%
+def start_new_game(game_name, level, user=None, show_timer=False):
+    print(game_name, level)
+    global io_history, cur_game_start
+    if game_name is None or level is None:
+        raise gr.Error("please choose both Game & Level")
+    # cur_game_id = GAME_IDS[GAME_NAMES.index(game_name)]
+    difficulty_level = LEVEL_IDS[LEVELS.index(level)]
+
+    is_solved = gr.State(False)
+
+    if show_timer:
+        elapsed_text = gr.Textbox("N/A", label=f"{game_name}", info=f"{level}", )
+        gr.Timer(.3).tick(_calc_time_elapsed, [cur_game_start, elapsed_text, is_solved], [elapsed_text])
+
+    cur_game = (
+        new_game(game_name, difficulty_level)
+        if user is None else
+        preload_game(game_name, difficulty_level, user)
+    )
+
+    def add_msg(new_msg, prev_msg):
+        user_input = '\n'.join(new_msg.split())
+        solved, val_msg = cur_game.validate(user_input)
+        response = ("Correct" if solved else "Bad") + " guess\n" + val_msg
+        new_io_history = prev_msg + [f"Guess>\n{new_msg}", "Prompt>\n" + response]
+        return (
+            ("" if not solved else gr.Textbox("Thank you for playing!", interactive=False)),
+            new_io_history, "\n\n".join(new_io_history), solved
+        )
+
+    io_history = gr.State(["Prompt>\n" + cur_game.get_prompt()])
+    io_textbox = gr.Textbox("\n\n".join(io_history.value), label="Prompt>", interactive=False)
+    textarea = gr.Textbox(label="Guess>", lines=5, info=f"(Shift + Enter to submit)")
+    textarea.submit(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved])
+    js_submit = "(a,b) => [a,b]"
+    if any([isinstance(cur_game, cls) for cls in (Islands, Sudoku, CrosswordArrangerGame, OrderingTextGame)]):
+        if isinstance(cur_game, Islands):
+            js, js_submit = js_island.format(N=cur_game.N), js_island_submit.format(N=cur_game.N)
+        elif isinstance(cur_game, Sudoku):
+            js, js_submit = js_sudoku.format(N=cur_game.srn), js_sudoku_submit.format(N=cur_game.srn)
+        elif isinstance(cur_game, CrosswordArrangerGame):
+            js, js_submit = js_crossword.format(N=cur_game.board_size), js_crossword_submit.format(
+                N=cur_game.board_size)
+        elif isinstance(cur_game, OrderingTextGame):
+            js, js_submit = js_ordering.format(items=f"{cur_game.words}"), js_ordering_submit.format()
+        else:
+            raise NotImplementedError(cur_game)
+        showhide_helper_btn = gr.Button("Show Input Helper (disabling manual input)", elem_id="lintao-helper-btn")
+        showhide_helper_btn.click(lambda: gr.update(interactive=False), None, textarea, js=js)
+    submit_btn = gr.Button("Submit", elem_id="lintao-submit-btn")
+    submit_btn.click(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved], js=js_submit)
+
+
+#%%
+with gr.Blocks(title="TextGames") as demo:
+    cur_game_start = gr.BrowserState()
+
     game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
     level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
     new_game_btn = gr.Button("Start New Game")
-
-    cur_game_start = gr.State()
     new_game_btn.click(lambda: time.time(), None, cur_game_start,
                        js="() => {var el = document.getElementById('lintao-container'); if (el) el.remove();}")
-
     io_history = None
 
-    def calc_time_elapsed(start_time, cur_text, is_solved):
-        if not is_solved:
-            return f"Time Elapsed (sec): {time.time() - start_time:8.1f}"
-        else:
-            return cur_text
-
     @gr.render(inputs=[game_radio, level_radio], triggers=[new_game_btn.click])
-    def start_new_game(game_name, level):
-        global io_history
-        if game_name is None or level is None:
-            raise gr.Error("please choose both Game & Level")
-        cur_game_id = GAME_IDS[GAME_NAMES.index(game_name)]
-        difficulty_level = LEVEL_IDS[LEVELS.index(level)]
-
-        is_solved = gr.State(False)
-
-        elapsed_text = gr.Textbox("N/A", label=f"{game_name}", info=f"{level}",)
-        gr.Timer(.3).tick(calc_time_elapsed, [cur_game_start, elapsed_text, is_solved], [elapsed_text])
-
-        cur_game = new_game(game_name, difficulty_level)
-
-        def add_msg(new_msg, prev_msg):
-            user_input = '\n'.join(new_msg.split())
-            solved, val_msg = cur_game.validate(user_input)
-            response = ("Correct" if solved else "Bad") + " guess\n" + val_msg
-            new_io_history = prev_msg + [f"Guess>\n{new_msg}", "Prompt>\n" + response]
-            return (
-                ("" if not solved else gr.Textbox("Thank you for playing!", interactive=False)),
-                new_io_history, "\n\n".join(new_io_history), solved
-            )
-
-        io_history = gr.State(["Prompt>\n" + cur_game.get_prompt()])
-        io_textbox = gr.Textbox("\n\n".join(io_history.value), label="Prompt>", interactive=False)
-        textarea = gr.Textbox(label="Guess>", lines=5, info=f"(Shift + Enter to submit)")
-        textarea.submit(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved])
-        js_submit = "(a,b) => [a,b]"
-        if any([isinstance(cur_game, cls) for cls in (Islands, Sudoku, CrosswordArrangerGame, OrderingTextGame)]):
-            if isinstance(cur_game, Islands):
-                js, js_submit = js_island.format(N=cur_game.N), js_island_submit.format(N=cur_game.N)
-            elif isinstance(cur_game, Sudoku):
-                js, js_submit = js_sudoku.format(N=cur_game.srn), js_sudoku_submit.format(N=cur_game.srn)
-            elif isinstance(cur_game, CrosswordArrangerGame):
-                js, js_submit = js_crossword.format(N=cur_game.board_size), js_crossword_submit.format(N=cur_game.board_size)
-            elif isinstance(cur_game, OrderingTextGame):
-                js, js_submit = js_ordering.format(items=f"{cur_game.words}"), js_ordering_submit.format()
-            else:
-                raise NotImplementedError(cur_game)
-            showhide_helper_btn = gr.Button("Show Input Helper (disabling manual input)", elem_id="lintao-helper-btn")
-            showhide_helper_btn.click(lambda: gr.update(interactive=False), None, textarea, js=js)
-        submit_btn = gr.Button("Submit", elem_id="lintao-submit-btn")
-        submit_btn.click(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved], js=js_submit)
-
+    def _start_new_game(game_name, level):
+        start_new_game(game_name, level)
 
 demo.launch()
+
 
 
 #%%
