@@ -5,6 +5,17 @@ import gradio as gr
 from textgames import LEVEL_IDS, LEVELS, new_game, preload_game
 
 # %%
+js_solved_games_df = """() => {
+        var solvedGamesDf = document.getElementById("solved-games-df");
+        var tables = solvedGamesDf.getElementsByTagName("table");
+        for (let i = 0; i < tables.length; ++i) {
+            tables[i].style.overflowY = "clip";
+            tables[i].style.overflowX = "auto";
+        }
+    }"""
+
+
+# %%
 from textgames.islands.islands import Islands
 
 js_island = """
@@ -353,7 +364,8 @@ def _calc_time_elapsed(start_time, cur_text, is_solved):
 
 
 # %%
-def start_new_game(game_name, level, session_state_component, is_solved_component, user=None, show_timer=False):
+def start_new_game(game_name, level, session_state_component, is_solved_component, solved_games_component,
+                   user=None, show_timer=False):
     # cur_game_id = GAME_IDS[GAME_NAMES.index(game_name)]
     difficulty_level = LEVEL_IDS[LEVELS.index(level)]
 
@@ -418,23 +430,26 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
     )
     give_up_checkbox.change(lambda cfm: 0 if cfm else 1, [give_up_checkbox], [session_state_component])
 
-    def game_is_solved(_is_solved, _session_state):
+    def game_is_solved(_is_solved, _session_state, _solved_games):
         if _is_solved:
+            if level not in _solved_games[game_name]:
+                _solved_games[game_name].append(level)
             return (
                 2,
                 gr.update(visible=False, interactive=False),
                 gr.update(visible=False, interactive=False),
-                gr.update(visible=True, interactive=True)
+                gr.update(visible=True, interactive=True),
+                _solved_games,
             )
         else:
             return (
-                _session_state, gr.update(), gr.update(), gr.update(),
+                _session_state, gr.update(), gr.update(), gr.update(), _solved_games
             )
 
     is_solved_component.change(
         game_is_solved,
-        [is_solved_component, session_state_component],
-        [session_state_component, submit_btn, give_up_btn, finish_btn],
+        [is_solved_component, session_state_component, solved_games_component],
+        [session_state_component, submit_btn, give_up_btn, finish_btn, solved_games_component],
     )
     finish_btn.click(lambda: (0, 0), None, [session_state_component, is_solved_component])
 

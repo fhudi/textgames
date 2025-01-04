@@ -8,28 +8,39 @@ os.environ.setdefault("TEXTGAMES_MOCKUSER", "")
 favicon_path = "textgames-scrabble-black2-ss.png"
 
 #%%
+import pandas as pd
 import gradio as gr
 from textgames import GAME_NAMES, LEVELS
-from play_helper import start_new_game, check_to_start_new_game, session_state_change_fn
+from play_helper import start_new_game, check_to_start_new_game, session_state_change_fn, js_solved_games_df
 
 
 #%%
 def greet():
-    return f"Welcome to TextGames! (Mock-User: {os.getenv('TEXTGAMES_MOCKUSER', '')})"
+    return f"Welcome to TextGames!<br/>(Mock-User: {os.getenv('TEXTGAMES_MOCKUSER', '')})"
 
 
 #%%
-with gr.Blocks(title="TextGames") as demo:
+with gr.Blocks(title="TextGames", delete_cache=(3600, 3600)) as demo:
     with gr.Row():
-        with gr.Column(scale=4):
-            m = gr.Markdown("Welcome to TextGames!")
         with gr.Column(scale=1):
-            logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', interactive=False)
-    demo.load(greet, None, [m])
+            m = gr.Markdown("Welcome to TextGames!")
+            logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', interactive=False, size='sm')
+        with gr.Column(scale=2):
+            solved_games_df = gr.DataFrame(headers=[g.split('\t', 1)[0] for g in GAME_NAMES], label="Solved Games",
+                                           interactive=False, elem_id="solved-games-df")
+    demo.load(greet, None, [m], js=js_solved_games_df)
 
     cur_game_start = gr.BrowserState()
     session_state = gr.State(0)    # 0: menu selection, 1: game is ongoing, 2: game is solved.
     is_solved = gr.State(0)
+    solved_games = gr.State({g: [] for g in GAME_NAMES})
+
+    def _icon(_):
+        return _.split('\t', 1)[0]
+    solved_games.change(
+        lambda sg: pd.DataFrame({_icon(g): [" ".join(map(_icon, l))] for g, l in sg.items()}),
+        solved_games, solved_games_df
+    )
 
     game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
     level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
@@ -50,7 +61,7 @@ with gr.Blocks(title="TextGames") as demo:
     @gr.render(inputs=[game_radio, level_radio, session_state], triggers=[render_toggle.change])
     def _start_new_game(game_name, level, _session_state):
         if _session_state in [1, 2]:
-            start_new_game(game_name, level, session_state, is_solved)
+            start_new_game(game_name, level, session_state, is_solved, solved_games)
 
 demo.launch(favicon_path=favicon_path if os.path.exists(favicon_path) else None)
 

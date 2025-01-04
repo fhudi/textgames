@@ -116,7 +116,7 @@ with gr.Blocks(title="TextGames") as login_demo:
 
 app = gr.mount_gradio_app(app, login_demo, path="/login")
 
-with gr.Blocks(title="TextGames") as demo:
+with gr.Blocks(title="TextGames", delete_cache=(3600, 3600)) as demo:
     user_state = gr.State()
     with gr.Row():
         with gr.Column(scale=4):
@@ -128,6 +128,7 @@ with gr.Blocks(title="TextGames") as demo:
     cur_game_start = gr.BrowserState()
     session_state = gr.State(0)    # 0: menu selection, 1: game is ongoing, 2: game is solved.
     is_solved = gr.State(0)
+    solved_games = gr.State({g: [] for g in GAME_NAMES})
 
     game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
     level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
@@ -148,7 +149,7 @@ with gr.Blocks(title="TextGames") as demo:
     @gr.render(inputs=[game_radio, level_radio, user_state, session_state], triggers=[render_toggle.change])
     def _start_new_game(game_name, level, user, _session_state):
         if _session_state in [1, 2]:
-            start_new_game(game_name, level, session_state, is_solved, user=user)
+            start_new_game(game_name, level, session_state, is_solved, solved_games, user=user)
 
 
 app = gr.mount_gradio_app(app, demo, path="/TextGames", auth_dependency=get_username)
