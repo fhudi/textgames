@@ -69,7 +69,7 @@ def preload_game(game_name, level_id, user):
     with open(f"problemsets/{game_filename(game_name)}_{level_id}.json", "r", encoding="utf8") as f:
         sid_prompt_dict = json.load(f)
     prompt = sid_prompt_dict.get(sid)
-    print("Prompt:", prompt, sep="\n")
+    print("Loaded prompt:", prompt, sep="\n")
 
     return _reload(prompt, game_cls)
 

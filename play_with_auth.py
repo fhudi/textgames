@@ -8,8 +8,8 @@ os.environ.setdefault("TEXTGAMES_MOCKUSER", "")
 favicon_path = "textgames-scrabble-black2-ss.png"
 
 #%%
-from textgames import GAME_IDS, GAME_NAMES, LEVEL_IDS, LEVELS, new_game
-from play_gradio import start_new_game, check_to_start_new_game, session_state_change_fn
+from textgames import GAME_NAMES, LEVELS
+from play_helper import start_new_game, check_to_start_new_game, session_state_change_fn
 from typing import Optional
 
 
@@ -121,11 +121,13 @@ with gr.Blocks(title="TextGames") as demo:
     with gr.Row():
         with gr.Column(scale=4):
             m = gr.Markdown("Welcome to TextGames!")
-        logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', scale=1)
+        with gr.Column(scale=1):
+            logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', interactive=True)
     demo.load(greet, None, [m, user_state])
 
     cur_game_start = gr.BrowserState()
-    session_state = gr.State(0)    # 0: menu selection, 1: game on-going
+    session_state = gr.State(0)    # 0: menu selection, 1: game is ongoing, 2: game is solved.
+    is_solved = gr.State(0)
 
     game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
     level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
@@ -140,10 +142,13 @@ with gr.Blocks(title="TextGames") as demo:
         check_to_start_new_game, [game_radio, level_radio], [session_state],
     )
 
-    @gr.render(inputs=[game_radio, level_radio, user_state, session_state], triggers=[session_state.change])
+    render_toggle = gr.Checkbox(False, visible=False, interactive=False)
+    session_state.change(lambda s, r: (not r if s in [0, 1] else r), [session_state, render_toggle], [render_toggle])
+
+    @gr.render(inputs=[game_radio, level_radio, user_state, session_state], triggers=[render_toggle.change])
     def _start_new_game(game_name, level, user, _session_state):
-        if _session_state == 1:
-            start_new_game(game_name, level, session_state, user=user)
+        if _session_state in [1, 2]:
+            start_new_game(game_name, level, session_state, is_solved, user=user)
 
 
 app = gr.mount_gradio_app(app, demo, path="/TextGames", auth_dependency=get_username)

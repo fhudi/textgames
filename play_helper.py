@@ -1,0 +1,467 @@
+# %%
+import os
+import time
+import gradio as gr
+from textgames import LEVEL_IDS, LEVELS, new_game, preload_game
+
+# %%
+from textgames.islands.islands import Islands
+
+js_island = """
+function island() {{
+    const grid_N = {N},
+          grid_px = 40;
+
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gridTemplateColumns = container.style.gridTemplateRows = `repeat(${{grid_N}}, ${{grid_px}}px)`;
+    container.style.gap = '1px';
+    container.style.border = '2px solid black';
+    container.style.width = 'max-content';
+    container.style.margin = '5px 0px 5px 40px';
+    container.id = 'lintao-container';
+
+    for (let i = 0; i < grid_N; ++i) {{
+        for (let j = 0; j < grid_N; ++j) {{
+            const cell = document.createElement('div');
+            cell.textContent = '.';
+            cell.style.width = cell.style.height = `${{grid_px}}px`;
+            cell.style.display = 'flex';
+            cell.style.alignItems = 'center';
+            cell.style.justifyContent = 'center';
+            cell.style.fontSize = `${{grid_px/2}}px`;
+            cell.style.border = '1px solid gray';
+            cell.style.cursor = 'pointer';
+            cell.id = `lintao-cell-${{i}}-${{j}}`;
+
+            // Toggle between '#', 'o', and '.'
+            cell.addEventListener('click', () => {{
+                if (cell.textContent === '.') {{
+                    cell.textContent = '#';
+                }} else if (cell.textContent === '#') {{
+                    cell.textContent = 'o';
+                }} else if (cell.textContent === 'o') {{
+                    cell.textContent = '.';
+                }} else {{
+                    alert(`The clicked cell has unknown value of '${{cell.textContent}}'.`)
+                }}
+            }});
+
+            container.appendChild(cell);
+        }}
+    }}    
+    // return container;
+
+    // var gradioContainer = document.querySelector('.gradio-container');
+    // gradioContainer.insertBefore(container, gradioContainer.firstChild);
+
+    var submitRow = document.getElementById("lintao-submit-row");
+    submitRow.parentElement.insertBefore(container, submitRow);
+}}
+"""
+
+js_island_submit = """
+function island_submit(textarea, io_history) {{
+    const grid_N = {N};
+    var ret = "";
+    for (let i = 0; i < grid_N; ++i) {{
+        if (i > 0) ret += '\\n';
+        for (let j = 0; j < grid_N; ++j) {{
+            ret += document.getElementById(`lintao-cell-${{i}}-${{j}}`).textContent;
+        }}
+    }}
+    return [ret, io_history];
+}}
+"""
+
+# %%
+from textgames.sudoku.sudoku import Sudoku
+
+js_sudoku = """
+function sudoku() {{
+    const N = {N};
+    const grid_N = N*N,
+          grid_px = 50,
+          border_px = 3;
+    const mat = {mat};
+
+    let is_numeric_sudoku = false;
+    for (let i = 0; i < grid_N; ++i) {{
+        for (let j = 0; j < grid_N; ++j) {{
+            if (/^\\d$/.test(mat[i][j])) {{
+                is_numeric_sudoku = true;
+                break;
+            }}
+        }}
+    }}
+
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gridTemplateColumns = container.style.gridTemplateRows = `repeat(${{grid_N}}, ${{grid_px}}px)`;
+    container.style.gap = '1px';
+    container.style.border = '${{border_px}}px solid white';
+    container.style.width = 'max-content';
+    container.style.margin = '5px 0px 5px 40px';
+    container.id = 'lintao-container';
+
+    // Generate the grid
+    for (let i = 0; i < grid_N; ++i) {{
+        for (let j = 0; j < grid_N; ++j) {{
+            const cell = document.createElement('input');
+            cell.type = 'text';
+            cell.maxLength = 1;
+            cell.style.width = cell.style.height = `${{grid_px}}px`;
+            cell.style.display = 'flex';
+            cell.style.alignItems = 'center';
+            cell.style.justifyContent = 'center';
+            cell.style.textAlign = 'center';
+            cell.style.fontSize = `${{grid_px/2}}px`;
+            cell.style.border = '1px solid #c0c0c0';
+            cell.style.backgroundColor = 'black'
+            cell.style.cursor = 'pointer';
+            cell.id = `lintao-cell-${{i}}-${{j}}`;
+
+            if (mat[i][j] != '_') {{
+                cell.value = mat[i][j];
+                cell.style.color = '#D0D0D0'
+                cell.disabled = true;
+            }}
+
+            //cell.style.color = 'black';
+            //cell.style.outline = 'none';
+
+            if (j % N === 0) cell.style.borderLeft = `${{border_px}}px solid white`;
+            if (j % N === (N-1)) cell.style.borderRight = `${{border_px}}px solid white`;
+            if (i % N === 0) cell.style.borderTop = `${{border_px}}px solid white`;
+            if (i % N === (N-1)) cell.style.borderBottom = `${{border_px}}px solid white`;
+
+            // Allow only numbers 1-9 or A-I
+            cell.addEventListener('input', (e) => {{
+                if ((N === 2  &&  (!(is_numeric_sudoku?/^[1-4]$/:/^[A-Da-d]$/).test(e.target.value))) || 
+                    (N === 3  &&  (!(is_numeric_sudoku?/^[1-9]$/:/^[A-Ia-i]$/).test(e.target.value)))) {{
+                    e.target.value = '';
+                }}
+                e.target.value = e.target.value.toUpperCase();
+            }});
+
+            container.appendChild(cell);
+        }}
+    }}
+
+    container.addEventListener('focusin', (e) => {{
+        const index = Array.from(container.children).indexOf(e.target);
+        if (index === -1) return;
+
+        const row = Math.floor(index / grid_N);
+        const col = index % grid_N;
+
+        for (let i = 0; i < grid_N * grid_N; ++i) {{
+            const cell = container.children[i];
+            const currentRow = Math.floor(i / grid_N);
+            const currentCol = i % grid_N;
+
+            if (currentRow === row || currentCol === col || (Math.floor(currentRow / N) === Math.floor(row / N) && Math.floor(currentCol / N) === Math.floor(col / N))) {{
+                cell.style.backgroundColor = '#303039';
+            }} else {{
+                cell.style.backgroundColor = 'black';
+            }}
+        }}
+    }});
+
+    container.addEventListener('focusout', () => {{
+        for (let i = 0; i < grid_N * grid_N; i++) {{
+            container.children[i].style.backgroundColor = 'black';
+        }}
+    }});
+
+    var submitRow = document.getElementById("lintao-submit-row");
+    submitRow.parentElement.insertBefore(container, submitRow);
+}}
+"""
+
+js_sudoku_submit = """
+function sudoku_submit(textarea, io_history) {{
+    const N = {N};
+    const grid_N = N*N;
+    var ret = "";
+    for (let i = 0; i < grid_N; ++i) {{
+        if (i > 0) ret += '\\n';
+        for (let j = 0; j < grid_N; ++j) {{
+            ret += document.getElementById(`lintao-cell-${{i}}-${{j}}`).value;
+        }}
+    }}
+    return [ret, io_history];
+}}
+"""
+
+# %%
+from textgames.crossword_arranger.crossword_arranger import CrosswordArrangerGame
+
+js_crossword = """
+function crossword() {{
+    const grid_N = {N},
+          grid_px = 50;
+
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gridTemplateColumns = container.style.gridTemplateRows = `repeat(${{grid_N}}, ${{grid_px}}px)`;
+    container.style.gap = '1px';
+    container.style.border = '2px solid white';
+    container.style.width = 'max-content';
+    container.style.margin = '5px 0px 5px 40px';
+    container.id = 'lintao-container';
+
+    // Generate the grid
+    for (let i = 0; i < grid_N; ++i) {{
+        for (let j = 0; j < grid_N; ++j) {{
+            const cell = document.createElement('input');
+            //cell.textContent = '';
+            cell.type = 'text';
+            cell.maxLength = 1;
+            cell.style.width = cell.style.height = `${{grid_px}}px`;
+            cell.style.display = 'flex';
+            cell.style.alignItems = 'center';
+            cell.style.justifyContent = 'center';
+            cell.style.textAlign = 'center';
+            cell.style.fontSize = `${{grid_px/2}}px`;
+            cell.style.border = '1px solid #c0c0c0';
+            cell.style.backgroundColor = 'black'
+            cell.style.cursor = 'pointer';
+            cell.id = `lintao-cell-${{i}}-${{j}}`;
+
+            // Allow only a-z
+            cell.addEventListener('input', (e) => {{
+                if (!/^[a-z]$/.test(e.target.value)) {{
+                    e.target.value = '';
+                }}
+            }});
+
+            container.appendChild(cell);
+        }}
+    }}
+
+    var submitRow = document.getElementById("lintao-submit-row");
+    submitRow.parentElement.insertBefore(container, submitRow);
+}}
+"""
+
+js_crossword_submit = """
+function crossword_submit(textarea, io_history) {{
+    const grid_N = {N};
+    var ret = "";
+    for (let i = 0; i < grid_N; ++i) {{
+        if (i > 0) ret += '\\n';
+        for (let j = 0; j < grid_N; ++j) {{
+            ret += document.getElementById(`lintao-cell-${{i}}-${{j}}`).value;
+        }}
+    }}
+    return [ret, io_history];
+}}
+"""
+
+# %%
+from textgames.ordering_text.ordering_text import OrderingTextGame
+
+js_ordering = """
+function ordering() {{          
+    const listContainer = document.createElement('ul');
+    listContainer.style.listStyle = 'none';
+    listContainer.style.padding = '0';
+    listContainer.style.width = '20em';
+    listContainer.style.border = '2px solid white';
+    listContainer.style.margin = '5px 0px 5px 40px';
+    listContainer.id = 'lintao-container';
+
+    document.body.appendChild(listContainer);
+
+    const items = {items};
+
+    items.forEach((itemText, index) => {{
+        const listItem = document.createElement('li');
+        listItem.textContent = itemText;
+        listItem.draggable = true;
+        listItem.style.padding = '10px';
+        listItem.style.border = '1px solid #c0c0c0';
+        listItem.style.margin = '3px';
+        listItem.style.backgroundColor = 'black';
+        listItem.style.cursor = 'grab';
+        listItem.id = `lintao-item-${{index}}`;
+
+        // Drag and drop events
+        listItem.addEventListener('dragstart', (e) => {{
+            const draggedIndex = Array.from(listContainer.children).indexOf(listItem);
+            e.dataTransfer.setData('text/plain', draggedIndex);
+            listItem.style.backgroundColor = '#1f1811';
+        }});
+
+        listItem.addEventListener('dragover', (e) => {{
+            e.preventDefault();
+            listItem.style.backgroundColor = '#303030';
+        }});
+
+        listItem.addEventListener('dragleave', () => {{
+            listItem.style.backgroundColor = 'black';
+        }});
+
+        listItem.addEventListener('drop', (e) => {{
+            e.preventDefault();
+            const draggedIndex = e.dataTransfer.getData('text/plain');
+            const draggedItem = listContainer.children[draggedIndex];
+            const targetIndex = Array.from(listContainer.children).indexOf(listItem);
+            console.log(draggedIndex, draggedItem, targetIndex);
+
+            if (draggedIndex !== targetIndex) {{
+                listContainer.insertBefore(draggedItem, targetIndex > draggedIndex ? listItem.nextSibling : listItem);
+            }}
+
+            listItem.style.backgroundColor = 'black';
+        }});
+
+        listItem.addEventListener('dragend', () => {{
+            listItem.style.backgroundColor = 'black';
+        }});
+
+        listContainer.appendChild(listItem);
+    }});
+
+    var submitRow = document.getElementById("lintao-submit-row");
+    submitRow.parentElement.insertBefore(listContainer, submitRow);
+}}
+"""
+
+js_ordering_submit = """
+function ordering_submit(textarea, io_history) {{
+    var ret = "";
+    const container = 
+    document.getElementById("lintao-container").childNodes.forEach(
+        (c, i) => {{
+            if (i>0) ret += '\\n';
+            ret += c.textContent;
+        }}
+    )
+    return [ret, io_history];
+}}
+"""
+
+
+# %%
+def _calc_time_elapsed(start_time, cur_text, is_solved):
+    if not is_solved:
+        return f"Time Elapsed (sec): {time.time() - start_time:8.1f}"
+    else:
+        return cur_text
+
+
+# %%
+def start_new_game(game_name, level, session_state_component, is_solved_component, user=None, show_timer=False):
+    # cur_game_id = GAME_IDS[GAME_NAMES.index(game_name)]
+    difficulty_level = LEVEL_IDS[LEVELS.index(level)]
+
+    # if show_timer:
+    #     elapsed_text = gr.Textbox("N/A", label=f"{game_name}", info=f"{level}", )
+    #     gr.Timer(.3).tick(_calc_time_elapsed, [cur_game_start, elapsed_text, is_solved_component], [elapsed_text])
+
+    if user is None and os.getenv("TEXTGAMES_MOCKUSER", ""):
+        user = {'email': os.getenv("TEXTGAMES_MOCKUSER", "")}
+
+    cur_game = (
+        new_game(game_name, difficulty_level)
+        if user is None else
+        preload_game(game_name, difficulty_level, user)
+    )
+
+    def add_msg(new_msg, prev_msg):
+        user_input = '\n'.join(new_msg.split())
+        solved, val_msg = cur_game.validate(user_input)
+        response = ("Correct" if solved else "Bad") + " guess\n" + val_msg
+        new_io_history = prev_msg + [f"Guess>\n{new_msg}", "Prompt>\n" + response]
+        return (
+            ("" if not solved else gr.Textbox("Thank you for playing!", interactive=False)),
+            new_io_history, "\n\n".join(new_io_history), (1 if solved else 0),
+        )
+
+    showhide_helper_btn = gr.Button("Show Input Helper (disabling manual input)", elem_id="lintao-helper-btn")
+    io_history = gr.State(["Prompt>\n" + cur_game.get_prompt()])
+    io_textbox = gr.Textbox("\n\n".join(io_history.value), label="Prompt>", interactive=False)
+    textarea = gr.Textbox(label="Guess>", lines=5, info=f"(Shift + Enter to submit)")
+    textarea.submit(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved_component])
+    js_submit = "(a,b) => [a,b]"
+    if any([isinstance(cur_game, cls) for cls in (Islands, Sudoku, CrosswordArrangerGame, OrderingTextGame)]):
+        if isinstance(cur_game, Islands):
+            js, js_submit = js_island.format(N=cur_game.N), js_island_submit.format(N=cur_game.N)
+        elif isinstance(cur_game, Sudoku):
+            sudoku_arr = str(list(map(lambda r: ''.join(map(str, r)), cur_game.mat)))
+            js, js_submit = js_sudoku.format(N=cur_game.srn, mat=sudoku_arr), js_sudoku_submit.format(N=cur_game.srn)
+        elif isinstance(cur_game, CrosswordArrangerGame):
+            js, js_submit = js_crossword.format(N=cur_game.board_size), js_crossword_submit.format(
+                N=cur_game.board_size)
+        elif isinstance(cur_game, OrderingTextGame):
+            js, js_submit = js_ordering.format(items=f"{cur_game.words}"), js_ordering_submit.format()
+        else:
+            raise NotImplementedError(cur_game)
+        showhide_helper_btn.click(lambda: (gr.update(interactive=False), gr.update(interactive=False)), None,
+                                  [textarea, showhide_helper_btn], js=js)
+    else:
+        showhide_helper_btn.interactive = showhide_helper_btn.visible = False
+
+    with gr.Row(elem_id="lintao-submit-row"):
+        submit_btn = gr.Button("Submit", elem_id="lintao-submit-btn", variant='primary', scale=3)
+        give_up_btn = gr.Button("Give-up 😭", variant='stop', scale=1)
+    finish_btn = gr.Button("🎉🎊 ~ Finish Game ~ 🎊🎉", variant='primary', visible=False, interactive=False)
+
+    submit_btn.click(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved_component],
+                     js=js_submit)
+    give_up_checkbox = gr.Checkbox(False, visible=False, interactive=False)
+    give_up_btn.click(
+        lambda x: x, [give_up_checkbox], [give_up_checkbox],
+        js="(x) => confirm('🥹 Give-up? 💸')"
+    )
+    give_up_checkbox.change(lambda cfm: 0 if cfm else 1, [give_up_checkbox], [session_state_component])
+
+    def game_is_solved(_is_solved, _session_state):
+        if _is_solved:
+            return (
+                2,
+                gr.update(visible=False, interactive=False),
+                gr.update(visible=False, interactive=False),
+                gr.update(visible=True, interactive=True)
+            )
+        else:
+            return (
+                _session_state, gr.update(), gr.update(), gr.update(),
+            )
+
+    is_solved_component.change(
+        game_is_solved,
+        [is_solved_component, session_state_component],
+        [session_state_component, submit_btn, give_up_btn, finish_btn],
+    )
+    finish_btn.click(lambda: (0, 0), None, [session_state_component, is_solved_component])
+
+
+# %%
+def check_to_start_new_game(game_name, level):
+    print(game_name, level)
+    if game_name is None or level is None:
+        raise gr.Error("please choose both Game & Level")
+    return 1
+
+
+# %%
+def session_state_change_fn(_session_state, cnt_return_with_val=2, cnt_negate_with_val=0, cnt_return=1, cnt_negate=0):
+    # print(f"Session state changed to {_session_state}")
+    ret = (_session_state not in [1, 2])
+
+    def up(positive, positive_reset_value=True):
+        return (
+            gr.update(interactive=True, value=None) if positive and positive_reset_value else
+            gr.update(interactive=True) if positive else gr.update(interactive=False)
+        )
+
+    return ([up(ret, True) for _ in range(cnt_return_with_val)] +
+            [up(not ret, True) for _ in range(cnt_negate_with_val)] +
+            [up(ret, False) for _ in range(cnt_return)] +
+            [up(not ret, False) for _ in range(cnt_negate)] +
+            [])
+
+
