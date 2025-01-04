@@ -17,7 +17,7 @@ from typing import Optional
 import uvicorn
 from fastapi import FastAPI, Depends, Request
 from starlette.config import Config
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectResponse, FileResponse
 from starlette.middleware.sessions import SessionMiddleware
 from authlib.integrations.starlette_client import OAuth, OAuthError
 import gradio as gr
@@ -57,6 +57,11 @@ def get_username(request: Request):
     if user:
         return user['email']
     return None
+
+
+@app.get('/favicon.ico', include_in_schema=False)
+async def favicon():
+    return FileResponse(favicon_path)
 
 
 @app.get('/')
@@ -100,21 +105,23 @@ def greet(request: gr.Request):
     user = get_user(request.request)
     return f"""
     Welcome to TextGames, {user['name']}!<br />
-    <<{user['email']}>> ({'' if user['email_verified'] else 'NON-'}verified email)
+    <{user['email'].replace('@', '{at}')}> ({'' if user['email_verified'] else 'NON-'}verified email)
     """, user
 
 
 with gr.Blocks(title="TextGames") as login_demo:
     gr.Markdown("Welcome to TextGames!")
     # gr.Button("Login", link="/do-login")
-    gr.LoginButton("Login", link="/do-login")
+    gr.Button("🚪\tLogin", link="/do-login", icon=None)
 
 app = gr.mount_gradio_app(app, login_demo, path="/login")
 
-    m = gr.Markdown("Welcome to TextGames!")
 with gr.Blocks(title="TextGames") as demo:
     user_state = gr.State()
-    logout_btn = gr.Button("Logout", link="/logout")
+    with gr.Row():
+        with gr.Column(scale=4):
+            m = gr.Markdown("Welcome to TextGames!")
+        logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', scale=1)
     demo.load(greet, None, [m, user_state])
 
     cur_game_start = gr.BrowserState()

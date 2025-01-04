@@ -1,7 +1,7 @@
 #%%
 import os
 os.environ.setdefault("GRADIO_SERVER_PORT", "1080")
-os.environ.setdefault("TEXTGAMES_SHOW_HIDDEN_LEVEL", "1")
+# os.environ.setdefault("TEXTGAMES_SHOW_HIDDEN_LEVEL", "1")
 os.environ.setdefault("TEXTGAMES_LOADGAME_DIR", "problemsets")
 os.environ.setdefault("TEXTGAMES_LOADGAME_ID", "42")
 os.environ.setdefault("TEXTGAMES_MOCKUSER", "")
@@ -94,7 +94,8 @@ js_sudoku = """
 function sudoku() {{
     const N = {N};
     const grid_N = N*N,
-          grid_px = 50;
+          grid_px = 50,
+          border_px = 3;
     const mat = {mat};
     
     console.log(mat);
@@ -112,7 +113,7 @@ function sudoku() {{
     container.style.display = 'grid';
     container.style.gridTemplateColumns = container.style.gridTemplateRows = `repeat(${{grid_N}}, ${{grid_px}}px)`;
     container.style.gap = '1px';
-    container.style.border = '2px solid white';
+    container.style.border = '${{border_px}}px solid white';
     container.style.width = 'max-content';
     container.style.margin = '5px 0px 5px 40px';
     container.id = 'lintao-container';
@@ -143,10 +144,10 @@ function sudoku() {{
             //cell.style.color = 'black';
             //cell.style.outline = 'none';
     
-            if (j % N === 0) cell.style.borderLeft = `${{grid_px/10}}px solid white`;
-            if (j % N === (N-1)) cell.style.borderRight = `${{grid_px/10}}px solid white`;
-            if (i % N === 0) cell.style.borderTop = `${{grid_px/10}}px solid white`;
-            if (i % N === (N-1)) cell.style.borderBottom = `${{grid_px/10}}px solid white`;
+            if (j % N === 0) cell.style.borderLeft = `${{border_px}}px solid white`;
+            if (j % N === (N-1)) cell.style.borderRight = `${{border_px}}px solid white`;
+            if (i % N === 0) cell.style.borderTop = `${{border_px}}px solid white`;
+            if (i % N === (N-1)) cell.style.borderBottom = `${{border_px}}px solid white`;
     
             // Allow only numbers 1-9 or A-I
             cell.addEventListener('input', (e) => {{
@@ -433,7 +434,12 @@ def start_new_game(game_name, level, session_state_component, user=None, show_ti
     submit_btn.click(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved], js=js_submit)
 
     give_up_btn = gr.Button("Give-up 😭", variant='stop')
-    give_up_btn.click(lambda x: (1-x), give_up_btn, session_state, js="(x) => confirm('🥹 Give-up? 💸')")
+    give_up_checkbox = gr.Checkbox(False, visible=False, interactive=False)
+    give_up_btn.click(
+        lambda x: x, [give_up_checkbox], [give_up_checkbox],
+        js="(x) => confirm('🥹 Give-up? 💸')"
+    )
+    give_up_checkbox.change(lambda cfm: 0 if cfm else 1, [give_up_checkbox], [session_state_component])
 
 
 #%%
@@ -464,9 +470,11 @@ def session_state_change_fn(_session_state, cnt_return_with_val=2, cnt_negate_wi
 
 #%%
 with gr.Blocks(title="TextGames") as demo:
-    m = gr.Markdown("Welcome to TextGames!")
+    with gr.Row():
+        with gr.Column(scale=4):
+            m = gr.Markdown("Welcome to TextGames!")
+        logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', scale=1, interactive=False)
     demo.load(lambda: f"Welcome to TextGames! (Mock-User: {os.getenv('TEXTGAMES_MOCKUSER', '')})", None, [m])
-    logout_btn = gr.Button("Logout", link="/logout", interactive=False)
 
     cur_game_start = gr.BrowserState()
     session_state = gr.State(0)    # 0: menu selection, 1: game on-going
@@ -483,7 +491,6 @@ with gr.Blocks(title="TextGames") as demo:
     new_game_btn.click(
         check_to_start_new_game, [game_radio, level_radio], [session_state],
     )
-
 
     @gr.render(inputs=[game_radio, level_radio, session_state], triggers=[session_state.change])
     def _start_new_game(game_name, level, _session_state):
