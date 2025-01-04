@@ -9,7 +9,7 @@ favicon_path = "textgames-scrabble-black2-ss.png"
 
 #%%
 from textgames import GAME_IDS, GAME_NAMES, LEVEL_IDS, LEVELS, new_game
-from play_gradio import start_new_game
+from play_gradio import start_new_game, check_to_start_new_game, session_state_change_fn
 from typing import Optional
 
 
@@ -62,7 +62,7 @@ def get_username(request: Request):
 @app.get('/')
 def public(user: str = Depends(get_username)):
     if user:
-        return RedirectResponse(url='/main-demo')
+        return RedirectResponse(url='/TextGames')
     else:
         return RedirectResponse(url='/login')
 
@@ -115,21 +115,33 @@ with gr.Blocks(title="TextGames") as main_demo:
     m = gr.Markdown("Welcome to TextGames!")
     user_state = gr.State()
     main_demo.load(greet, None, [m, user_state])
+    logout_btn = gr.Button("Logout", link="/logout")
 
-    gr.Button("Logout", link="/logout")
+    cur_game_start = gr.BrowserState()
+    session_state = gr.State(0)    # 0: menu selection, 1: game on-going
 
     game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
     level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
     new_game_btn = gr.Button("Start Game")
-    new_game_btn.click(js="() => {var el = document.getElementById('lintao-container'); if (el) el.remove();}")
     io_history = None
 
-    @gr.render(inputs=[game_radio, level_radio, user_state], triggers=[new_game_btn.click])
-    def _start_new_game(game_name, level, user):
-        start_new_game(game_name, level, user)
+    new_game_btn.click(js="() => {var el = document.getElementById('lintao-container'); if (el) el.remove();}")
+    new_game_btn.click(
+        check_to_start_new_game, [game_radio, level_radio], [cur_game_start, session_state],
+        js="(g, l) => {var el = document.getElementById('lintao-container'); if (el) el.remove(); return [g, l];}",
+    )
+    session_state.change(
+        lambda s: session_state_change_fn(s, 2, 0, 2, 0),
+        [session_state], [game_radio, level_radio, new_game_btn, logout_btn],
+    )
+
+    @gr.render(inputs=[game_radio, level_radio, user_state, session_state], triggers=[new_game_btn.click])
+    def _start_new_game(game_name, level, user, _session_state):
+        if _session_state.change == 1:
+            start_new_game(game_name, level, user)
 
 
-app = gr.mount_gradio_app(app, main_demo, path="/main-demo", auth_dependency=get_username)
+app = gr.mount_gradio_app(app, main_demo, path="/TextGames", auth_dependency=get_username)
 
 if __name__ == '__main__':
     uvicorn.run(app, port=int(os.environ.get("GRADIO_SERVER_PORT", "8080")))

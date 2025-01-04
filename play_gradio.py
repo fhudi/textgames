@@ -94,7 +94,7 @@ js_sudoku = """
 function sudoku() {{
     const N = {N};
     const grid_N = N*N;
-          grid_px = 40;
+          grid_px = 50;
 
     const container = document.createElement('div');
     container.style.display = 'grid';
@@ -200,7 +200,7 @@ from textgames.crossword_arranger.crossword_arranger import CrosswordArrangerGam
 js_crossword = """
 function crossword() {{
     const grid_N = {N};
-          grid_px = 40;
+          grid_px = 50;
 
     const container = document.createElement('div');
     container.style.display = 'grid';
@@ -411,8 +411,12 @@ def start_new_game(game_name, level, user=None, show_timer=False):
             raise NotImplementedError(cur_game)
         showhide_helper_btn = gr.Button("Show Input Helper (disabling manual input)", elem_id="lintao-helper-btn")
         showhide_helper_btn.click(lambda: gr.update(interactive=False), None, textarea, js=js)
-    submit_btn = gr.Button("Submit", elem_id="lintao-submit-btn")
+    submit_btn = gr.Button("Submit", elem_id="lintao-submit-btn", variant='primary')
     submit_btn.click(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved], js=js_submit)
+
+    give_up_btn = gr.Button("Give-up 😭", variant='stop')
+    give_up_btn.click(lambda x: (1-x), give_up_btn, session_state, js="(x) => confirm('🥹 Give-up? 💸')")
+
 
 #%%
 def check_to_start_new_game(game_name, level):
@@ -422,12 +426,29 @@ def check_to_start_new_game(game_name, level):
     return time.time(), 1
 
 
+#%%
+def session_state_change_fn(_session_state, cnt_return_with_val=2, cnt_negate_with_val=0, cnt_return=1, cnt_negate=0):
+    print(f"Session state changed to {_session_state}")
+    ret = (_session_state != 1)
+
+    def up(positive, positive_reset_value=True):
+        return (
+            gr.update(interactive=True, value=None) if positive and positive_reset_value else
+            gr.update(interactive=True) if positive else gr.update(interactive=False)
+        )
+
+    return ([up(ret, True) for _ in range(cnt_return_with_val)] +
+            [up(not ret, True) for _ in range(cnt_negate_with_val)] +
+            [up(ret, False) for _ in range(cnt_return)] +
+            [up(not ret, False) for _ in range(cnt_negate)] +
+            [])
+
 
 #%%
 with gr.Blocks(title="TextGames") as demo:
     m = gr.Markdown("Welcome to TextGames!")
     demo.load(lambda: f"Welcome to TextGames! (Mock-User: {os.getenv('TEXTGAMES_MOCKUSER', '')})", None, [m])
-    gr.Button("Logout", link="/logout", interactive=False)
+    logout_btn = gr.Button("Logout", link="/logout", interactive=False)
 
     cur_game_start = gr.BrowserState()
     session_state = gr.State(0)    # 0: menu selection, 1: game on-going
@@ -435,12 +456,17 @@ with gr.Blocks(title="TextGames") as demo:
     game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
     level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
     new_game_btn = gr.Button("Start New Game")
+    io_history = None
+
+    session_state.change(
+        lambda s: session_state_change_fn(s, 2, 0, 1, 0),
+        [session_state], [game_radio, level_radio, new_game_btn],
+    )
     new_game_btn.click(
         check_to_start_new_game, [game_radio, level_radio], [cur_game_start, session_state],
         js="(g, l) => {var el = document.getElementById('lintao-container'); if (el) el.remove(); return [g, l];}",
     )
 
-    io_history = None
 
     @gr.render(inputs=[game_radio, level_radio, session_state], triggers=[session_state.change])
     def _start_new_game(game_name, level, _session_state):
