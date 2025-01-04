@@ -6,7 +6,7 @@ import json
 
 from tqdm import tqdm
 from pathlib import Path
-from textgames import GAME_NAMES, LEVEL_IDS, new_game
+from textgames import GAME_NAMES, LEVEL_IDS, new_game, game_filename
 
 
 def set_seed(seed):
@@ -24,16 +24,16 @@ if __name__ == '__main__':
     set_seed(42)
 
     # level_ids = LEVEL_IDS
-    level_ids = ["1", "3"]
+    level_ids = ["1", "2", "3"]
     session_ids = [
-        f"session_{sid:04}" for sid in range(os.getenv("TEXTGAMES_GENERATE_N", 100))
+        f"session_{sid:04}" for sid in range(os.getenv("TEXTGAMES_GENERATE_N", 1000))
     ]
 
     count_duplicate = 0
     for game_name in GAME_NAMES:
         prompts_map = dict()
         for level_id in level_ids:
-            os.environ["TEXTGAMES_NEWGAME_ERRFILE"] = f"{outdir}/{game_name}_{level_id}.err"
+            os.environ["TEXTGAMES_NEWGAME_ERRFILE"] = f"{outdir}/{game_filename(game_name)}_{level_id}.err"
             for sid in tqdm(session_ids, desc=f"{game_name}_{level_id}"):
                 while True:
                     cur_game = new_game(game_name, level_id)
@@ -45,7 +45,7 @@ if __name__ == '__main__':
             print(f"[{game_name}_{level_id}]  Duplicate #: {count_duplicate:-4}")
 
             json_object = json.dumps({sid: prompt for prompt, sid in prompts_map.items()}, indent=4)
-            with open(outdir / f"{game_name}_{level_id}.json", "w") as outfile:
+            with open(outdir / f"{game_filename(game_name)}_{level_id}.json", "w") as outfile:
                 outfile.write(json_object)
 
     print(f"duplicates:{count_duplicate}")

@@ -44,6 +44,10 @@ def _reload(prompt, game_cls):
     return game
 
 
+def game_filename(_game_name):
+    return _game_name.split('\t', 1)[-1]
+
+
 def new_game(game_name, level_id):
     not_available_game_level = NotImplementedError(
         f"The difficulty level is not available for this game: {game_name} - {level_id}"
