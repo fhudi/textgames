@@ -34,9 +34,9 @@ SINGLE_LINE_GAME_IDS = list(map(lambda g: GAME_IDS[GAME_NAMES.index(g.get_game_n
                                 [PasswordGame, BracketGame, StringSearch, AnagramScribble]
                                 ))
 
-LEVEL_IDS = ["1", "2", "3", "4", "0", "00"]
-LEVELS = ["🚅\tEasy", "🚀\tMedium", "🛸\tHard"]
-LEVELS_HIDDEN = ["🌌\tInsane", "🔰\tSample #1", "🔰\tSample #2"]
+LEVEL_IDS = ["0", "1", "2", "3", "4", "00"]
+LEVELS = ["🔰\tSample #1", "🚅\tEasy", "🚀\tMedium", "🛸\tHard"]
+LEVELS_HIDDEN = ["🌌\tInsane", "🔰\tSample #2"]
 _show_hidden_level_ = os.getenv("TEXTGAMES_SHOW_HIDDEN_LEVEL", False)
 if _show_hidden_level_:
     LEVELS, LEVELS_HIDDEN = LEVELS + LEVELS_HIDDEN, []
