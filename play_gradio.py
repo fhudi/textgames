@@ -363,10 +363,7 @@ def _calc_time_elapsed(start_time, cur_text, is_solved):
 
 #%%
 def start_new_game(game_name, level, user=None, show_timer=False):
-    print(game_name, level)
-    global io_history, cur_game_start
-    if game_name is None or level is None:
-        raise gr.Error("please choose both Game & Level")
+    global io_history, cur_game_start, new_game_btn
     # cur_game_id = GAME_IDS[GAME_NAMES.index(game_name)]
     difficulty_level = LEVEL_IDS[LEVELS.index(level)]
 
@@ -392,7 +389,7 @@ def start_new_game(game_name, level, user=None, show_timer=False):
         new_io_history = prev_msg + [f"Guess>\n{new_msg}", "Prompt>\n" + response]
         return (
             ("" if not solved else gr.Textbox("Thank you for playing!", interactive=False)),
-            new_io_history, "\n\n".join(new_io_history), solved
+            new_io_history, "\n\n".join(new_io_history), solved,
         )
 
     io_history = gr.State(["Prompt>\n" + cur_game.get_prompt()])
@@ -417,6 +414,14 @@ def start_new_game(game_name, level, user=None, show_timer=False):
     submit_btn = gr.Button("Submit", elem_id="lintao-submit-btn")
     submit_btn.click(add_msg, [textarea, io_history], [textarea, io_history, io_textbox, is_solved], js=js_submit)
 
+#%%
+def check_to_start_new_game(game_name, level):
+    print(game_name, level)
+    if game_name is None or level is None:
+        raise gr.Error("please choose both Game & Level")
+    return time.time(), 1
+
+
 
 #%%
 with gr.Blocks(title="TextGames") as demo:
@@ -425,17 +430,23 @@ with gr.Blocks(title="TextGames") as demo:
     gr.Button("Logout", link="/logout", interactive=False)
 
     cur_game_start = gr.BrowserState()
+    session_state = gr.State(0)    # 0: menu selection, 1: game on-going
 
     game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
     level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
     new_game_btn = gr.Button("Start New Game")
-    new_game_btn.click(lambda: time.time(), None, cur_game_start,
-                       js="() => {var el = document.getElementById('lintao-container'); if (el) el.remove();}")
+    new_game_btn.click(
+        check_to_start_new_game, [game_radio, level_radio], [cur_game_start, session_state],
+        js="(g, l) => {var el = document.getElementById('lintao-container'); if (el) el.remove(); return [g, l];}",
+    )
+
     io_history = None
 
-    @gr.render(inputs=[game_radio, level_radio], triggers=[new_game_btn.click])
-    def _start_new_game(game_name, level):
-        start_new_game(game_name, level)
+    @gr.render(inputs=[game_radio, level_radio, session_state], triggers=[session_state.change])
+    def _start_new_game(game_name, level, _session_state):
+        if _session_state == 1:
+            start_new_game(game_name, level)
+
 
 #%%
 if __name__ == "__main__":
