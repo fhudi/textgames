@@ -93,8 +93,20 @@ from textgames.sudoku.sudoku import Sudoku
 js_sudoku = """
 function sudoku() {{
     const N = {N};
-    const grid_N = N*N;
+    const grid_N = N*N,
           grid_px = 50;
+    const mat = {mat};
+    
+    console.log(mat);
+    let is_numeric_sudoku = false;
+    for (let i = 0; i < grid_N; ++i) {{
+        for (let j = 0; j < grid_N; ++j) {{
+            if (/^\\d$/.test(mat[i][j])) {{
+                is_numeric_sudoku = true;
+                break;
+            }}
+        }}
+    }}
 
     const container = document.createElement('div');
     container.style.display = 'grid';
@@ -109,7 +121,6 @@ function sudoku() {{
     for (let i = 0; i < grid_N; ++i) {{
         for (let j = 0; j < grid_N; ++j) {{
             const cell = document.createElement('input');
-            //cell.textContent = '';
             cell.type = 'text';
             cell.maxLength = 1;
             cell.style.width = cell.style.height = `${{grid_px}}px`;
@@ -123,6 +134,12 @@ function sudoku() {{
             cell.style.cursor = 'pointer';
             cell.id = `lintao-cell-${{i}}-${{j}}`;
             
+            if (mat[i][j] != '_') {{
+                cell.value = mat[i][j];
+                cell.style.color = '#D0D0D0'
+                cell.disabled = true;
+            }}
+            
             //cell.style.color = 'black';
             //cell.style.outline = 'none';
     
@@ -133,10 +150,11 @@ function sudoku() {{
     
             // Allow only numbers 1-9 or A-I
             cell.addEventListener('input', (e) => {{
-                if ((N === 2  &&  (!/^[1-4A-D]$/.test(e.target.value))) || 
-                    (N === 3  &&  (!/^[1-9A-I]$/.test(e.target.value)))) {{
+                if ((N === 2  &&  (!(is_numeric_sudoku?/^[1-4]$/:/^[A-Da-d]$/).test(e.target.value))) || 
+                    (N === 3  &&  (!(is_numeric_sudoku?/^[1-9]$/:/^[A-Ia-i]$/).test(e.target.value)))) {{
                     e.target.value = '';
                 }}
+                e.target.value = e.target.value.toUpperCase();
             }});
     
             container.appendChild(cell);
@@ -156,7 +174,7 @@ function sudoku() {{
             const currentCol = i % grid_N;
 
             if (currentRow === row || currentCol === col || (Math.floor(currentRow / N) === Math.floor(row / N) && Math.floor(currentCol / N) === Math.floor(col / N))) {{
-                cell.style.backgroundColor = '#b0b6bb';
+                cell.style.backgroundColor = '#303039';
             }} else {{
                 cell.style.backgroundColor = 'black';
             }}
@@ -199,7 +217,7 @@ from textgames.crossword_arranger.crossword_arranger import CrosswordArrangerGam
 
 js_crossword = """
 function crossword() {{
-    const grid_N = {N};
+    const grid_N = {N},
           grid_px = 50;
 
     const container = document.createElement('div');
@@ -401,7 +419,8 @@ def start_new_game(game_name, level, user=None, show_timer=False):
         if isinstance(cur_game, Islands):
             js, js_submit = js_island.format(N=cur_game.N), js_island_submit.format(N=cur_game.N)
         elif isinstance(cur_game, Sudoku):
-            js, js_submit = js_sudoku.format(N=cur_game.srn), js_sudoku_submit.format(N=cur_game.srn)
+            sudoku_arr = list(map(lambda r: ''.join(map(str, r)), cur_game.mat))
+            js, js_submit = js_sudoku.format(N=cur_game.srn, mat=str(sudoku_arr)), js_sudoku_submit.format(N=cur_game.srn)
         elif isinstance(cur_game, CrosswordArrangerGame):
             js, js_submit = js_crossword.format(N=cur_game.board_size), js_crossword_submit.format(
                 N=cur_game.board_size)
