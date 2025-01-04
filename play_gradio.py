@@ -376,6 +376,9 @@ def start_new_game(game_name, level, user=None, show_timer=False):
         elapsed_text = gr.Textbox("N/A", label=f"{game_name}", info=f"{level}", )
         gr.Timer(.3).tick(_calc_time_elapsed, [cur_game_start, elapsed_text, is_solved], [elapsed_text])
 
+    if user is None and os.getenv("TEXTGAMES_MOCKUSER", ""):
+        user = {'email': os.getenv("TEXTGAMES_MOCKUSER", "")}
+
     cur_game = (
         new_game(game_name, difficulty_level)
         if user is None else
@@ -417,6 +420,10 @@ def start_new_game(game_name, level, user=None, show_timer=False):
 
 #%%
 with gr.Blocks(title="TextGames") as demo:
+    m = gr.Markdown("Welcome to TextGames!")
+    demo.load(lambda: f"Welcome to TextGames! (Mock-User: {os.getenv('TEXTGAMES_MOCKUSER', '')})", None, [m])
+    gr.Button("Logout", link="/logout", interactive=False)
+
     cur_game_start = gr.BrowserState()
 
     game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")

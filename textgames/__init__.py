@@ -10,6 +10,10 @@ from textgames.anagram_scribble.anagram_scribble import AnagramScribble
 import random
 import os
 
+from pandas import read_csv
+import json
+
+
 # ["🔑\tPassword Game", "🧩\tText Sudoku", "🗳️\tBracket Game", "📈\tOrdering Text",
 #  "🏝️\tIslands", "🔎\tString Search", "📰\tCrossword Arranger", "🔤\tAnagram Scribble",]
 THE_GAMES = {
@@ -46,6 +50,28 @@ def _reload(prompt, game_cls):
 
 def game_filename(_game_name):
     return _game_name.split('\t', 1)[-1]
+
+
+def _game_class_from_name(game_name):
+    for game_class in [PasswordGame, Sudoku, BracketGame, OrderingTextGame, Islands,
+                       StringSearch, CrosswordArrangerGame, AnagramScribble]:
+        if game_name == game_class.get_game_name():
+            return game_class
+    return None
+
+
+def preload_game(game_name, level_id, user):
+    game_cls = _game_class_from_name(game_name)
+    email_sid_dict = read_csv("session_email.csv").dropna().set_index("EMAIL").SID.to_dict()
+    sid = email_sid_dict.get(user["email"])
+    print(f"preload_game('{game_name}', '{level_id}', '{user['email']}')", game_cls, sid, sep="\n\t")
+
+    with open(f"problemsets/{game_filename(game_name)}_{level_id}.json", "r", encoding="utf8") as f:
+        sid_prompt_dict = json.load(f)
+    prompt = sid_prompt_dict.get(sid)
+    print("Prompt:", prompt, sep="\n")
+
+    return _reload(prompt, game_cls)
 
 
 def new_game(game_name, level_id):
