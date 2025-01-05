@@ -456,7 +456,13 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
         lambda x: x, [give_up_checkbox], [give_up_checkbox],
         js="(x) => confirm('🥹 Give-up? 💸')"
     )
-    give_up_checkbox.change(lambda cfm: 0 if cfm else 1, [give_up_checkbox], [session_state_component])
+
+    def _forfeiting(confirmed):
+        if confirmed:
+            cur_game.finish_stats_(forfeit=True)
+            return 0
+        return 1
+    give_up_checkbox.change(_forfeiting, [give_up_checkbox], [session_state_component])
 
     def game_is_solved(_is_solved, _session_state, _solved_games):
         if _is_solved:
