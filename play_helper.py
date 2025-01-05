@@ -386,16 +386,13 @@ def _calc_time_elapsed(start_time, cur_text, is_solved):
 
 # %%
 def start_new_game(game_name, level, session_state_component, is_solved_component, solved_games_component,
-                   user=None, show_timer=False):
+                   user=None, show_timer=False, uid=None):
     # cur_game_id = GAME_IDS[GAME_NAMES.index(game_name)]
     difficulty_level = LEVEL_IDS[LEVELS.index(level)]
 
     # if show_timer:
     #     elapsed_text = gr.Textbox("N/A", label=f"{game_name}", info=f"{level}", )
     #     gr.Timer(.3).tick(_calc_time_elapsed, [cur_game_start, elapsed_text, is_solved_component], [elapsed_text])
-
-    if user is None and os.getenv("TEXTGAMES_MOCKUSER", ""):
-        user = {'email': os.getenv("TEXTGAMES_MOCKUSER", "")}
 
     cur_game = (
         new_game(game_name, difficulty_level)
@@ -476,10 +473,17 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
 
 
 # %%
-def check_to_start_new_game(game_name, level):
+def check_to_start_new_game(game_name, level, user=None, uid=None):
     print(game_name, level)
     if game_name is None or level is None:
         raise gr.Error("please choose both Game & Level")
+    if user is None:
+        gr.Warning("no user, game will be generated randomly")
+    else:
+        if not user['email_verified']:
+            gr.Warning("please verify your email address")
+        elif user['email_verified'] == "mockuser":
+            gr.Info("game will load with a mocked-up user")
     return 1
 
 
