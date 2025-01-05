@@ -18,7 +18,7 @@ def declare_components():
             m = gr.Markdown("Welcome to TextGames!", elem_id="md-greeting")
             logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', size='sm', elem_id="btn-logout")
         with gr.Column(scale=2):
-            solved_games_df = gr.DataFrame(headers=[g.split('\t', 1)[0] for g in GAME_NAMES], label="Solved Games",
+            solved_games_df = gr.DataFrame(headers=[g.split('\t', 1)[0] for g in GAME_NAMES], label="Finished Games",
                                            interactive=False, elem_id="df-solved-games")
     game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
     level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
@@ -504,6 +504,18 @@ def check_to_start_new_game(game_name, level, user=None, uid=None):
         elif user['email_verified'] == "mockuser":
             gr.Info("game will load with a mocked-up user")
     return 1
+
+
+# %%
+def check_played_game(solved_games, uid):
+    ret = dict()
+    for game_name in solved_games.keys():
+        cur = []
+        for level, level_id in zip(LEVELS[1:4], LEVEL_IDS[1:4]):
+            if os.path.exists(_get_file_output(game_name, level_id, uid)):
+                cur.append(level)
+        ret[game_name] = cur
+    return ret
 
 
 # %%
