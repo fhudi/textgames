@@ -12,6 +12,7 @@ from textgames import GAME_NAMES, LEVELS
 from play_helper import declare_components, start_new_game, check_to_start_new_game,\
     session_state_change_fn, js_solved_games_df, js_remove_input_helper, solved_games_change_fn
 from typing import Optional
+import hashlib
 
 
 #%%
@@ -41,6 +42,14 @@ oauth.register(
 )
 
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+
+_HASHER = (hashlib.blake2b, {"digest_size": 16, "key": SECRET_KEY.encode('utf-8')})
+
+
+def _hash_msg(msg):
+    m = _HASHER[0](**_HASHER[1])
+    m.update(msg)
+    return m.hexdigest()
 
 
 # Dependency to get the current user
@@ -104,10 +113,12 @@ async def auth(request: Request):
 
 def greet(request: gr.Request):
     user = get_user(request.request)
+    # uid = ('1' if user['email_verified'] else '0') + f"{int(time.time()*10):x}_"[-8:] + _hash_msg(user['email'])
+    uid = _hash_msg(user['email'])
     return f"""
     Welcome to TextGames, {user['name']}!<br />
     <{user['email'].replace('@', '{at}')}> ({'' if user['email_verified'] else 'NON-'}verified email)
-    """, user
+    """, user, uid
 
 
 with gr.Blocks(title="TextGames") as login_demo:
@@ -125,21 +136,22 @@ with gr.Blocks(title="TextGames", delete_cache=(3600, 3600)) as demo:
     is_solved = gr.State(0)
     solved_games = gr.State({g: [] for _, g in game_radio.choices})
     user_state = gr.State()
+    uid_state = gr.State()
 
-    demo.load(greet, None, [m, user_state], js=js_solved_games_df)
+    demo.load(greet, None, [m, user_state, uid_state], js=js_solved_games_df)
 
     session_state.change(
         lambda s: session_state_change_fn(s, 2, 0, 2, 0),
         [session_state], [game_radio, level_radio, new_game_btn, logout_btn], js=js_remove_input_helper,
     )
-    new_game_btn.click(check_to_start_new_game, [game_radio, level_radio], [session_state])
+    new_game_btn.click(check_to_start_new_game, [game_radio, level_radio, user_state, uid_state], [session_state])
     solved_games.change(solved_games_change_fn, solved_games, solved_games_df)
     session_state.change(lambda s, r: (not r if s in [0, 1] else r), [session_state, render_toggle], [render_toggle])
 
-    @gr.render(inputs=[game_radio, level_radio, user_state, session_state], triggers=[render_toggle.change])
-    def _start_new_game(game_name, level, user, _session_state):
+    @gr.render(inputs=[game_radio, level_radio, user_state, session_state, uid_state], triggers=[render_toggle.change])
+    def _start_new_game(game_name, level, user, _session_state, _uid_state):
         if _session_state in [1, 2]:
-            start_new_game(game_name, level, session_state, is_solved, solved_games, user=user)
+            start_new_game(game_name, level, session_state, is_solved, solved_games, user=user, uid=_uid_state)
 
 
 app = gr.mount_gradio_app(app, demo, path="/TextGames", auth_dependency=get_username)
