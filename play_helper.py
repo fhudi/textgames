@@ -457,12 +457,15 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
         js="(x) => confirm('🥹 Give-up? 💸')"
     )
 
-    def _forfeiting(confirmed):
+    def _forfeiting(confirmed, _solved_games):
         if confirmed:
             cur_game.finish_stats_(forfeit=True)
-            return 0
-        return 1
-    give_up_checkbox.change(_forfeiting, [give_up_checkbox], [session_state_component])
+            if level in LEVELS[1:4] and level not in _solved_games[game_name]:
+                _solved_games[game_name].append(level)
+            return 0, _solved_games
+        return 1, _solved_games
+    give_up_checkbox.change(_forfeiting, [give_up_checkbox, solved_games_component],
+                            [session_state_component, solved_games_component])
 
     def game_is_solved(_is_solved, _session_state, _solved_games):
         if _is_solved:

@@ -115,7 +115,7 @@ async def auth(request: Request):
 def greet(request: gr.Request):
     user = get_user(request.request)
     # uid = ('1' if user['email_verified'] else '0') + f"{int(time.time()*10):x}_"[-8:] + _hash_msg(user['email'])
-    uid = _hash_msg(user['email'])
+    uid = _hash_msg(user['email'].encode('utf-8'))
     return f"""
     Welcome to TextGames, {user['name']}!<br />
     <{user['email'].replace('@', '{at}')}> ({'' if user['email_verified'] else 'NON-'}verified email)
