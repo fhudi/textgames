@@ -9,7 +9,8 @@ favicon_path = "textgames-scrabble-black2-ss.png"
 
 #%%
 from textgames import GAME_NAMES, LEVELS
-from play_helper import start_new_game, check_to_start_new_game, session_state_change_fn
+from play_helper import declare_components, start_new_game, check_to_start_new_game,\
+    session_state_change_fn, js_solved_games_df, js_remove_input_helper, solved_games_change_fn
 from typing import Optional
 
 
@@ -117,33 +118,22 @@ with gr.Blocks(title="TextGames") as login_demo:
 app = gr.mount_gradio_app(app, login_demo, path="/login")
 
 with gr.Blocks(title="TextGames", delete_cache=(3600, 3600)) as demo:
-    user_state = gr.State()
-    with gr.Row():
-        with gr.Column(scale=4):
-            m = gr.Markdown("Welcome to TextGames!")
-        with gr.Column(scale=1):
-            logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', interactive=True)
-    demo.load(greet, None, [m, user_state])
+    m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle = declare_components()
 
-    cur_game_start = gr.BrowserState()
+    # cur_game_start = gr.BrowserState()
     session_state = gr.State(0)    # 0: menu selection, 1: game is ongoing, 2: game is solved.
     is_solved = gr.State(0)
-    solved_games = gr.State({g: [] for g in GAME_NAMES})
+    solved_games = gr.State({g: [] for _, g in game_radio.choices})
+    user_state = gr.State()
 
-    game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
-    level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
-    new_game_btn = gr.Button("Start Game")
+    demo.load(greet, None, [m, user_state], js=js_solved_games_df)
 
     session_state.change(
         lambda s: session_state_change_fn(s, 2, 0, 2, 0),
-        [session_state], [game_radio, level_radio, new_game_btn, logout_btn],
-        js="(s) => {var el = document.getElementById('lintao-container'); if (el) el.remove(); return s;}",
+        [session_state], [game_radio, level_radio, new_game_btn, logout_btn], js=js_remove_input_helper,
     )
-    new_game_btn.click(
-        check_to_start_new_game, [game_radio, level_radio], [session_state],
-    )
-
-    render_toggle = gr.Checkbox(False, visible=False, interactive=False)
+    new_game_btn.click(check_to_start_new_game, [game_radio, level_radio], [session_state])
+    solved_games.change(solved_games_change_fn, solved_games, solved_games_df)
     session_state.change(lambda s, r: (not r if s in [0, 1] else r), [session_state, render_toggle], [render_toggle])
 
     @gr.render(inputs=[game_radio, level_radio, user_state, session_state], triggers=[render_toggle.change])
@@ -156,3 +146,10 @@ app = gr.mount_gradio_app(app, demo, path="/TextGames", auth_dependency=get_user
 
 if __name__ == '__main__':
     uvicorn.run(app, port=int(os.environ.get("GRADIO_SERVER_PORT", "8080")))
+
+
+#%%
+
+
+#%%
+

@@ -10,52 +10,34 @@ favicon_path = "textgames-scrabble-black2-ss.png"
 #%%
 import pandas as pd
 import gradio as gr
-from textgames import GAME_NAMES, LEVELS
-from play_helper import start_new_game, check_to_start_new_game, session_state_change_fn, js_solved_games_df
+from play_helper import declare_components, start_new_game, check_to_start_new_game,\
+    session_state_change_fn, js_solved_games_df, js_remove_input_helper, solved_games_change_fn
 
 
 #%%
 def greet():
-    return f"Welcome to TextGames!<br/>(Mock-User: {os.getenv('TEXTGAMES_MOCKUSER', '')})"
+    return f"Welcome to TextGames!<br/>(Mock-User: {os.getenv('TEXTGAMES_MOCKUSER', '')})", None
 
 
 #%%
 with gr.Blocks(title="TextGames", delete_cache=(3600, 3600)) as demo:
-    with gr.Row():
-        with gr.Column(scale=1):
-            m = gr.Markdown("Welcome to TextGames!")
-            logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', interactive=False, size='sm')
-        with gr.Column(scale=2):
-            solved_games_df = gr.DataFrame(headers=[g.split('\t', 1)[0] for g in GAME_NAMES], label="Solved Games",
-                                           interactive=False, elem_id="solved-games-df")
-    demo.load(greet, None, [m], js=js_solved_games_df)
+    m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle = declare_components()
+    logout_btn.interactive = False
 
-    cur_game_start = gr.BrowserState()
+    # cur_game_start = gr.BrowserState()
     session_state = gr.State(0)    # 0: menu selection, 1: game is ongoing, 2: game is solved.
     is_solved = gr.State(0)
-    solved_games = gr.State({g: [] for g in GAME_NAMES})
+    solved_games = gr.State({g: [] for _, g in game_radio.choices})
+    user_state = gr.State()
 
-    def _icon(_):
-        return _.split('\t', 1)[0]
-    solved_games.change(
-        lambda sg: pd.DataFrame({_icon(g): [" ".join(map(_icon, l))] for g, l in sg.items()}),
-        solved_games, solved_games_df
-    )
-
-    game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
-    level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
-    new_game_btn = gr.Button("Start New Game")
+    demo.load(greet, None, [m, user_state], js=js_solved_games_df)
 
     session_state.change(
-        lambda s: session_state_change_fn(s, 2, 0, 1, 0),
-        [session_state], [game_radio, level_radio, new_game_btn],
-        js="(s) => {var el = document.getElementById('lintao-container'); if (el) el.remove(); return s;}",
+        session_state_change_fn,
+        [session_state], [game_radio, level_radio, new_game_btn], js=js_remove_input_helper,
     )
-    new_game_btn.click(
-        check_to_start_new_game, [game_radio, level_radio], [session_state],
-    )
-
-    render_toggle = gr.Checkbox(False, visible=False, interactive=False)
+    new_game_btn.click(check_to_start_new_game, [game_radio, level_radio], [session_state])
+    solved_games.change(solved_games_change_fn, solved_games, solved_games_df)
     session_state.change(lambda s, r: (not r if s in [0, 1] else r), [session_state, render_toggle], [render_toggle])
 
     @gr.render(inputs=[game_radio, level_radio, session_state], triggers=[render_toggle.change])

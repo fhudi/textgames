@@ -1,12 +1,38 @@
 # %%
 import os
 import time
+import pandas as pd
 import gradio as gr
-from textgames import LEVEL_IDS, LEVELS, new_game, preload_game
+from textgames import GAME_NAMES, LEVEL_IDS, LEVELS, new_game, preload_game
+
+from textgames.islands.islands import Islands
+from textgames.sudoku.sudoku import Sudoku
+from textgames.crossword_arranger.crossword_arranger import CrosswordArrangerGame
+from textgames.ordering_text.ordering_text import OrderingTextGame
+
+
+# %%
+def declare_components():
+    with gr.Row():
+        with gr.Column(scale=1):
+            m = gr.Markdown("Welcome to TextGames!", elem_id="md-greeting")
+            logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', size='sm', elem_id="btn-logout")
+        with gr.Column(scale=2):
+            solved_games_df = gr.DataFrame(headers=[g.split('\t', 1)[0] for g in GAME_NAMES], label="Solved Games",
+                                           interactive=False, elem_id="df-solved-games")
+    game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
+    level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
+    new_game_btn = gr.Button("Start Game", elem_id="btn-start-game")
+    render_toggle = gr.Checkbox(False, visible=False, interactive=False)
+    return m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle
+
+
+# %%
+js_remove_input_helper = "(s) => {var el = document.getElementById('lintao-container'); if (el) el.remove(); return s;}"
 
 # %%
 js_solved_games_df = """() => {
-        var solvedGamesDf = document.getElementById("solved-games-df");
+        var solvedGamesDf = document.getElementById("df-solved-games");
         var tables = solvedGamesDf.getElementsByTagName("table");
         for (let i = 0; i < tables.length; ++i) {
             tables[i].style.overflowY = "clip";
@@ -16,8 +42,6 @@ js_solved_games_df = """() => {
 
 
 # %%
-from textgames.islands.islands import Islands
-
 js_island = """
 function island() {{
     const grid_N = {N},
@@ -85,9 +109,8 @@ function island_submit(textarea, io_history) {{
 }}
 """
 
-# %%
-from textgames.sudoku.sudoku import Sudoku
 
+# %%
 js_sudoku = """
 function sudoku() {{
     const N = {N};
@@ -205,9 +228,8 @@ function sudoku_submit(textarea, io_history) {{
 }}
 """
 
-# %%
-from textgames.crossword_arranger.crossword_arranger import CrosswordArrangerGame
 
+# %%
 js_crossword = """
 function crossword() {{
     const grid_N = {N},
@@ -270,9 +292,8 @@ function crossword_submit(textarea, io_history) {{
 }}
 """
 
-# %%
-from textgames.ordering_text.ordering_text import OrderingTextGame
 
+# %%
 js_ordering = """
 function ordering() {{          
     const listContainer = document.createElement('ul');
@@ -432,7 +453,7 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
 
     def game_is_solved(_is_solved, _session_state, _solved_games):
         if _is_solved:
-            if level not in _solved_games[game_name]:
+            if level in LEVELS[1:4] and level not in _solved_games[game_name]:
                 _solved_games[game_name].append(level)
             return (
                 2,
@@ -479,4 +500,19 @@ def session_state_change_fn(_session_state, cnt_return_with_val=2, cnt_negate_wi
             [up(not ret, False) for _ in range(cnt_negate)] +
             [])
 
+
+# %%
+def solved_games_change_fn(solved_games):
+    def _icon(_):
+        return _.split('\t', 1)[0]
+    return pd.DataFrame({
+        _icon(g): [" ".join(map(_icon, l))]
+        for g, l in solved_games.items()
+    })
+
+
+# %%
+
+
+# %%
 
