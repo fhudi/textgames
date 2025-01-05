@@ -1,4 +1,5 @@
 import time
+import pickle
 
 
 class BaseGame:
@@ -10,6 +11,8 @@ class BaseGame:
         self.attempt_count = 0
         self.attempt_timestamps = None
         self.is_solved = None
+        self.is_forfeited = None
+        self.stats_filepath = None
 
     @staticmethod
     def get_game_name() -> str:
@@ -29,14 +32,41 @@ class BaseGame:
 
     def init_stats_(self):
         self.start_timestamp = time.time()
-        self.chat_log = []
         self.attempt_count = 0
         self.attempt_timestamps = []
+        self.chat_log = []
         self.is_solved = False
+        self.is_forfeited = False
 
-    def finish_stats_(self):
+    def attach_stats_output_(self, filepath):
+        assert not self.stats_filepath
+        self.stats_filepath = filepath
+
+    def flush_stats_(self, user=None):
+        if self.stats_filepath:
+            with open(self.stats_filepath, mode='ab') as o:
+                if user:
+                    pickle.dump((time.time(), user), o)
+                else:
+                    pickle.dump((
+                        time.time(),
+                        self.attempt_count,
+                        self.attempt_timestamps,
+                        self.chat_log,
+                        self.is_solved,
+                        self.is_forfeited,
+                    ), o)
+            self.chat_log.clear()
+            self.attempt_timestamps.clear()
+        # won't flush if output filepath is unset
+
+    def finish_stats_(self, forfeit: bool = False) -> None:
+        assert not self.is_solved and not self.is_forfeited
         self.end_timestamp = time.time()
-        self.is_solved = True
+        if not forfeit:
+            self.is_solved = True
+        else:
+            self.is_forfeited = True
 
     def generate_new_game(self, *args, **kwargs) -> None:
         self._generate_new_game(*args, **kwargs)
@@ -49,17 +79,19 @@ class BaseGame:
     def get_prompt(self) -> str:
         prompt = self._get_prompt()
         self.chat_log.append((-2, prompt,))
+        self.flush_stats_()
         return prompt
 
     def validate(self, answer: str) -> (bool, str):
         # print(self.start_timestamp, self.attempt_timestamps, self.is_solved, sep="\n", end="\n\n")
-        self.chat_log.append((-1, answer,))
         self.attempt_count += 1
         self.attempt_timestamps.append(time.time())
+        self.chat_log.append((-1, answer,))
         solved, val_msg = self._validate(answer)
         self.chat_log.append((solved, val_msg,))
         if solved:
             self.finish_stats_()
+        self.flush_stats_()
         return solved, val_msg
 
     def is_game_reloadable(self) -> bool:

@@ -3,7 +3,7 @@ import os
 import time
 import pandas as pd
 import gradio as gr
-from textgames import GAME_NAMES, LEVEL_IDS, LEVELS, new_game, preload_game
+from textgames import GAME_NAMES, LEVEL_IDS, LEVELS, new_game, preload_game, game_filename
 
 from textgames.islands.islands import Islands
 from textgames.sudoku.sudoku import Sudoku
@@ -385,6 +385,13 @@ def _calc_time_elapsed(start_time, cur_text, is_solved):
 
 
 # %%
+def _get_file_output(game_name, level_id, fn_prefix):
+    fd = os.getenv('TEXTGAMES_OUTPUT_DIR', '.')
+    os.makedirs(fd, exist_ok=True)
+    return f"{fd}/{fn_prefix}_-_{game_filename(game_name)}_{level_id}.pkl"
+
+
+# %%
 def start_new_game(game_name, level, session_state_component, is_solved_component, solved_games_component,
                    user=None, show_timer=False, uid=None):
     # cur_game_id = GAME_IDS[GAME_NAMES.index(game_name)]
@@ -394,11 +401,14 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
     #     elapsed_text = gr.Textbox("N/A", label=f"{game_name}", info=f"{level}", )
     #     gr.Timer(.3).tick(_calc_time_elapsed, [cur_game_start, elapsed_text, is_solved_component], [elapsed_text])
 
+    fp_out = _get_file_output(game_name, difficulty_level, uid)
     cur_game = (
         new_game(game_name, difficulty_level)
         if user is None else
         preload_game(game_name, difficulty_level, user)
     )
+    cur_game.attach_stats_output_(fp_out)
+    cur_game.flush_stats_(user=user)
 
     def add_msg(new_msg, prev_msg):
         user_input = '\n'.join(new_msg.split())
@@ -477,6 +487,9 @@ def check_to_start_new_game(game_name, level, user=None, uid=None):
     print(game_name, level)
     if game_name is None or level is None:
         raise gr.Error("please choose both Game & Level")
+    fp = _get_file_output(game_name, LEVEL_IDS[LEVELS.index(level)], uid)
+    if os.path.exists(fp):
+        raise gr.Error(f"You have done this game already.<br/>{game_name} - {level}")
     if user is None:
         gr.Warning("no user, game will be generated randomly")
     else:

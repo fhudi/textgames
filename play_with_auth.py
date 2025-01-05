@@ -5,6 +5,7 @@ os.environ.setdefault("GRADIO_SERVER_PORT", "1080")
 os.environ.setdefault("TEXTGAMES_LOADGAME_DIR", "problemsets")
 os.environ.setdefault("TEXTGAMES_LOADGAME_ID", "42")
 os.environ.setdefault("TEXTGAMES_MOCKUSER", "")
+os.environ.setdefault("TEXTGAMES_OUTPUT_DIR", "user_outputs")
 favicon_path = "textgames-scrabble-black2-ss.png"
 
 #%%
