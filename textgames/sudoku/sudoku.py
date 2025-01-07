@@ -24,13 +24,14 @@ class Sudoku(BaseGame):
         cols = [set() for _ in range(self.size)]
         subgrids = [set() for _ in range(self.size)]
     
+        print(mat)
         for i in range(self.size):
             for j in range(self.size):
                 num = mat[i][j]
-                if num == 0:
+                if num == self.empty_character:
                     continue
     
-                subgrid_index = (i // self.srn) * self.srn + j // self.srn
+                subgrid_index = (i // self.srn) * self.srn + (j // self.srn)
     
                 if num in rows[i] or num in cols[j] or num in subgrids[subgrid_index]:
                     return False
@@ -38,7 +39,7 @@ class Sudoku(BaseGame):
                 rows[i].add(num)
                 cols[j].add(num)
                 subgrids[subgrid_index].add(num)
-    
+
         return True
 
     def _validate(self, input) -> (bool, str):
