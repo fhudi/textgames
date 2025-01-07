@@ -28,7 +28,7 @@ class Sudoku(BaseGame):
             for j in range(self.size):
                 num = mat[i][j]
                 if num == self.empty_character:
-                    continue
+                    return False
     
                 subgrid_index = (i // self.srn) * self.srn + (j // self.srn)
     
