@@ -422,13 +422,21 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
     def add_msg(new_msg, prev_msg):
         user_input = '\n'.join(new_msg.split())
         solved, val_msg = cur_game.validate(user_input)
-        response = ("Correct" if solved else "Bad") + " guess\n" + val_msg
+        response = ("Correct guess" if solved else "Bad guess (Wrong Answer)") + "\n" + val_msg
         new_io_history = prev_msg + [f"Guess>\n{new_msg}", "Prompt>\n" + response]
         return (
             ("" if not solved else gr.Textbox("Thank you for playing!", interactive=False)),
             new_io_history, "\n\n".join(new_io_history), (1 if solved else 0),
         )
 
+    gr.Markdown(
+        """
+        > ### ‼️ Do ***NOT*** refresh this page. ‼️<br>
+        > #### ⚠️ Refreshing the page equals "Give-up 😭" ⚠️
+        
+        
+        """
+    )
     showhide_helper_btn = gr.Button("Show Input Helper (disabling manual input)", elem_id="lintao-helper-btn")
     io_history = gr.State(["Prompt>\n" + cur_game.get_prompt()])
     io_textbox = gr.Textbox("\n\n".join(io_history.value), label="Prompt>", interactive=False)
