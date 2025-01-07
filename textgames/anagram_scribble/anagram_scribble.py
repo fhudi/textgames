@@ -23,11 +23,12 @@ class AnagramScribble(BaseGame):
         self.total_chars_num = 10
         self.total_chars = []
         self.possible_ans = ""
+        self.exclude_states = ["low_num_chars", "high_num_chars", "possible_ans"]
 
     def _load_game(self, state_string) -> None:
         num_chars_pattern = re.compile(r'Construct a valid (\d+)-character English word')
         repeat_pattern = r'Each character can be used multiple times\.'
-        letters_pattern = re.compile(r'from the following letters:\n\[(.*?)\]')
+        letters_pattern = re.compile(r'from the following letters:\n\[(.*)\]')
         def extract_variable(pattern, input_string):
             match = pattern.search(input_string)
             if match:
@@ -41,7 +42,7 @@ class AnagramScribble(BaseGame):
         total_chars_extraction = extract_variable(letters_pattern, state_string)
         if total_chars_extraction != "Error loading game state.":
             characters = total_chars_extraction.split(",")
-            self.total_chars = [char.strip() for char in characters]
+            self.total_chars = [char.strip().strip("'") for char in characters]
 
     def _generate_new_game(self, *args, **kwargs) -> None:
         self.low_num_chars = kwargs['low_num_chars']
