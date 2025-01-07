@@ -11,7 +11,7 @@ favicon_path = "textgames-scrabble-black2-ss.png"
 #%%
 from textgames import GAME_NAMES, LEVELS
 from play_helper import declare_components, start_new_game, check_to_start_new_game,\
-    session_state_change_fn, js_solved_games_df, js_remove_input_helper, solved_games_change_fn, check_played_game
+    session_state_change_fn, js_solved_games_df_and_remove_footers, js_remove_input_helper, solved_games_change_fn, check_played_game
 from typing import Optional
 import hashlib
 
@@ -148,7 +148,7 @@ with gr.Blocks(title="TextGames", delete_cache=(3600, 3600)) as demo:
     session_state.change(lambda s, r: (not r if s in [0, 1] else r), [session_state, render_toggle], [render_toggle])
 
     demo.load(
-        greet, None, [m, user_state, uid_state], js=js_solved_games_df
+        greet, None, [m, user_state, uid_state], js=js_solved_games_df_and_remove_footers
     ).then(
         check_played_game, [solved_games, uid_state], [solved_games]
     )

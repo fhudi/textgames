@@ -28,15 +28,24 @@ def declare_components():
 
 
 # %%
-js_remove_input_helper = "(s) => {var el = document.getElementById('lintao-container'); if (el) el.remove(); return s;}"
+js_remove_input_helper = """(s) => {
+        var el = document.getElementById('lintao-container');
+        if (el) el.remove();
+        return s;
+    }"""
 
 # %%
-js_solved_games_df = """() => {
+js_solved_games_df_and_remove_footers = """() => {
         var solvedGamesDf = document.getElementById("df-solved-games");
         var tables = solvedGamesDf.getElementsByTagName("table");
         for (let i = 0; i < tables.length; ++i) {
             tables[i].style.overflowY = "clip";
             tables[i].style.overflowX = "auto";
+        }
+        var footers = document.getElementsByTagName("footer");
+        for (let i = 0; i < footers.length; ++i) {
+            // footers[i].style.visibility = 'hidden';
+            footers[i].remove();
         }
     }"""
 
