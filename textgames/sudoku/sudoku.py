@@ -24,7 +24,6 @@ class Sudoku(BaseGame):
         cols = [set() for _ in range(self.size)]
         subgrids = [set() for _ in range(self.size)]
     
-        print(mat)
         for i in range(self.size):
             for j in range(self.size):
                 num = mat[i][j]
