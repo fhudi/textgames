@@ -1,85 +1,85 @@
-📰	Crossword Arranger_1: 100%|██████████| 1000/1000 [00:04<00:00, 222.82it/s]
+📰	Crossword Arranger_1: 100%|██████████| 1000/1000 [00:04<00:00, 206.56it/s]
 [📰	Crossword Arranger_1]  Duplicate #:    0
-📰	Crossword Arranger_2: 100%|██████████| 1000/1000 [00:11<00:00, 87.08it/s]
+📰	Crossword Arranger_2: 100%|██████████| 1000/1000 [00:14<00:00, 69.60it/s]
 [📰	Crossword Arranger_2]  Duplicate #:    0
-📰	Crossword Arranger_3: 100%|██████████| 1000/1000 [04:57<00:00,  3.36it/s]
-🧩	Text Sudoku_1: 100%|██████████| 1000/1000 [00:00<00:00, 7963.18it/s]
-🧩	Text Sudoku_2: 100%|██████████| 1000/1000 [00:00<00:00, 7641.16it/s]
-🧩	Text Sudoku_3: 100%|██████████| 1000/1000 [00:07<00:00, 141.16it/s]
+📰	Crossword Arranger_3: 100%|██████████| 1000/1000 [05:30<00:00,  3.02it/s]
 [📰	Crossword Arranger_3]  Duplicate #:    0
+🧩	Text Sudoku_1: 100%|██████████| 1000/1000 [00:00<00:00, 7546.89it/s]
 [🧩	Text Sudoku_1]  Duplicate #:    0
+🧩	Text Sudoku_2: 100%|██████████| 1000/1000 [00:00<00:00, 6991.53it/s]
 [🧩	Text Sudoku_2]  Duplicate #:    0
+🧩	Text Sudoku_3: 100%|██████████| 1000/1000 [00:09<00:00, 107.71it/s]
 [🧩	Text Sudoku_3]  Duplicate #:    0
-[🏝️	Islands_1]  Duplicate #: 1689
+🏝️	Islands_1: 100%|██████████| 1000/1000 [00:00<00:00, 6561.67it/s]
+🏝️	Islands_2:   0%|          | 0/1000 [00:00<?, ?it/s][🏝️	Islands_1]  Duplicate #: 1689
 [🏝️	Islands_2]  Duplicate #: 1910
+🏝️	Islands_2: 100%|██████████| 1000/1000 [00:00<00:00, 14037.63it/s]
+🏝️	Islands_3: 100%|██████████| 1000/1000 [00:00<00:00, 8771.91it/s]
 [🏝️	Islands_3]  Duplicate #: 2813
-🏝️	Islands_1: 100%|██████████| 1000/1000 [00:00<00:00, 9184.84it/s]
-🏝️	Islands_2: 100%|██████████| 1000/1000 [00:00<00:00, 18342.89it/s]
-🏝️	Islands_3: 100%|██████████| 1000/1000 [00:00<00:00, 11318.37it/s]
-🔑	Password Game_1: 100%|██████████| 1000/1000 [03:40<00:00,  4.54it/s]
-[🔑	Password Game_1]  Duplicate #: 3022
-🔑	Password Game_2: 100%|██████████| 1000/1000 [02:58<00:00,  5.59it/s]
-[🔑	Password Game_2]  Duplicate #: 3022
-🔑	Password Game_3: 100%|██████████| 1000/1000 [02:48<00:00,  5.95it/s]
-📈	Ordering Text_1:   0%|          | 0/1000 [00:00<?, ?it/s][🔑	Password Game_3]  Duplicate #: 3022
+🔑	Password Game_1: 100%|██████████| 1000/1000 [04:15<00:00,  3.91it/s]
+[🔑	Password Game_1]  Duplicate #: 3003
+🔑	Password Game_2: 100%|██████████| 1000/1000 [03:47<00:00,  4.40it/s]
+[🔑	Password Game_2]  Duplicate #: 3004
+🔑	Password Game_3: 100%|██████████| 1000/1000 [03:48<00:00,  4.37it/s]
+[🔑	Password Game_3]  Duplicate #: 3004
+📈	Ordering Text_1:   0%|          | 0/1000 [00:00<?, ?it/s]can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
-📈	Ordering Text_1:  30%|██▉       | 297/1000 [00:00<00:00, 2966.35it/s]can't find matching word
-can't find matching word
-can't find matching word
-can't find matching word
-can't find matching word
-📈	Ordering Text_1:  66%|██████▌   | 661/1000 [00:00<00:00, 3362.02it/s]can't find matching word
+📈	Ordering Text_1:  30%|███       | 303/1000 [00:00<00:00, 2988.99it/s]can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
-can't find matching word
+📈	Ordering Text_1:  67%|██████▋   | 669/1000 [00:00<00:00, 3373.69it/s]can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
-[📈	Ordering Text_1]  Duplicate #: 3022
-📈	Ordering Text_1: 100%|██████████| 1000/1000 [00:00<00:00, 3014.71it/s]
+can't find matching word
+can't find matching word
+can't find matching word
+can't find matching word
+can't find matching word
+can't find matching word
+can't find matching word
+[📈	Ordering Text_1]  Duplicate #: 3004
+📈	Ordering Text_1: 100%|██████████| 1000/1000 [00:00<00:00, 3012.38it/s]
 📈	Ordering Text_2:   0%|          | 0/1000 [00:00<?, ?it/s]can't find matching word
 can't find matching word
 can't find matching word
-📈	Ordering Text_2:  30%|██▉       | 299/1000 [00:00<00:00, 2984.24it/s]can't find matching word
-can't find matching word
-can't find matching word
-📈	Ordering Text_2:  91%|█████████ | 911/1000 [00:00<00:00, 2949.44it/s]can't find matching word
+📈	Ordering Text_2:  32%|███▏      | 323/1000 [00:00<00:00, 3224.33it/s]can't find matching word
 can't find matching word
 can't find matching word
 can't find matching word
-[📈	Ordering Text_2]  Duplicate #: 3022
-📈	Ordering Text_2: 100%|██████████| 1000/1000 [00:00<00:00, 2885.34it/s]
-📈	Ordering Text_3: 100%|██████████| 1000/1000 [00:00<00:00, 1941.80it/s]
-🔤	Anagram Scribble_1:   0%|          | 0/1000 [00:00<?, ?it/s][📈	Ordering Text_3]  Duplicate #: 3022
-🔤	Anagram Scribble_1: 100%|██████████| 1000/1000 [01:21<00:00, 12.26it/s]
-🔤	Anagram Scribble_2:   0%|          | 0/1000 [00:00<?, ?it/s][🔤	Anagram Scribble_1]  Duplicate #: 3022
-🔤	Anagram Scribble_2: 100%|██████████| 1000/1000 [01:20<00:00, 12.38it/s]
-🔤	Anagram Scribble_3:  13%|█▎        | 134/1000 [00:10<01:08, 12.58it/s][🔤	Anagram Scribble_2]  Duplicate #: 3022
-🔤	Anagram Scribble_3: 100%|██████████| 1000/1000 [01:16<00:00, 13.10it/s]
-[🔤	Anagram Scribble_3]  Duplicate #: 3022
-🗳️	Bracket Game_1: 100%|██████████| 1000/1000 [04:57<00:00,  3.36it/s]
-🗳️	Bracket Game_2:   0%|          | 2/1000 [00:00<05:01,  3.31it/s][🗳️	Bracket Game_1]  Duplicate #: 3022
-🗳️	Bracket Game_2: 100%|██████████| 1000/1000 [05:00<00:00,  3.33it/s]
-[🗳️	Bracket Game_2]  Duplicate #: 3022
-🗳️	Bracket Game_3: 100%|██████████| 1000/1000 [03:12<00:00,  5.18it/s]
-🔎	String Search_1:  21%|██        | 207/1000 [00:09<00:39, 20.22it/s][🗳️	Bracket Game_3]  Duplicate #: 3022
-🔎	String Search_1: 100%|██████████| 1000/1000 [00:46<00:00, 21.45it/s]
-🔎	String Search_2:  31%|███       | 312/1000 [00:14<00:32, 21.47it/s][🔎	String Search_1]  Duplicate #: 3022
-🔎	String Search_2: 100%|██████████| 1000/1000 [00:46<00:00, 21.59it/s]
-🔎	String Search_3:  19%|█▉        | 191/1000 [00:08<00:38, 21.27it/s][🔎	String Search_2]  Duplicate #: 3022
-🔎	String Search_3: 100%|██████████| 1000/1000 [00:46<00:00, 21.45it/s]
-[🔎	String Search_3]  Duplicate #: 3022
-duplicates:3022
+📈	Ordering Text_2: 100%|██████████| 1000/1000 [00:00<00:00, 2945.44it/s]
+📈	Ordering Text_3:   0%|          | 0/1000 [00:00<?, ?it/s][📈	Ordering Text_2]  Duplicate #: 3004
+📈	Ordering Text_3: 100%|██████████| 1000/1000 [00:00<00:00, 1941.32it/s]
+🔤	Anagram Scribble_1:   0%|          | 0/1000 [00:00<?, ?it/s][📈	Ordering Text_3]  Duplicate #: 3004
+🔤	Anagram Scribble_1: 100%|██████████| 1000/1000 [01:53<00:00,  8.84it/s]
+🔤	Anagram Scribble_2:   0%|          | 0/1000 [00:00<?, ?it/s][🔤	Anagram Scribble_1]  Duplicate #: 3004
+🔤	Anagram Scribble_2: 100%|██████████| 1000/1000 [01:57<00:00,  8.54it/s]
+[🔤	Anagram Scribble_2]  Duplicate #: 3004
+🔤	Anagram Scribble_3: 100%|██████████| 1000/1000 [01:50<00:00,  9.02it/s]
+🗳️	Bracket Game_1:   4%|▍         | 41/1000 [00:13<05:21,  2.98it/s][🔤	Anagram Scribble_3]  Duplicate #: 3004
+🗳️	Bracket Game_1: 100%|██████████| 1000/1000 [05:15<00:00,  3.17it/s]
+[🗳️	Bracket Game_1]  Duplicate #: 3004
+🗳️	Bracket Game_2: 100%|██████████| 1000/1000 [05:17<00:00,  3.15it/s]
+🗳️	Bracket Game_3:   6%|▌         | 55/1000 [00:17<05:17,  2.98it/s][🗳️	Bracket Game_2]  Duplicate #: 3004
+🗳️	Bracket Game_3: 100%|██████████| 1000/1000 [05:20<00:00,  3.12it/s]
+[🗳️	Bracket Game_3]  Duplicate #: 3004
+🔎	String Search_1: 100%|██████████| 1000/1000 [00:54<00:00, 18.36it/s]
+[🔎	String Search_1]  Duplicate #: 3004
+🔎	String Search_2: 100%|██████████| 1000/1000 [00:56<00:00, 17.85it/s]
+🔎	String Search_3:   0%|          | 0/1000 [00:00<?, ?it/s][🔎	String Search_2]  Duplicate #: 3004
+🔎	String Search_3: 100%|██████████| 1000/1000 [00:50<00:00, 19.63it/s]
+[🔎	String Search_3]  Duplicate #: 3004
+duplicates:3004
 
 Process finished with exit code 0

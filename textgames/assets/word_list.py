@@ -28,8 +28,8 @@ def get_word_list_by_length(corpus=None, min_length=0, max_length=20):
     return word_list_by_length
 
 
-WORDS_LIST = get_word_list({"oxford5k_opal"})
-WORDS_BY_LEN = get_word_list_by_length({"oxford5k_opal"})
+WORDS_LIST = get_word_list({"dwyl"})
+WORDS_BY_LEN = get_word_list_by_length({"dwyl"})
 
 
 class Node:
