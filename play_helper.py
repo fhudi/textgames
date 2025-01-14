@@ -106,6 +106,8 @@ function island() {{
 
 js_island_submit = """
 function island_submit(textarea, io_history) {{
+    const container = document.getElementById("lintao-container")
+    if (container === null) return [textarea, io_history];
     const grid_N = {N};
     var ret = "";
     for (let i = 0; i < grid_N; ++i) {{
@@ -224,6 +226,8 @@ function sudoku() {{
 
 js_sudoku_submit = """
 function sudoku_submit(textarea, io_history) {{
+    const container = document.getElementById("lintao-container")
+    if (container === null) return [textarea, io_history];
     const N = {N};
     const grid_N = N*N;
     var ret = "";
@@ -289,6 +293,8 @@ function crossword() {{
 
 js_crossword_submit = """
 function crossword_submit(textarea, io_history) {{
+    const container = document.getElementById("lintao-container")
+    if (container === null) return [textarea, io_history];
     const grid_N = {N};
     var ret = "";
     for (let i = 0; i < grid_N; ++i) {{
@@ -372,9 +378,10 @@ function ordering() {{
 
 js_ordering_submit = """
 function ordering_submit(textarea, io_history) {{
+    const container = document.getElementById("lintao-container")
+    if (container === null) return [textarea, io_history];
     var ret = "";
-    const container = 
-    document.getElementById("lintao-container").childNodes.forEach(
+    container.childNodes.forEach(
         (c, i) => {{
             if (i>0) ret += '\\n';
             ret += c.textContent;
@@ -431,10 +438,8 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
 
     gr.Markdown(
         """
-        > ### ‼️ Do ***NOT*** refresh this page. ‼️<br>
+        > ### ‼️ Do ***<span style="color:red">NOT</span>*** refresh this page. ‼️<br>
         > #### ⚠️ Refreshing the page equals "Give-up 😭" ⚠️
-        
-        
         """
     )
     showhide_helper_btn = gr.Button("Show Input Helper (disabling manual input)", elem_id="lintao-helper-btn")

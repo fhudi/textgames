@@ -17,6 +17,12 @@ import hashlib
 
 
 #%%
+css = """
+#lintao-helper-btn {background: darkgreen;}
+"""
+
+
+#%%
 import uvicorn
 from fastapi import FastAPI, Depends, Request
 from starlette.config import Config
@@ -129,7 +135,7 @@ with gr.Blocks(title="TextGames") as login_demo:
 
 app = gr.mount_gradio_app(app, login_demo, path="/login")
 
-with gr.Blocks(title="TextGames", delete_cache=(3600, 3600)) as demo:
+with gr.Blocks(title="TextGames", css=css, delete_cache=(3600, 3600)) as demo:
     m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle = declare_components()
 
     # cur_game_start = gr.BrowserState()
