@@ -390,11 +390,16 @@ class ArithmeticMathExpressionRule(Rule):
 class ArithmeticMathWordExpressionRule(Rule):
     def __init__(self, args):
         self.num_to_word = {
-            0:"zero", 1:"one", 2:"two", 3:"three", 4:"four", 5:"five",
-            6:"six", 7:"seven", 8:"eight", 9:"nine"
+            0: "zero", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five",
+            6: "six", 7: "seven", 8: "eight", 9: "nine",
         }
         self.operators_words = ["plus", 'minus', "divided by", "multiply by"]
         self.operators = ["+", '-', "/", "*"]
+
+        self.words_to_expressions_dict = {
+            **{v: k for k, v in self.num_to_word.items()},
+            **{w: o for w, o in zip(self.operators_words, self.operators)},
+        }
 
         self.max_num_operator = args["max_num_operator"]
         num_operator = random.randint(1, self.max_num_operator)
@@ -428,7 +433,7 @@ class ArithmeticMathWordExpressionRule(Rule):
                 continue
             
             value = parse_expr(expression)
-        self.expression = expression
+        self.expression = word_expression
         self.num = value
 
     def generate_rule(self, input):

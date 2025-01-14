@@ -191,7 +191,21 @@ class PasswordGame(BaseGame):
         return res, "\n".join(val_msgs)
     
     def _load_game(self, state_string):
-        patterns = [re.compile(r"the text has only ([0-9]+) characters"), re.compile(r"the text has ([0-9]+) uppercase characters"), re.compile(r"the text has ([0-9]+) lowercase characters"), re.compile(r"the text has ([0-9]+ '[a-zA-Z]+') character"), re.compile(r"the text has ([0-9]+) english character"), re.compile(r"the text has ([0-9]+) number digits"), re.compile(r"the text has ([0-9]+) special characters"), re.compile(r"the text has ([0-9]+) roman digits"), re.compile(r"the text has \"([0-9a-zA-Z!@#$%^&*]+)\" string"), re.compile(r"the text has the capital city of ([0-9a-zA-Z!@#$%^&*]+)"), re.compile(r"the text has the continent of ([0-9a-zA-Z!@#$%^&*]+)"), re.compile(r"the text has a number that equals to ([0-9a-zA-Z!@#$%^&*+-x/ ]+)"), re.compile(r"the text has a number that equals to ([a-zA-Z ]+)")]
+        patterns = [
+            re.compile(r"the text has only ([0-9]+) characters"),
+            re.compile(r"the text has ([0-9]+) uppercase characters"),
+            re.compile(r"the text has ([0-9]+) lowercase characters"),
+            re.compile(r"the text has ([0-9]+ '[a-zA-Z]+') character"),
+            re.compile(r"the text has ([0-9]+) english character"),
+            re.compile(r"the text has ([0-9]+) number digits"),
+            re.compile(r"the text has ([0-9]+) special characters"),
+            re.compile(r"the text has ([0-9]+) roman digits"),
+            re.compile(r"the text has \"([0-9a-zA-Z!@#$%^&*]+)\" string"),
+            re.compile(r"the text has the capital city of ([^\n]+)"),
+            re.compile(r"the text has the continent of ([^\n]+)"),
+            re.compile(r"the text has a number that equals to ([\d +\-*/]+)"),
+            re.compile(r"the text has a number that equals to ([a-zA-Z ]+)"),
+        ]
         
         def extract_variable(pattern, input_string, mode):
             match = pattern.search(input_string)
@@ -244,7 +258,15 @@ class PasswordGame(BaseGame):
             elif 8 <= rule[4] <= 10:
                 rule_obj.str = str(content)
             else:
-                value = parse_expr(content)
+                if rule[4] == 12:
+                    parsed = []
+                    for c in content.split(" "):
+                        for k, v in rule_obj.words_to_expressions_dict.items():
+                            if k.startswith(c):
+                                parsed.append(str(v))
+                    value = parse_expr(" ".join(parsed))
+                else:
+                    value = parse_expr(content)
                 rule_obj.expression = content
                 rule_obj.num = value
             new_rules.append(rule_obj)
