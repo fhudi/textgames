@@ -9,3 +9,5 @@ transformers
 torch
 accelerate
 bitsandbytes
+itsdangerous
+authlib
