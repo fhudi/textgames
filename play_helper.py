@@ -616,36 +616,54 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
 
     def _forfeiting(confirmed, _solved_games):
         if confirmed:
+            gr.Info("Sad to see you go... Wrapping things up...")
             cur_game.finish_stats_(forfeit=True)
-            if level in LEVELS[1:4] and level not in _solved_games[game_name]:
+            if level in LEVELS and level not in _solved_games[game_name]:
                 _solved_games[game_name].append(level)
+            upload_to_drive(fp_out)
             return 0, _solved_games
         return 1, _solved_games
-    give_up_checkbox.change(_forfeiting, [give_up_checkbox, solved_games_component],
-                            [session_state_component, solved_games_component])
+    give_up_checkbox.change(
+        lambda: (gr.update(interactive=False), gr.update(interactive=False)), None, [submit_btn, give_up_btn]
+    ).then(
+        _forfeiting, [give_up_checkbox, solved_games_component], [session_state_component, solved_games_component]
+    ).then(
+        lambda: (gr.update(interactive=True), gr.update(interactive=True)), None, [submit_btn, give_up_btn]
+    )
 
-    def game_is_solved(_is_solved, _session_state, _solved_games):
+    def game_is_solved(_is_solved, _session_state, _solved_games, progress=gr.Progress()):
         if _is_solved:
-            if level in LEVELS[1:4] and level not in _solved_games[game_name]:
+            if level in LEVELS and level not in _solved_games[game_name]:
                 _solved_games[game_name].append(level)
             return (
                 2,
                 gr.update(visible=False, interactive=False),
                 gr.update(visible=False, interactive=False),
-                gr.update(visible=True, interactive=True),
                 _solved_games,
+                gr.update(visible=True, interactive=False),
             )
         else:
             return (
-                _session_state, gr.update(), gr.update(), gr.update(), _solved_games
+                _session_state, gr.update(), gr.update(), _solved_games, gr.update()
             )
+
+    def finalize_game(_is_solved):
+        if _is_solved:
+            gr.Info("Reporting... Please click the button when available...")
+            upload_to_drive(fp_out)
+            return gr.update(interactive=True)
+        return gr.update()
 
     is_solved_component.change(
         game_is_solved,
         [is_solved_component, session_state_component, solved_games_component],
-        [session_state_component, submit_btn, give_up_btn, finish_btn, solved_games_component],
+        [session_state_component, submit_btn, give_up_btn, solved_games_component, finish_btn],
+    ).then(
+        finalize_game, [is_solved_component], [finish_btn],
     )
-    finish_btn.click(lambda: (0, 0), None, [session_state_component, is_solved_component])
+    finish_btn.click(
+        lambda: (0, 0), None, [session_state_component, is_solved_component]
+    )
 
 
 # %%
@@ -667,15 +685,25 @@ def check_to_start_new_game(game_name, level, user=None, uid=None):
 
 
 # %%
-def check_played_game(solved_games, uid):
+def check_played_game(solved_games, uid, progress=gr.Progress()):
+    matches = _files.list(
+        q=f"'{_folder_id}' in parents and mimeType='application/octet-stream' and name contains '{uid}_-_'",
+        fields=f"files(name, id, {_cksm_methods_str})",
+    ).execute()['files']
     ret = dict()
     for game_name in solved_games.keys():
         cur = []
-        for level, level_id in zip(LEVELS[1:4], LEVEL_IDS[1:4]):
-            if os.path.exists(_get_file_output(game_name, level_id, uid)):
+        for level, level_id in zip(LEVELS, LEVEL_IDS):
+            fp_out = _get_file_output(game_name, level_id, uid)
+            _matches = list(filter(lambda m: fp_out.endswith(m['name']), matches))
+            if os.path.exists(fp_out):
+                upload_to_drive(fp_out, _matches)
+            else:
+                download_from_drive(fp_out, _matches)
+            if os.path.exists(fp_out):
                 cur.append(level)
         ret[game_name] = cur
-    return ret
+    return ret, gr.update()
 
 
 # %%
