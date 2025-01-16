@@ -65,6 +65,30 @@ def declare_components(demo, greet):
     )
 
 
+# %%
+_cksm_methods, _cksm_methods_str = (
+    [hashlib.md5, hashlib.sha1], "md5Checksum, sha1Checksum",
+    # [hashlib.md5, hashlib.sha1, hashlib.sha256], "md5Checksum, sha1Checksum, sha256Checksum",
+)
+_folder_id = "1qStKuVerAQPsXagngfzlNg8PdAR5hupA"
+_creds_dict = {
+  "type": "service_account",
+  "project_id": os.getenv("GOOGLE_AUTH_CREDS_PROJECT_ID", ""),
+  "private_key_id": os.getenv("GOOGLE_AUTH_CREDS_PRIVATE_KEY_ID", ""),
+  "private_key": f"-----BEGIN PRIVATE KEY-----\n{os.getenv('GOOGLE_AUTH_CREDS_PRIVATE_KEY', '')}\n-----END PRIVATE KEY-----".replace("\\n", "\n"),
+  "client_email": os.getenv("GOOGLE_AUTH_CREDS_CLIENT_EMAIL", ""),
+  "client_id": os.getenv("GOOGLE_AUTH_CREDS_CLIENT_ID", ""),
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": os.getenv("GOOGLE_AUTH_CREDS_CLIENT_X509_CERT_URL", ""),
+  "universe_domain": "googleapis.com"
+}
+_creds, _ = google.auth.load_credentials_from_dict(_creds_dict)
+_service = build("drive", "v3", credentials=_creds)
+_files = _service.files()
+
+
 #%%
 css = """
 #lintao-helper-btn {background: darkgreen; color: white;}
@@ -451,6 +475,68 @@ def _get_file_output(game_name, level_id, fn_prefix):
     fd = os.getenv('TEXTGAMES_OUTPUT_DIR', '.')
     os.makedirs(fd, exist_ok=True)
     return f"{fd}/{fn_prefix}_-_{game_filename(game_name)}_{level_id}.pkl"
+
+
+# %%
+def _is_checksum_same(fp_out, matches=None, mime_type="application/octet-stream"):
+    if matches is None:
+        matches = _files.list(
+            q=f"'{_folder_id}' in parents and mimeType='{mime_type}' and name = '{fp_out.rsplit('/', 1)[-1]}'",
+            fields=f"files(name, id, {_cksm_methods_str})",
+        ).execute()['files']
+    if not os.path.exists(fp_out):
+        return None, None, matches
+    with open(fp_out, "rb") as o:
+        _local = BytesIO(o.read()).getvalue()
+    _local_hash = [m(_local).hexdigest() for m in _cksm_methods]
+    for i, match in enumerate(matches):
+        if all(a == b for a, b in zip(_local_hash, [match[k] for k in _cksm_methods_str.split(", ")])):
+            return True, i, matches
+    return False, -1, matches
+
+
+# %%
+def upload_to_drive(fp_out, matches=None, mime_type="application/octet-stream", compare_checksum=True):
+    if compare_checksum:
+        same_checksum, _, _ = _is_checksum_same(fp_out, matches, mime_type)
+        # same_checksum, _, _ = _is_checksum_same(
+        #     fp_out, **{k: v for k, v in [('matches', matches), ('mime_type', mime_type)] if v})
+        if same_checksum:
+            return
+    fn = fp_out.rsplit("/", 1)[-1]
+    file_metadata = {"name": fn, "parents": [_folder_id]}
+    media = MediaFileUpload(fp_out)
+    try:
+        _files.create(body=file_metadata, media_body=media).execute()
+    except HttpError as error:
+        msg = f"Failed to upload the file, error: {error}"
+        print(msg)
+        gr.Error(msg)
+
+
+# %%
+def download_from_drive(fp_out, matches=None, mime_type="application/octet-stream", compare_checksum=True):
+    if compare_checksum and os.path.exists(fp_out):
+        same_checksum, i, matches = _is_checksum_same(fp_out, matches, mime_type)
+        if same_checksum:
+            return
+    if matches is None:
+        _, _, matches = _is_checksum_same(fp_out, matches, mime_type)
+    if len(matches) == 0:
+        return
+    else:
+        if len(matches) > 1:
+            gr.Warning(f"Multiple matches found! {fp_out.rsplit('/', 1)[-1].split('_-_', 1)[-1]}")
+        b_io, request = BytesIO(), _files.get_media(fileId=matches[0]['id'])
+        downloader = MediaIoBaseDownload(b_io, request)
+        if os.path.exists(fp_out):
+            print(f"Deleting and re-download... ({fp_out})")
+            os.remove(fp_out)
+        done = False
+        while not done:
+            status, done = downloader.next_chunk()
+            with open(fp_out, "ab") as o:
+                o.write(b_io.getvalue())
 
 
 # %%
