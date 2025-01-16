@@ -14,7 +14,6 @@ from textgames.ordering_text.ordering_text import OrderingTextGame
 
 
 # %%
-def declare_components():
 import google.auth
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -22,6 +21,7 @@ from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
 
 # %%
+def declare_components(demo, greet):
     with gr.Row():
         with gr.Column(scale=1):
             m = gr.Markdown("Welcome to TextGames!", elem_id="md-greeting")
@@ -33,7 +33,44 @@ from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
     level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
     new_game_btn = gr.Button("Start Game", elem_id="btn-start-game")
     render_toggle = gr.Checkbox(False, visible=False, interactive=False)
-    return m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle
+
+    # cur_game_start = gr.BrowserState()
+    session_state = gr.State(0)    # 0: menu selection, 1: game is ongoing, 2: game is solved.
+    is_solved = gr.State(0)
+    solved_games = gr.State({g: [] for _, g in game_radio.choices})
+    user_state = gr.State()
+    uid_state = gr.State()
+
+    session_state.change(
+        lambda s: session_state_change_fn(s, 2, 0, 2, 0),
+        [session_state], [game_radio, level_radio, new_game_btn, logout_btn], js=js_remove_input_helper,
+    )
+    new_game_btn.click(check_to_start_new_game, [game_radio, level_radio, user_state, uid_state], [session_state])
+    solved_games.change(solved_games_change_fn, solved_games, solved_games_df)
+    session_state.change(lambda s, r: (not r if s in [0, 1] else r), [session_state, render_toggle], [render_toggle])
+
+    demo.load(
+        greet, None, [m, user_state, uid_state], js=js_solved_games_df_and_remove_footers
+    ).then(
+        lambda: gr.update(interactive=False), None, [new_game_btn],
+    ).then(
+        check_played_game, [solved_games, uid_state], [solved_games, solved_games_df]
+    ).then(
+        lambda: gr.update(interactive=True), None, [new_game_btn],
+    )
+
+    return (
+        (m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle),
+        (session_state, is_solved, solved_games, user_state, uid_state),
+    )
+
+
+#%%
+css = """
+#lintao-helper-btn {background: darkgreen; color: white;}
+.lintao-cell-highlight {background: var(--border-color-primary);}
+//.lintao-border {border-style: solid; border-color: var(--body-text-color-subdued);}
+"""
 
 
 # %%
@@ -433,9 +470,12 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
         preload_game(game_name, difficulty_level, user)
     )
     cur_game.attach_stats_output_(fp_out)
-    cur_game.flush_stats_(user=user)
+    cur_game.flush_stats_(user_info_to_flush=user)
 
     def add_msg(new_msg, prev_msg):
+        if len(new_msg) > 200:
+            new_msg = new_msg[:200]
+            gr.Warning("your input is too long! It has been truncated.")
         user_input = '\n'.join(new_msg.split())
         solved, val_msg = cur_game.validate(user_input)
         response = ("Correct guess" if solved else "Bad guess (Wrong Answer)") + "\n" + val_msg

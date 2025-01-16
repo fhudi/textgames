@@ -6,13 +6,13 @@ os.environ.setdefault("TEXTGAMES_LOADGAME_DIR", "problemsets")
 os.environ.setdefault("TEXTGAMES_LOADGAME_ID", "42")
 os.environ.setdefault("TEXTGAMES_MOCKUSER", "")
 os.environ.setdefault("TEXTGAMES_OUTPUT_DIR", "user_outputs")
+os.environ.setdefault("TEXTGAMES_HASH_USER", "")
 favicon_path = "textgames-scrabble-black2-ss.png"
 
 #%%
-from textgames import GAME_NAMES, LEVELS
-from play_helper import declare_components, start_new_game, check_to_start_new_game,\
-    session_state_change_fn, js_solved_games_df_and_remove_footers, js_remove_input_helper, solved_games_change_fn, check_played_game
+from play_helper import css, declare_components, start_new_game
 from typing import Optional
+import gradio as gr
 import hashlib
 
 
@@ -23,7 +23,6 @@ from starlette.config import Config
 from starlette.responses import RedirectResponse, FileResponse
 from starlette.middleware.sessions import SessionMiddleware
 from authlib.integrations.starlette_client import OAuth, OAuthError
-import gradio as gr
 
 app = FastAPI()
 
@@ -131,28 +130,9 @@ with gr.Blocks(title="TextGames") as login_demo:
 app = gr.mount_gradio_app(app, login_demo, path="/login")
 
 with gr.Blocks(title="TextGames", css=css, delete_cache=(3600, 3600)) as demo:
-    m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle = declare_components()
-
-    # cur_game_start = gr.BrowserState()
-    session_state = gr.State(0)    # 0: menu selection, 1: game is ongoing, 2: game is solved.
-    is_solved = gr.State(0)
-    solved_games = gr.State({g: [] for _, g in game_radio.choices})
-    user_state = gr.State()
-    uid_state = gr.State()
-
-    session_state.change(
-        lambda s: session_state_change_fn(s, 2, 0, 2, 0),
-        [session_state], [game_radio, level_radio, new_game_btn, logout_btn], js=js_remove_input_helper,
-    )
-    new_game_btn.click(check_to_start_new_game, [game_radio, level_radio, user_state, uid_state], [session_state])
-    solved_games.change(solved_games_change_fn, solved_games, solved_games_df)
-    session_state.change(lambda s, r: (not r if s in [0, 1] else r), [session_state, render_toggle], [render_toggle])
-
-    demo.load(
-        greet, None, [m, user_state, uid_state], js=js_solved_games_df_and_remove_footers
-    ).then(
-        check_played_game, [solved_games, uid_state], [solved_games]
-    )
+    ((m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle),
+     (session_state, is_solved, solved_games, user_state, uid_state),
+     ) = declare_components(demo, greet)
 
     @gr.render(inputs=[game_radio, level_radio, user_state, session_state, uid_state], triggers=[render_toggle.change])
     def _start_new_game(game_name, level, user, _session_state, _uid_state):
