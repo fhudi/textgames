@@ -1,6 +1,6 @@
 #%%
 import os
-os.environ.setdefault("GRADIO_SERVER_PORT", "1080")
+# os.environ.setdefault("GRADIO_SERVER_PORT", "1080")
 # os.environ.setdefault("TEXTGAMES_SHOW_HIDDEN_LEVEL", "1")
 os.environ.setdefault("TEXTGAMES_LOADGAME_DIR", "problemsets")
 os.environ.setdefault("TEXTGAMES_LOADGAME_ID", "42")

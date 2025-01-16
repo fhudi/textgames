@@ -3,8 +3,10 @@ import os
 import time
 import pandas as pd
 import gradio as gr
-from textgames import GAME_NAMES, LEVEL_IDS, LEVELS, new_game, preload_game, game_filename
+import hashlib
+from io import BytesIO
 
+from textgames import GAME_NAMES, LEVEL_IDS, LEVELS, new_game, preload_game, game_filename
 from textgames.islands.islands import Islands
 from textgames.sudoku.sudoku import Sudoku
 from textgames.crossword_arranger.crossword_arranger import CrosswordArrangerGame
@@ -13,6 +15,13 @@ from textgames.ordering_text.ordering_text import OrderingTextGame
 
 # %%
 def declare_components():
+import google.auth
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
+
+
+# %%
     with gr.Row():
         with gr.Column(scale=1):
             m = gr.Markdown("Welcome to TextGames!", elem_id="md-greeting")

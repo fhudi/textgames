@@ -42,11 +42,11 @@ class BaseGame:
         assert not self.stats_filepath
         self.stats_filepath = filepath
 
-    def flush_stats_(self, user=None):
+    def flush_stats_(self, user_info_to_flush=None):
         if self.stats_filepath:
             with open(self.stats_filepath, mode='ab') as o:
-                if user:
-                    pickle.dump((time.time(), user), o)
+                if user_info_to_flush:
+                    pickle.dump((time.time(), user_info_to_flush), o)
                 else:
                     pickle.dump((
                         time.time(),

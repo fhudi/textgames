@@ -54,6 +54,8 @@ _HASHER = (hashlib.blake2b, {"digest_size": 16, "key": SECRET_KEY.encode('utf-8'
 
 
 def _hash_msg(msg):
+    if isinstance(msg, str):
+        msg = msg.encode('utf-8')
     m = _HASHER[0](**_HASHER[1])
     m.update(msg)
     return m.hexdigest()

@@ -34,9 +34,9 @@ SINGLE_LINE_GAME_IDS = list(map(lambda g: GAME_IDS[GAME_NAMES.index(g.get_game_n
                                 [PasswordGame, BracketGame, StringSearch, AnagramScribble]
                                 ))
 
-LEVEL_IDS = ["0", "1", "2", "3", "4", "00"]
-LEVELS = ["🔰\tSample #1", "🚅\tEasy", "🚀\tMedium", "🛸\tHard"]
-LEVELS_HIDDEN = ["🌌\tInsane", "🔰\tSample #2"]
+LEVEL_IDS = ["1", "2", "3", "4", "0", "00"]
+LEVELS = ["🚅\tEasy", "🚀\tMedium", "🛸\tHard"]
+LEVELS_HIDDEN = ["🌌\tInsane", "🔰\tSample #1", "🔰\tSample #2"]
 _show_hidden_level_ = os.getenv("TEXTGAMES_SHOW_HIDDEN_LEVEL", False)
 if _show_hidden_level_:
     LEVELS, LEVELS_HIDDEN = LEVELS + LEVELS_HIDDEN, []
@@ -62,14 +62,16 @@ def _game_class_from_name(game_name):
 
 def preload_game(game_name, level_id, user):
     game_cls = _game_class_from_name(game_name)
-    email_sid_dict = read_csv("session_email.csv").dropna().set_index("EMAIL").SID.to_dict()
+    email_sid_dict = read_csv(
+        f"{os.getenv('TEXTGAMES_OUTPUT_DIR')}/textgames_userauth.tsv", sep='\t'
+    ).dropna().set_index("EMAIL").SID.to_dict()
     sid = email_sid_dict.get(user["email"])
-    print(f"preload_game('{game_name}', '{level_id}', '{user['email']}')", game_cls, sid, sep="\n\t")
+    print(f"preload_game('{game_name}', '{level_id}', '{user['email']}') on {sid}")
 
     with open(f"problemsets/{game_filename(game_name)}_{level_id}.json", "r", encoding="utf8") as f:
         sid_prompt_dict = json.load(f)
     prompt = sid_prompt_dict.get(sid)
-    print("Loaded prompt:", prompt, sep="\n")
+    # print("Loaded prompt:", prompt, sep="\n")
 
     return _reload(prompt, game_cls)
 
