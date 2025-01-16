@@ -1,6 +1,6 @@
 import os
 
-os.environ.setdefault("GRADIO_SERVER_PORT", "1080")
+# os.environ.setdefault("GRADIO_SERVER_PORT", "1080")
 # os.environ.setdefault("TEXTGAMES_SHOW_HIDDEN_LEVEL", "1")
 os.environ.setdefault("TEXTGAMES_LOADGAME_DIR", "problemsets")
 os.environ.setdefault("TEXTGAMES_LOADGAME_ID", "42")
@@ -14,12 +14,6 @@ from play_helper import declare_components, start_new_game, check_to_start_new_g
     session_state_change_fn, js_solved_games_df_and_remove_footers, js_remove_input_helper, solved_games_change_fn, check_played_game
 from typing import Optional
 import hashlib
-
-
-#%%
-css = """
-#lintao-helper-btn {background: darkgreen;}
-"""
 
 
 #%%
@@ -104,9 +98,9 @@ async def login(request: Request):
     redirect_uri = request.url_for('auth')
     # If your app is running on https, you should ensure that the
     # `redirect_uri` is https, e.g. uncomment the following lines:
-    #
-    # from urllib.parse import urlparse, urlunparse
-    # redirect_uri = urlunparse(urlparse(str(redirect_uri))._replace(scheme='https'))
+
+    from urllib.parse import urlparse, urlunparse
+    redirect_uri = urlunparse(urlparse(str(redirect_uri))._replace(scheme='https'))
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
@@ -122,11 +116,10 @@ async def auth(request: Request):
 
 def greet(request: gr.Request):
     user = get_user(request.request)
-    # uid = ('1' if user['email_verified'] else '0') + f"{int(time.time()*10):x}_"[-8:] + _hash_msg(user['email'])
-    uid = _hash_msg(user['email'].encode('utf-8'))
+    uid = _hash_msg(user['email']) if os.getenv("TEXTGAMES_HASH_USER", "") else user['email']
     return f"""
-    Welcome to TextGames, {user['name']}!<br />
-    <{user['email'].replace('@', '{at}')}> ({'' if user['email_verified'] else 'NON-'}verified email)
+        Welcome to TextGames, {user['name']}!<br />
+        <{user['email'].replace('@', '{at}')}> ({'' if user['email_verified'] else 'NON-'}verified email)
     """, user, uid
 
 
@@ -170,7 +163,12 @@ with gr.Blocks(title="TextGames", css=css, delete_cache=(3600, 3600)) as demo:
 app = gr.mount_gradio_app(app, demo, path="/TextGames", auth_dependency=get_username)
 
 if __name__ == '__main__':
-    uvicorn.run(app, port=int(os.environ.get("GRADIO_SERVER_PORT", "8080")))
+    uvicorn.run(app,
+                port=int(os.getenv("GRADIO_SERVER_PORT", "7860")),
+                host=os.getenv("UVICORN_SERVER_HOST", "127.0.0.1"),
+                ssl_keyfile=os.getenv("SSL_KEYFILE", None),
+                ssl_certfile=os.getenv("SSL_CERTFILE", None),
+                )
 
 
 #%%
