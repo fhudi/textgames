@@ -170,7 +170,7 @@ class ConsecutiveScoring(Scoring):
                     pattern += cur_pattern
                     pattern += f"{{{n}}}" if (n > 1) else ""
                 n = 1
-        self._pattern = re.compile(pattern)
+        self._pattern = re.compile(f"(?=({pattern}))")
 
         self.prompt = None
 
@@ -535,6 +535,9 @@ class OrderingTextGame(BaseGame):
                                random.choice([1] if kwargs["positive_only"] else [-1, 1])))
                 for scoring in scoring_list
             ]
+            # for rule in _rules:
+            #     if isinstance(rule, AffixScoring) and ((rule.prefix and '-' in rule.prefix_txt) or (rule.suffix and '-' in rule.suffix_txt)):
+            #         pass
             # print("rules", _rules)
             self.rules = _rules
 
@@ -544,13 +547,13 @@ class OrderingTextGame(BaseGame):
                 if kwargs["word_dic_only"] or (i < 2) or random.randint(0, 1):
                     word_length = random.randint(*kwargs["word_length"])
                     _word = random.choice(WORDS_BY_LEN[word_length])
-                    j, mak_j = 0, 2000
+                    j, mak_j = 0, 3000
                     while (i < 2) and (j < mak_j) and (self.calc_point(_word) == 0):
                         word_length = random.randint(*kwargs["word_length"])
                         _word = random.choice(WORDS_BY_LEN[word_length])
                         j += 1
-                    if j >= mak_j:
-                        print("can't find matching word")
+                    # if j >= mak_j:
+                    #     print("can't find matching word")
                     _words.append(_word)
                 else:
                     word_length = random.randint(*kwargs["word_length"])
