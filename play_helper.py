@@ -130,9 +130,10 @@ function island() {{
     container.style.display = 'grid';
     container.style.gridTemplateColumns = container.style.gridTemplateRows = `repeat(${{grid_N}}, ${{grid_px}}px)`;
     container.style.gap = '1px';
-    container.style.border = '2px solid black';
+    container.style.border = '2px solid';
     container.style.width = 'max-content';
     container.style.margin = '5px 0px 5px 40px';
+    container.style.padding = '1px';
     container.id = 'lintao-container';
 
     for (let i = 0; i < grid_N; ++i) {{
@@ -144,7 +145,7 @@ function island() {{
             cell.style.alignItems = 'center';
             cell.style.justifyContent = 'center';
             cell.style.fontSize = `${{grid_px/2}}px`;
-            cell.style.border = '1px solid gray';
+            cell.style.border = '1px solid var(--body-text-color-subdued)';
             cell.style.cursor = 'pointer';
             cell.id = `lintao-cell-${{i}}-${{j}}`;
 
@@ -197,7 +198,7 @@ function sudoku() {{
     const N = {N};
     const grid_N = N*N,
           grid_px = 50,
-          border_px = 3;
+          border_px = 2;
     const mat = {mat};
 
     let is_numeric_sudoku = false;
@@ -213,16 +214,17 @@ function sudoku() {{
     const container = document.createElement('div');
     container.style.display = 'grid';
     container.style.gridTemplateColumns = container.style.gridTemplateRows = `repeat(${{grid_N}}, ${{grid_px}}px)`;
-    container.style.gap = '1px';
-    container.style.border = '${{border_px}}px solid white';
+    container.style.border = `${{border_px}}px solid`;
     container.style.width = 'max-content';
     container.style.margin = '5px 0px 5px 40px';
+    container.style.padding = '0px';
     container.id = 'lintao-container';
 
     // Generate the grid
+    const highlightClass = 'lintao-cell-highlight';
     for (let i = 0; i < grid_N; ++i) {{
         for (let j = 0; j < grid_N; ++j) {{
-            const cell = document.createElement('input');
+            const cell = document.createElement('div');
             cell.type = 'text';
             cell.maxLength = 1;
             cell.style.width = cell.style.height = `${{grid_px}}px`;
@@ -231,32 +233,35 @@ function sudoku() {{
             cell.style.justifyContent = 'center';
             cell.style.textAlign = 'center';
             cell.style.fontSize = `${{grid_px/2}}px`;
-            cell.style.border = '1px solid #c0c0c0';
-            cell.style.backgroundColor = 'black'
-            cell.style.cursor = 'pointer';
+            cell.style.border = '1px solid var(--body-text-color-subdued)';
+            cell.style.margin = '0px';
+            //cell.style.outline = 'none';
+            //cell.style.color = 'var(--body-text-color)';
+            //cell.style.backgroundColor = 'black';
             cell.id = `lintao-cell-${{i}}-${{j}}`;
 
             if (mat[i][j] != '_') {{
-                cell.value = mat[i][j];
-                cell.style.color = '#D0D0D0'
+                cell.textContent = mat[i][j];
+                cell.style.color = 'var(--block-title-text-color)';
                 cell.disabled = true;
+            }} else {{
+                cell.style.cursor = 'pointer';
+                cell.contentEditable = "true";
             }}
 
-            //cell.style.color = 'black';
-            //cell.style.outline = 'none';
 
-            if (j % N === 0) cell.style.borderLeft = `${{border_px}}px solid white`;
-            if (j % N === (N-1)) cell.style.borderRight = `${{border_px}}px solid white`;
-            if (i % N === 0) cell.style.borderTop = `${{border_px}}px solid white`;
-            if (i % N === (N-1)) cell.style.borderBottom = `${{border_px}}px solid white`;
+            if (j % N === 0) cell.style.borderLeft = `${{border_px}}px solid var(--body-text-color)`;
+            if (j % N === (N-1)) cell.style.borderRight = `${{border_px}}px solid var(--body-text-color)`;
+            if (i % N === 0) cell.style.borderTop = `${{border_px}}px solid var(--body-text-color)`;
+            if (i % N === (N-1)) cell.style.borderBottom = `${{border_px}}px solid var(--body-text-color)`;
 
             // Allow only numbers 1-9 or A-I
             cell.addEventListener('input', (e) => {{
-                if ((N === 2  &&  (!(is_numeric_sudoku?/^[1-4]$/:/^[A-Da-d]$/).test(e.target.value))) || 
-                    (N === 3  &&  (!(is_numeric_sudoku?/^[1-9]$/:/^[A-Ia-i]$/).test(e.target.value)))) {{
-                    e.target.value = '';
+                if ((N === 2  &&  (!(is_numeric_sudoku?/^[1-4]$/:/^[A-Da-d]$/).test(e.target.textContent))) || 
+                    (N === 3  &&  (!(is_numeric_sudoku?/^[1-9]$/:/^[A-Ia-i]$/).test(e.target.textContent)))) {{
+                    e.target.textContent = '';
                 }}
-                e.target.value = e.target.value.toUpperCase();
+                e.target.textContent = e.target.textContent.toUpperCase();
             }});
 
             container.appendChild(cell);
@@ -276,16 +281,16 @@ function sudoku() {{
             const currentCol = i % grid_N;
 
             if (currentRow === row || currentCol === col || (Math.floor(currentRow / N) === Math.floor(row / N) && Math.floor(currentCol / N) === Math.floor(col / N))) {{
-                cell.style.backgroundColor = '#303039';
+                cell.classList.add(highlightClass);
             }} else {{
-                cell.style.backgroundColor = 'black';
+                cell.classList.remove(highlightClass);
             }}
         }}
     }});
 
     container.addEventListener('focusout', () => {{
         for (let i = 0; i < grid_N * grid_N; i++) {{
-            container.children[i].style.backgroundColor = 'black';
+            container.children[i].classList.remove(highlightClass);
         }}
     }});
 
@@ -304,7 +309,7 @@ function sudoku_submit(textarea, io_history) {{
     for (let i = 0; i < grid_N; ++i) {{
         if (i > 0) ret += '\\n';
         for (let j = 0; j < grid_N; ++j) {{
-            ret += document.getElementById(`lintao-cell-${{i}}-${{j}}`).value;
+            ret += document.getElementById(`lintao-cell-${{i}}-${{j}}`).textContent;
         }}
     }}
     return [ret, io_history];
@@ -322,9 +327,10 @@ function crossword() {{
     container.style.display = 'grid';
     container.style.gridTemplateColumns = container.style.gridTemplateRows = `repeat(${{grid_N}}, ${{grid_px}}px)`;
     container.style.gap = '1px';
-    container.style.border = '2px solid white';
+    container.style.border = '2px solid';
     container.style.width = 'max-content';
     container.style.margin = '5px 0px 5px 40px';
+    container.style.padding = '1px';
     container.id = 'lintao-container';
 
     // Generate the grid
@@ -340,8 +346,8 @@ function crossword() {{
             cell.style.justifyContent = 'center';
             cell.style.textAlign = 'center';
             cell.style.fontSize = `${{grid_px/2}}px`;
-            cell.style.border = '1px solid #c0c0c0';
-            cell.style.backgroundColor = 'black'
+            cell.style.border = '1px solid var(--body-text-color-subdued)';
+            cell.style.backgroundColor = 'var(--body-background-fill)';
             cell.style.cursor = 'pointer';
             cell.id = `lintao-cell-${{i}}-${{j}}`;
 
@@ -385,7 +391,7 @@ function ordering() {{
     listContainer.style.listStyle = 'none';
     listContainer.style.padding = '0';
     listContainer.style.width = '20em';
-    listContainer.style.border = '2px solid white';
+    listContainer.style.border = '2px solid';
     listContainer.style.margin = '5px 0px 5px 40px';
     listContainer.id = 'lintao-container';
 
@@ -398,9 +404,9 @@ function ordering() {{
         listItem.textContent = itemText;
         listItem.draggable = true;
         listItem.style.padding = '10px';
-        listItem.style.border = '1px solid #c0c0c0';
+        listItem.style.border = '1px solid';
         listItem.style.margin = '3px';
-        listItem.style.backgroundColor = 'black';
+        //listItem.style.backgroundColor = 'var(--body-background-fill)';
         listItem.style.cursor = 'grab';
         listItem.id = `lintao-item-${{index}}`;
 
@@ -408,16 +414,16 @@ function ordering() {{
         listItem.addEventListener('dragstart', (e) => {{
             const draggedIndex = Array.from(listContainer.children).indexOf(listItem);
             e.dataTransfer.setData('text/plain', draggedIndex);
-            listItem.style.backgroundColor = '#1f1811';
+            listItem.style.backgroundColor = 'var(--block-background-fill)';
         }});
 
         listItem.addEventListener('dragover', (e) => {{
             e.preventDefault();
-            listItem.style.backgroundColor = '#303030';
+            listItem.style.backgroundColor = 'var(--border-color-primary)';
         }});
 
         listItem.addEventListener('dragleave', () => {{
-            listItem.style.backgroundColor = 'black';
+            listItem.style.backgroundColor = 'var(--body-background-fill)';
         }});
 
         listItem.addEventListener('drop', (e) => {{
@@ -431,11 +437,11 @@ function ordering() {{
                 listContainer.insertBefore(draggedItem, targetIndex > draggedIndex ? listItem.nextSibling : listItem);
             }}
 
-            listItem.style.backgroundColor = 'black';
+            listItem.style.backgroundColor = 'var(--body-background-fill)';
         }});
 
         listItem.addEventListener('dragend', () => {{
-            listItem.style.backgroundColor = 'black';
+            listItem.style.backgroundColor = 'var(--body-background-fill)';
         }});
 
         listContainer.appendChild(listItem);
