@@ -15,13 +15,37 @@ import gradio as gr
 
 
 #%%
-def greet():
+fp_user_auth = f"{os.getenv('TEXTGAMES_OUTPUT_DIR')}/textgames_userauth.tsv"
+# fp_user_auth_id = "13RLyxV3ys5DGgRIJt5_tO-ILllJ1LDPGasobagZyVLU"
+fp_user_auth_mime_type = "text/tab-separated-values"
+
+
+#%%
+def file_based_auth(username, password):
+    if os.getenv('TEXTGAMES_MOCKUSER', ''):
+        return True
+    download_from_drive(fp_user_auth, mime_type=fp_user_auth_mime_type)
+    df_auth = pd.read_csv(fp_user_auth, sep="\t").dropna(how="any")
+    return len(df_auth.loc[(df_auth.EMAIL == username) & (df_auth.PASSWORD == password)]) > 0
+
+
+#%%
+def greet(request: gr.Request):
     email = os.getenv('TEXTGAMES_MOCKUSER', '')
-    _m = f"Welcome to TextGames!<br/>({'Mock-User: ' if email else 'no user'}{email})"
     if email:
-        return _m, {'email': email, 'email_verified': "mockuser"}, email
+        user = {'email': email, 'name': "mockuser"}
     else:
-        return _m, None, f"{int(time.time()*10):x}"
+        df_auth = pd.read_csv(fp_user_auth, sep="\t").dropna(how="any").drop_duplicates(subset=['EMAIL'])
+        r = df_auth.loc[df_auth.EMAIL == request.username].iloc[0]
+        user = {'email': r.EMAIL, 'name': r.NAME}
+    return f"""
+        Welcome to TextGames, {user['name']}!<br/><{user['email'].replace('@', '{at}')}>
+    """, user, user['email']
+
+    # return f"""
+    #     Welcome to TextGames, {user['name']}!<br />
+    #     <{user['email'].replace('@', '{at}')}> ({'' if user['email_verified'] else 'NON-'}verified email)
+    # """, None, None
 
 
 #%%
@@ -35,7 +59,11 @@ with gr.Blocks(title="TextGames", css=css, delete_cache=(3600, 3600)) as demo:
         if _session_state in [1, 2]:
             start_new_game(game_name, level, session_state, is_solved, solved_games, user=user, uid=_uid_state)
 
-demo.launch(favicon_path=favicon_path if os.path.exists(favicon_path) else None)
+demo.launch(
+    auth=file_based_auth,
+    favicon_path=favicon_path if os.path.exists(favicon_path) else None,
+    share=True,
+)
 
 
 #%%

@@ -572,11 +572,11 @@ def check_to_start_new_game(game_name, level, user=None, uid=None):
         raise gr.Error(f"You have done this game already.<br/>{game_name} - {level}")
     if user is None:
         gr.Warning("no user, game will be generated randomly")
-    else:
-        if not user['email_verified']:
-            gr.Warning("please verify your email address")
-        elif user['email_verified'] == "mockuser":
-            gr.Info("game will load with a mocked-up user")
+    # else:
+    #     if not user['email_verified']:
+    #         gr.Warning("please verify your email address")
+    #     elif user['email_verified'] == "mockuser":
+    #         gr.Info("game will load with a mocked-up user")
     return 1
 
 
