@@ -15,9 +15,10 @@ import gradio as gr
 
 
 #%%
-fp_user_auth = f"{os.getenv('TEXTGAMES_OUTPUT_DIR')}/textgames_userauth.tsv"
+fp_user_auth = f"{os.getenv('TEXTGAMES_OUTPUT_DIR', '.')}/textgames_userauth.tsv"
 # fp_user_auth_id = "13RLyxV3ys5DGgRIJt5_tO-ILllJ1LDPGasobagZyVLU"
 fp_user_auth_mime_type = "text/tab-separated-values"
+os.makedirs(os.getenv('TEXTGAMES_OUTPUT_DIR', '.'), exist_ok=True)
 
 
 #%%
