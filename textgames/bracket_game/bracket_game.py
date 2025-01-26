@@ -57,10 +57,11 @@ class BracketGame(BaseGame):
                 self.MULTI_WORD_LIST.append(self.WORD_LIST[num1] + self.WORD_LIST[num2])
 
     def _validate(self, answer: str) -> (bool, str):
+        answer = "".join(answer.split())
         for rule in self.rules:
             arr = answer.split(rule[0])
 
-            if len(arr) != 2:
+            if len(arr) < 2:
                 val_msg = f"The text '{rule[0]}' is not found in your answer."
                 return False, val_msg
 
@@ -145,6 +146,7 @@ class BracketGame(BaseGame):
         prompt = f"You are given a text {self.string} Your job is to put some valid parenthesis brackets in the text such that:\n"
         for rule in self.rules:
             prompt += f"- \"{rule[0]}\" is inside a {rule[1][0]} bracket\n"
+        prompt += "The open and close parenthesis for block is [ ], curly is { }, round is ( ), and angle is < >\n"
         prompt += f"The bracket depth must be {self.depth} and print only the answer\n"
         return prompt
 
@@ -163,7 +165,7 @@ class BracketGame(BaseGame):
             else:
                 return 0
             
-        content = state_string.split("the text such that:")[1].split("\nThe bracket depth must be")[0].split("\n")
+        content = state_string.split("the text such that:")[1].split("\nThe open and close parenthesis ")[0].split("\n")
 
         self.words = []
         self.rules = []
