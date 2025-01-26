@@ -1,5 +1,6 @@
 import random
 import re
+from bisect import bisect_left
 from pathlib import Path
 from textgames.base_game import BaseGame
 #%%
@@ -57,52 +58,93 @@ class BracketGame(BaseGame):
                 self.MULTI_WORD_LIST.append(self.WORD_LIST[num1] + self.WORD_LIST[num2])
 
     def _validate(self, answer: str) -> (bool, str):
-        answer = "".join(answer.split())
-        for rule in self.rules:
-            arr = answer.split(rule[0])
+        answer = "".join(answer.split()).lower()
 
-            if len(arr) < 2:
+        # if ("".join(filter(lambda a: a.isalpha(), answer)) !=
+        #         "".join(filter(lambda a: a.isalpha(), self.string.lower()))):
+        #     val_msg = f"You are only allowed to add parentheses to the base text '{self.string}'."
+        #     return False, val_msg
+
+        char2type_op = {b[1]: b[0] for b in self.BRACKETS}
+        char2type_ed = {b[2]: b[0] for b in self.BRACKETS}
+
+        depth_count = {b[0]: [(-1, 0)] for b in self.BRACKETS}
+
+        def push(dc, v):
+            cur_depth = dc[-1][-1]
+            if cur_depth < 0:
+                return False
+            dc.append((i, cur_depth + v))
+            return True
+
+        mak, cur_mak = 0, 0
+        for i, c in enumerate(answer):
+            if c in char2type_op:
+                push(depth_count[char2type_op[c]], 1)
+                cur_mak += 1
+            elif c in char2type_ed:
+                if not push(depth_count[char2type_ed[c]], -1):
+                    val_msg = "There is a closing bracket without an open bracket"
+                    return False, val_msg
+                cur_mak -= 1
+            mak = max(mak, cur_mak)
+
+        if mak != self.depth:
+            val_msg = f"The depth of the bracket is {mak}. The expected depth is {self.depth}"
+            return False, val_msg
+
+        for rule in self.rules:
+            i = answer.find(rule[0])
+            if i < 0:
                 val_msg = f"The text '{rule[0]}' is not found in your answer."
                 return False, val_msg
 
-            if rule[1][1] not in arr[0] or rule[1][2] not in arr[1]:
-                val_msg = f"The text '{rule[0]}' is not between the correct bracket, {rule[1][1]} not in {arr[0]} and {rule[1][2]} not in {arr[1]}"
+            i_depth = bisect_left(depth_count[rule[1][0]], (i, -1)) - 1
+            if depth_count[rule[1][0]][i_depth][-1] < 1:
+                val_msg = f"The text '{rule[0]}' is not inside any {rule[1][0]} bracket {rule[1][1]} {rule[1][2]}"
                 return False, val_msg
-            
-        filter_answer = answer
-        for i in range(0, 26):
-            cc = chr(ord("a") + i)
-            filter_answer = filter_answer.replace(cc,"")
 
-            cc = chr(ord("A") + i)
-            filter_answer = filter_answer.replace(cc,"")
-        
-        open_bracket_list = ["[", "{", "(", "<"]
-        close_bracket_map = {
-            "[":"]", "{":"}", "(":")", "<":">"
-        }
+            # arr = answer.split(rule[0])
+            # if rule[1][1] not in arr[0] or rule[1][2] not in arr[1]:
+            #     val_msg = f"The text '{rule[0]}' is not between the correct bracket, {rule[1][1]} not in {arr[0]} and {rule[1][2]} not in {arr[1]}"
+            #     return False, val_msg
 
-        # check max depth
-        count = 0
-        st = []
+        return True, ""
 
-        for i in range(len(filter_answer)):
-            if (filter_answer[i] in open_bracket_list):
-                st.append(filter_answer[i]) # pushing the bracket in the stack
-            else:
-                if len(st) > 0 and (filter_answer[i] == close_bracket_map[st[-1]]):
-                    if (count < len(st)):
-                        count = len(st)
-                    st.pop()
-                else:
-                    val_msg = "There is a closing bracket without an open bracket"
-                    return False, val_msg
-        
-        if count == self.depth:
-            return True, ""
-        else:       
-            val_msg = f"The depth of the bracket is {count}. The expected depth is {self.depth}"
-            return False, val_msg
+        # filter_answer = answer
+        # for i in range(0, 26):
+        #     cc = chr(ord("a") + i)
+        #     filter_answer = filter_answer.replace(cc,"")
+        #
+        #     cc = chr(ord("A") + i)
+        #     filter_answer = filter_answer.replace(cc,"")
+        #
+        # open_bracket_list = ["[", "{", "(", "<"]
+        # close_bracket_map = {
+        #     "[":"]", "{":"}", "(":")", "<":">"
+        # }
+        #
+        # # check max depth
+        # count = 0
+        # st = []
+        #
+        # for i in range(len(filter_answer)):
+        #     if (filter_answer[i] in open_bracket_list):
+        #         st.append(filter_answer[i]) # pushing the bracket in the stack
+        #     else:
+        #         if len(st) > 0 and (filter_answer[i] == close_bracket_map[st[-1]]):
+        #             if (count < len(st)):
+        #                 count = len(st)
+        #             st.pop()
+        #         else:
+        #             val_msg = "There is a closing bracket without an open bracket"
+        #             return False, val_msg
+        #
+        # if count == self.depth:
+        #     return True, ""
+        # else:
+        #     val_msg = f"The depth of the bracket is {count}. The expected depth is {self.depth}"
+        #     return False, val_msg
 
     def _generate_new_game(self, *args, **kwargs) -> None:
         num_words = kwargs["num_words"]
