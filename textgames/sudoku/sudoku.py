@@ -45,10 +45,14 @@ class Sudoku(BaseGame):
         mat = [[self.empty_character for i in range(self.size)] for j in range(self.size)]
 
         arr = input.split()
+        if (len(arr) != self.size) or any(len(arr[i]) != self.size for i in range(len(arr))):
+            val_msg = f"Your answer is wrong in shape, it should be {self.size}x{self.size} sudoku."
+            return False, val_msg
+
         for i in range(len(arr)):
             for j in range(len(arr[i])):
                 if arr[i][j] not in self.char_to_id:
-                    val_msg = "Found unrecognized character(s)"
+                    val_msg = "There are unrecognized characters, or possibly unfilled cells."
                     return False, val_msg
                 
                 mat[i][j] = self.char_to_id[arr[i][j]]
