@@ -59,9 +59,13 @@ class BracketGame(BaseGame):
     def _validate(self, answer: str) -> (bool, str):
         for rule in self.rules:
             arr = answer.split(rule[0])
-            
+
+            if len(arr) != 2:
+                val_msg = f"The text '{rule[0]}' is not found in your answer."
+                return False, val_msg
+
             if rule[1][1] not in arr[0] or rule[1][2] not in arr[1]:
-                val_msg = f"{rule[0]} is not between the correct bracket, {rule[1][1]} not in {arr[0]} and {rule[1][2]} not in {arr[1]}"
+                val_msg = f"The text '{rule[0]}' is not between the correct bracket, {rule[1][1]} not in {arr[0]} and {rule[1][2]} not in {arr[1]}"
                 return False, val_msg
             
         filter_answer = answer
