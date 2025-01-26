@@ -5,10 +5,10 @@ Rules Description
 
 word length:
 - example: word less than 5 characters gets 10 points
-- possible operands: {\eq, \lt, \gt, \ne}
-    - \le and \ge will be randomized for prompt generation
-- possible combinations: {\gt\lt, \gt\lt\ne}
-- only 1 \ne is considered
+- possible operands: {\\eq, \\lt, \\gt, \\ne}
+    - \\le and \\ge will be randomized for prompt generation
+- possible combinations: {\\gt\\lt, \\gt\\lt\\ne}
+- only 1 \\ne is considered
 
 neighboring / consecutive chars
 - example: every pair of consecutive consonant gets 5 points
@@ -64,6 +64,15 @@ from textgames.base_game import BaseGame
 
 #%%
 from textgames.assets.word_list import WORDS_LIST, WORDS_BY_LEN
+
+
+#%%
+index_to_word = {
+    1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth",
+    6: "sixth", 7: "seventh", 8: "eighth", 9: "ninth", 10: "tenth",
+    11: "eleventh", 12: "twelfth", 13: "thirteenth", 14: "fourteenth",
+    15: "fifteenth", 16: "sixteenth", 17: "seventeenth", 18: "eighteenth",
+}
 
 
 #%%
@@ -505,14 +514,15 @@ class OrderingTextGame(BaseGame):
         return self.answer    # sorted(self.words, key=lambda word: (self.get_point(word), word))
 
     def _validate(self, answer: str) -> (bool, str):
-        answer = answer.lower().replace(' ', '\n')
-        if answer != "\n".join(self.get_answer()):
-            for i, (a, b) in enumerate(zip(answer.split(), self.get_answer()), 1):
-                if a != b:
-                    val_msg = f"{a} is not supposed to be at index {i}."
-                    return False, val_msg
-        else:
-            return True, ""
+        answer = answer.lower().replace(',', ' ').split()
+        gold = self.get_answer()
+        if len(answer) < len(gold):
+            return False, f"Your answer is too short. There should be {len(gold)} items."
+        for i, (a, b) in enumerate(zip(answer, self.get_answer()), 1):
+            if a != b:
+                val_msg = f"'{a}' is not supposed to be the {index_to_word[i]} word in the order."
+                return False, val_msg
+        return True, ""
 
     def _generate_new_game(self, *args, **kwargs) -> None:
         if "preset_config" in kwargs:
