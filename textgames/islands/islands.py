@@ -99,8 +99,8 @@ class Islands(BaseGame):
         answer = [a.replace(" ", "").lower().strip() for a in answer]
 
         # check the size
-        if len(answer) != self.N or len(answer[0]) != self.N:
-            val_msg = f"2D grid is not {self.N} x {self.N}. ({len(answer)} x {len(answer[0])})"
+        if len(answer) != self.N or any((len(a) < self.N) for a in answer):
+            val_msg = f"2D grid is not {self.N} x {self.N}. ({len(answer)} x {set(len(a) for a in answer)})"
             return False, val_msg
 
         # check the tiles, ensure they are valid
