@@ -57,9 +57,9 @@ class AnagramScribble(BaseGame):
 
     def _get_prompt(self) -> str:
         if self.allow_repeat:
-            prompt = f"Construct a valid {self.num_chars}-character English word from the following letters:\n{self.total_chars}.\nEach character can be used multiple times. Please write None if there is no valid combination."
+            prompt = f"Construct a valid {self.num_chars}-character English word from the following letters:\n{self.total_chars}.\nEach character can be used multiple times. Please write None if there is no valid combination. Print only the answer.\n"
         else:
-            prompt = f"Construct a valid {self.num_chars}-character English word from the following letters:\n{self.total_chars}.\nEach character can only be used once. Please write None if there is no valid combination."
+            prompt = f"Construct a valid {self.num_chars}-character English word from the following letters:\n{self.total_chars}.\nEach character can only be used once. Please write None if there is no valid combination. Print only the answer.\n"
         return prompt
     
     def _validate(self, answer: str) -> (bool, str):
