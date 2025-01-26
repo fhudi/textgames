@@ -130,10 +130,16 @@ class CrosswordArrangerGame(BaseGame):
         if len(ans_hor) != self.board_size:
             val_msg = f"Mismatch answer length found!! Expected size of {self.board_size}, got {len(ans_hor)}."
             return False, val_msg
+        for w in ans_hor:
+            if len(w) != self.board_size:
+                val_msg = f"Mismatch answer length found!! Expected size of {self.board_size}, got {len(w)}."
+                return False, val_msg
         ans_ver = [''.join(ans_hor[r][c] for r in range(self.board_size)) for c in range(self.board_size)]
         word_set = set(self.word_list)
-        for w in chain(ans_hor, ans_ver):
+        for i, w in enumerate(chain(ans_hor, ans_ver)):
             if w not in word_set:
+                val_msg = (f"Mismatch answer word found!! {'Horizontal' if i < self.board_size else 'Vertical'} word"
+                           f" '{w}' is not in the word set.")
                 return False, val_msg
             word_set.remove(w)
         return True, val_msg
