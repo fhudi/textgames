@@ -4,21 +4,23 @@ import re
 
 #%%
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from textgames import THE_GAMES, GAME_NAMES
+from textgames import THE_GAMES, GAME_NAMES, LEVEL_IDS
 from agents import run_with_agent
 
 
 #%%
 def gemma_postproc(response_txt, game_name, difficulty_level):
-    if game_name in [THE_GAMES[i] for i in ["1", "7"]]:  # crossword
-        pat = re.compile(r'^```\n([^`]*)\n```')
-        match = pat.search(response_txt)
-        return match.group(1).strip().replace(" ", "") if match else response_txt
+    # if game_name in [THE_GAMES[i] for i in ["1", "7"]]:  # crossword
+    pat = re.compile(r'^```\n?([^\n`]*)\n?```')
+    match = pat.search(response_txt)
+    if match:
+        return match.group(1).strip().replace(" ", "")
 
-    elif game_name == THE_GAMES["6"]:  # anagram
-        pat = re.compile(r'\*\*\"?([^\"*]*)\"?\*\*')
-        match = pat.search(response_txt)
-        return match.group(1) if match else response_txt
+    # elif game_name == THE_GAMES["6"]:  # anagram
+    pat = re.compile(r'\*\*\"?([^\"*]*)\"?\*\*')
+    match = pat.search(response_txt)
+    if match:
+        return match.group(1)
 
     return response_txt or ""
 
@@ -27,7 +29,7 @@ def gemma_postproc(response_txt, game_name, difficulty_level):
 def get_gemma_response(texts, game_name, difficulty_level, turn):
     # global gen_model, tokenizer
     messages = [
-        {"role": ("model" if i % 2 else "user"), "content": texts}
+        {"role": ("model" if i % 2 else "user"), "content": text}
         for i, text in enumerate(texts)
     ]
 

@@ -64,6 +64,7 @@ demo.launch(
     auth=file_based_auth,
     favicon_path=favicon_path if os.path.exists(favicon_path) else None,
     share=True,
+    show_api=False,
 )
 
 

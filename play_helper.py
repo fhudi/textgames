@@ -616,8 +616,12 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
                      js=js_submit)
     give_up_checkbox = gr.Checkbox(False, visible=False, interactive=False)
     give_up_btn.click(
+        lambda: (gr.update(interactive=False), gr.update(interactive=False)), None, [submit_btn, give_up_btn]
+    ).then(
         lambda x: x, [give_up_checkbox], [give_up_checkbox],
         js="(x) => confirm('🥹 Give-up? 💸')"
+    ).then(
+        lambda: (gr.update(interactive=True), gr.update(interactive=True)), None, [submit_btn, give_up_btn]
     )
 
     def _forfeiting(confirmed, _solved_games):
