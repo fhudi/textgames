@@ -195,3 +195,15 @@ Your 2D grid must follow the following rules:
 Print only the answer.
 """
         return prompt
+
+    @staticmethod
+    def example() -> (str, str):
+        prompt = ("You are asked to construct a 2D 5 x 5 grid, consisting of water tiles (denoted by \u2019.\u2019), \n"
+                  "land tiles (denoted by \u2019#\u2019). \n\n"
+                  "A group of connected land tiles in 4 cardinal directions forms an island.\n\n"
+                  "Your 2D grid must follow the following rules:\n"
+                  "- There must be exactly 1 islands.\n"
+                  "- The size of each island must be from 1 to 2 tiles.\n\n"
+                  "Print only the answer.\n")
+        answer = "...##\n.....\n.....\n.....\n....."
+        return prompt, answer

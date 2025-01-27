@@ -274,3 +274,13 @@ class PasswordGame(BaseGame):
         self.rules = [rule for rule in new_rules]
 
         sort_game_states(self)
+
+    @staticmethod
+    def example() -> (str, str):
+        prompt = ("Please write a text string without any space by following a set of given rules."
+                  " Please write only the answer and follow the following criteria:\n"
+                  "- the text has 6 english character\n"
+                  "- the text has 0 uppercase characters\n")
+        answer = "hoodie"
+        return prompt, answer
+

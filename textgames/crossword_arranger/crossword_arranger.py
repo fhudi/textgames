@@ -144,6 +144,22 @@ class CrosswordArrangerGame(BaseGame):
             word_set.remove(w)
         return True, val_msg
 
+    @staticmethod
+    def example() -> (str, str):
+        prompt = (f"Given a board size of 3x3, arrange a possible crossword puzzle answer from a list of words.\n"
+                  f"Item in the list can only be used once.\n\n"
+                  f"List of words:\n"
+                  f"- app\n"
+                  f"- all\n"
+                  f"- and\n"
+                  f"- lee\n"
+                  f"- let\n"
+                  f"- pat\n"
+                  f"- pee\n"
+                  f"- pet\n\n"
+                  f"Print only the answer.")
+        answer = "app\nlee\nlet"
+        return prompt, answer
 
 #%%
 

@@ -236,3 +236,14 @@ class BracketGame(BaseGame):
         self.create_multiple_words()        
 
         sort_game_states(self)
+
+    @staticmethod
+    def example() -> (str, str):
+        prompt = ("You are given a text fabuloustextgames Your job is to put some valid parenthesis brackets in the text such that:\n"
+                  "- \"games\" is inside a round bracket\n"
+                  "- \"text\" is inside a angle bracket\n"
+                  "- \"fabulous\" is inside a block bracket\n"
+                  "The open and close parenthesis for block is [ ], curly is { }, round is ( ), and angle is < >\n"
+                  "The bracket depth must be 2 and print only the answer\n")
+        answer = "[[fabulous]<text>(games)]"
+        return prompt, answer

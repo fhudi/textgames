@@ -598,6 +598,26 @@ class OrderingTextGame(BaseGame):
         prompt += "\nPrint only the answer."
         return prompt
 
+    @staticmethod
+    def example() -> (str, str):
+        prompt = ("Given a set of rules to calculate point, sort the set of words in decreasing order.\n"
+                  "When there 2 or more words with same point, sort lexicographically.\n\n"
+                  "Rules:\n"
+                  "- add 10 points if there exists 'u' in the word\n\n"
+                  "Words:\n"
+                  "- hudi\n"
+                  "- genta\n"
+                  "- aji\n"
+                  "- ruochen\n\n"
+                  "Print only the answer.")
+        answer = (
+            "hudi\n"
+            "ruochen\n"
+            "aji\n"
+            "genta"
+        )
+        return prompt, answer
+
 
 #%%
 

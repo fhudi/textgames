@@ -310,3 +310,15 @@ Find a substring of exactly {self.answer_len} characters long that:
 Print only the answer.
 """
         return prompt
+
+    @staticmethod
+    def example() -> (str, str):
+        prompt = ("You are given the following string:\n"
+                  "hudigentaajiruochen\n\n"
+                  "Find a substring of exactly 3 characters long that:\n"
+                  " - Contains t\n"
+                  " - Does not contain i and a\n\n"
+                  "Print only the answer.\n")
+        answer = "ent"
+        return prompt, answer
+

@@ -20,22 +20,31 @@ def run_with_agent(fp_out: Union[str, Path],
                    n_turns=3,
                    game_names_list=GAME_NAMES,
                    level_ids_list=LEVEL_IDS[:3],
+                   sid_indices=None,  # sid_index_range=range(0, 1000),
+                   remove_if_output_file_exist=True,
+                   prepend_example=False,
                    ) -> None:
     os.makedirs(os.path.dirname(os.path.abspath(fp_out)), exist_ok=True)
-    with open(fp_out, "wb"):
-        pass
+    if remove_if_output_file_exist:
+        with open(fp_out, "wb"):
+            pass
 
     for game_name, difficulty_level in product(game_names_list, level_ids_list):
         game_str = f"{game_filename(game_name)}_{difficulty_level}"
         game_cls = _game_class_from_name(game_name)
         with open(f"problemsets/{game_filename(game_name)}_{difficulty_level}.json", "r", encoding="utf8") as f:
             sid_prompt_dict = json.load(f)
+        if sid_indices is not None:
+            sid_prompt_dict = {k: sid_prompt_dict[k] for k in sid_indices}
 
         correct_cnt, exception_cnt = 0, 0
         for sid, prompt in tqdm(sid_prompt_dict.items(), desc=game_str, total=len(sid_prompt_dict)):
             cur_game = game_cls()
             cur_game.load_game(prompt)
-            texts = [cur_game.get_prompt()]
+            if prepend_example:
+                texts = [*cur_game.example(), f"Correct guess. Now let's try another example.\n{cur_game.get_prompt()}"]
+            else:
+                texts = [cur_game.get_prompt()]
             for turn in range(1, n_turns + 1):
                 response_raw, response, e = None, None, None
                 solved, val_msg = False, None
@@ -46,7 +55,7 @@ def run_with_agent(fp_out: Union[str, Path],
                     solved, val_msg = cur_game.validate(response)
                     texts.append(
                         f"Bad guess (Wrong Answer).\n{val_msg}\nPlease try again and print the answer only."
-                        if not solved else "Good guess."
+                        if not solved else "Correct guess."
                     )
                 except Exception as _e:
                     e = _e

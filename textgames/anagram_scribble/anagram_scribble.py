@@ -5,6 +5,7 @@ import json
 import string
 import re
 
+
 class AnagramScribble(BaseGame):
     @staticmethod
     def get_game_name() -> str:
@@ -83,3 +84,13 @@ class AnagramScribble(BaseGame):
             return False, val_msg
 
         return True, ""
+
+    @staticmethod
+    def example() -> (str, str):
+        prompt = ("Construct a valid 5-character English word from the following letters:\n"
+                  "['e', 'l', 'o', 'b', 's', 'p'].\n"
+                  "Each character can be used multiple times. Please write None if there is no valid combination."
+                  " Print only the answer.\n")
+        answer = "sleep"
+        return prompt, answer
+

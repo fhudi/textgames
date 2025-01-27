@@ -9,6 +9,7 @@ Please solve the 9x9 sudoku with 1,2,3,4,5,6,7,8,9 as the values and fill _ with
 Print only the answer.
 """
 
+
 #%%
 class Sudoku(BaseGame):
     @staticmethod
@@ -232,4 +233,14 @@ class Sudoku(BaseGame):
         self.char_to_id = {}
         for c_id in range(len(self.characters)):
             self.char_to_id[self.characters[c_id]] = c_id
-        
+
+    @staticmethod
+    def example() -> (str, str):
+        prompt = ("Please solve the 4x4 sudoku with A,B,C,D as the values and fill _ with the possible value and"
+                  " only print the answer. Follow the sudoku rule.\nA_CD CD_B _AD_ DCBA")
+        answer = ("ABCD\n"
+                  "CDAB\n"
+                  "BADC\n"
+                  "DCBA")
+        return prompt, answer
+
