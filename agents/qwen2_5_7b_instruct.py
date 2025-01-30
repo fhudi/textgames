@@ -9,6 +9,20 @@ from agents import run_with_agent
 
 
 #%%
+def _getenv_as_int(attr, default=None):
+    ret = os.getenv(attr, default)
+    return None if ret is None else int(ret)
+
+
+GAME_ST, GAME_ED = _getenv_as_int("TG_GAME_ST", None), _getenv_as_int("TG_GAME_ED", None)
+LVL_ST, LVL_ED = _getenv_as_int("TG_LEVEL_ST", None), _getenv_as_int("TG_LEVEL_ED", '3')
+SID_ST, SID_ED = _getenv_as_int("TG_SID_ST", None), _getenv_as_int("TG_SID_ED", None)
+N_TURNS = _getenv_as_int("TG_N_TURNS", 3)
+ONE_SHOT = bool(int(os.getenv("TG_ONESHOT", "0")))
+QWEN_SIZE = int(os.getenv("TG_QWEN_SIZE", "32"))    # {3, 7, 14, 32, 72}  unsupported: {0.5, 1.5}
+
+
+#%%
 def qwen_postproc(response_txt, game_name, difficulty_level):
     # # if game_name in [THE_GAMES[i] for i in ["1", "7"]]:  # crossword
     # pat = re.compile(r'^```\n?([^`]*)\n?```')
@@ -21,7 +35,6 @@ def qwen_postproc(response_txt, game_name, difficulty_level):
     # match = pat.search(response_txt)
     # if match:
     #     return match.group(1).strip()
-
     return response_txt or ""
 
 
@@ -57,31 +70,18 @@ def get_qwen_response(texts, game_name, difficulty_level, turn):
 
 
 #%%
-def _getenv_as_int(attr, default=None):
-    ret = os.getenv(attr, default)
-    return None if ret is None else int(ret)
-
-
-GAME_ST, GAME_ED = _getenv_as_int("TG_GAME_ST", None), _getenv_as_int("TG_GAME_ED", None)
-LVL_ST, LVL_ED = _getenv_as_int("TG_LEVEL_ST", None), _getenv_as_int("TG_LEVEL_ED", '3')
-SID_ST, SID_ED = _getenv_as_int("TG_SID_ST", None), _getenv_as_int("TG_SID_ED", None)
-N_TURNS = _getenv_as_int("TG_N_TURNS", 3)
-ONE_SHOT = bool(int(os.getenv("TG_ONESHOT", "0")))
-
-
-#%%
 if __name__ == "__main__":
-    fp_out = (f"model_outputs/results_qwen2-5-7b-instruct"
+    fp_out = (f"model_outputs/results_qwen2-5-{QWEN_SIZE}b-instruct"
               f"{'.1s' if ONE_SHOT else '.zs'}"
               f"{'' if GAME_ST is None else f'.{GAME_ST}'}"
               f"{'' if LVL_ST is None else f'.{LVL_ST}'}"
               f".jsonl")
 
-    model_name = "Qwen/Qwen2.5-7B-Instruct"
+    model_name = f"Qwen/Qwen2.5-{QWEN_SIZE}B-Instruct"
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
-        # torch_dtype="auto",
         device_map="auto",
+        **({"torch_dtype": "auto"} if QWEN_SIZE > 7 else {}),
     )
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
