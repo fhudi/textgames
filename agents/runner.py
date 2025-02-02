@@ -25,6 +25,7 @@ def run_with_agent(fp_out: Union[str, Path],
                    prepend_example=False,
                    ) -> None:
     os.makedirs(os.path.dirname(os.path.abspath(fp_out)), exist_ok=True)
+    print(fp_out)
     if remove_if_output_file_exist:
         with open(fp_out, "wb"):
             pass
