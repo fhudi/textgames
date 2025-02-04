@@ -3,9 +3,18 @@ import os
 import re
 
 #%%
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+import numpy as np
+from transformers import AutoTokenizer, AutoModelForCausalLM, set_seed
 from textgames import THE_GAMES, GAME_NAMES, LEVEL_IDS
 from agents import run_with_agent
+
+#%%
+def set_all_seed(seed=42):
+    set_seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
 
 
 #%%
