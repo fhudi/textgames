@@ -57,7 +57,7 @@ def dsr1_postproc(response_txt, *args, **kwargs):
 def get_dsr1_response(texts, *args, **kwargs):
     # global model, tokenizer
     messages = [
-        {"role": "system", "content": "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."},
+        # {"role": "system", "content": "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."},
         *[{"role": ("assistant" if i % 2 else "user"),
            "content": f"{text}\nPlease reason step by step, and put your final answer within \\boxed{{}} as text file."
            # "content": f"{text}\nPlease print only your final answer, and put your final answer within \\boxed{{}}."
