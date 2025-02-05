@@ -75,10 +75,19 @@ class AnagramScribble(BaseGame):
             if char not in self.total_chars:
                 val_msg = "Your answer must only contain the characters provided"
                 return False, val_msg
-        if (not self.allow_repeat and (len(set(answer)) != len(answer))
-                and (len(self.possible_ans) == len(set(self.possible_ans)))):
-            val_msg = "Your answer must not contain repeated characters"
-            return False, val_msg
+        # if (not self.allow_repeat and (len(set(answer)) != len(answer))
+        #         and (len(self.possible_ans) == len(set(self.possible_ans)))):
+        if not self.allow_repeat:
+            _ans = sorted(answer)
+            _chars = sorted(self.total_chars)
+            j, k = 0, 0
+            while j < len(_ans) and k < len(_chars):
+                if _ans[j] == _chars[k]:
+                    j += 1
+                k += 1
+            if j < len(_ans):
+                val_msg = "Your answer must not contain repeated characters"
+                return False, val_msg
         if answer not in self.WORD_LIST_BIN[str(self.num_chars)]:
             val_msg = "Your answer is not a valid English word"
             return False, val_msg
