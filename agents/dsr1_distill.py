@@ -27,8 +27,8 @@ GAME_ST, GAME_ED = _getenv_as_int("TG_GAME_ST", None), _getenv_as_int("TG_GAME_E
 LVL_ST, LVL_ED = _getenv_as_int("TG_LEVEL_ST", None), _getenv_as_int("TG_LEVEL_ED", '3')
 SID_ST, SID_ED = _getenv_as_int("TG_SID_ST", None), _getenv_as_int("TG_SID_ED", None)
 N_TURNS = _getenv_as_int("TG_N_TURNS", 1)
-MAX_NEW_TOKENS = _getenv_as_int("TG_MAX_NEW_TOKENS", 12000)
 ONE_SHOT = bool(int(os.getenv("TG_ONESHOT", "0")))
+MAX_NEW_TOKENS = _getenv_as_int("TG_MAX_NEW_TOKENS", 12000)
 DSR1_SIZE = os.getenv("TG_DSR1_SIZE", "14")    # {1.5, 7, 8, 14, 32, 70}
 DSR1_NAME = {
     "1.5": "Qwen-1.5",

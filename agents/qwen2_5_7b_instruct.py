@@ -71,19 +71,21 @@ def get_qwen_response(texts, game_name, difficulty_level, turn):
 
 #%%
 if __name__ == "__main__":
-    fp_out = (f"model_outputs/results_qwen2-5-{QWEN_SIZE}b-instruct"
+    fp_out = (f"model_outputs/__runs__/results_qwen2-5-{QWEN_SIZE}b-instruct"
               f"{'.1s' if ONE_SHOT else '.zs'}"
               f"{'' if GAME_ST is None else f'.{GAME_ST}'}"
               f"{'' if LVL_ST is None else f'.{LVL_ST}'}"
               f".jsonl")
 
     model_name = f"Qwen/Qwen2.5-{QWEN_SIZE}B-Instruct"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         device_map="auto",
-        **({"torch_dtype": "auto"} if QWEN_SIZE > 7 else {}),
+        torch_dtype="auto",
+        # **({"torch_dtype": "auto"} if QWEN_SIZE > 7 else {}),
     )
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    print(f"    > model.dtype: {model.dtype}")
 
     run_with_agent(
         fp_out,
