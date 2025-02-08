@@ -57,22 +57,23 @@ def dsr1_postproc(response_txt, *args, **kwargs):
 def get_dsr1_response(texts, *args, **kwargs):
     # global model, tokenizer
     messages = [
-        # {"role": "system", "content": "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."},
-        *[{"role": ("assistant" if i % 2 else "user"),
-           "content": f"{text}\nPlease reason step by step, and put your final answer within \\boxed{{}} as text file."
-           # "content": f"{text}\nPlease print only your final answer, and put your final answer within \\boxed{{}}."
-           } for i, text in enumerate(texts)]
+        {"role": "user",
+         "content": f"{text}\nPlease reason step by step, and put your final answer within \\boxed{{}} as text file."}
+        if i % 2 == 0 else
+        {"role": "assistant", "content": f"\\boxed{{{text}}}"}
+        for i, text in enumerate(texts)
     ]
     text_inputs = tokenizer.apply_chat_template(
         messages,
         tokenize=False,
         add_generation_prompt=True
     )
-    model_inputs = tokenizer([text_inputs], return_tensors="pt").to(model.device)
+    model_inputs = tokenizer(text_inputs, return_tensors="pt").to(model.device)
     generated_ids = model.generate(
         **model_inputs,
         max_new_tokens=MAX_NEW_TOKENS,
         do_sample=False,
+        pad_token_id=tokenizer.eos_token_id,
     )
     generated_ids = [
         output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
@@ -94,7 +95,9 @@ if __name__ == "__main__":
               f"{'' if LVL_ST is None else f'.{LVL_ST}'}"
               f".jsonl")
 
+    set_all_seed()
     model_name = f"deepseek-ai/DeepSeek-R1-Distill-{DSR1_NAME[DSR1_SIZE]}B"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         device_map="auto",
@@ -103,7 +106,6 @@ if __name__ == "__main__":
     model.generation_config.temperature = None
     model.generation_config.top_k = None
     model.generation_config.top_p = None
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
 
     run_with_agent(
         fp_out,

@@ -33,7 +33,7 @@ def run_with_agent(fp_out: Union[str, Path],
     for game_name, difficulty_level in product(game_names_list, level_ids_list):
         game_str = f"{game_filename(game_name)}_{difficulty_level}"
         game_cls = _game_class_from_name(game_name)
-        with open(f"problemsets/{game_filename(game_name)}_{difficulty_level}.json", "r", encoding="utf8") as f:
+        with open(f"problemsets/{game_str}.json", "r", encoding="utf8") as f:
             sid_prompt_dict = json.load(f)
         if sid_indices is not None:
             sid_prompt_dict = {k: sid_prompt_dict[k] for k in sid_indices}
