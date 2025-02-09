@@ -60,10 +60,10 @@ class BracketGame(BaseGame):
     def _validate(self, answer: str) -> (bool, str):
         answer = "".join(answer.split()).lower()
 
-        # if ("".join(filter(lambda a: a.isalpha(), answer)) !=
-        #         "".join(filter(lambda a: a.isalpha(), self.string.lower()))):
-        #     val_msg = f"You are only allowed to add parentheses to the base text '{self.string}'."
-        #     return False, val_msg
+        if ("".join(filter(lambda a: a.isalpha(), answer)) !=
+                "".join(filter(lambda a: a.isalpha(), self.string.lower()))):
+            val_msg = f"You are only allowed to add parentheses to the base text '{self.string}'."
+            return False, val_msg
 
         char2type_op = {b[1]: b[0] for b in self.BRACKETS}
         char2type_ed = {b[2]: b[0] for b in self.BRACKETS}
