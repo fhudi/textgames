@@ -41,45 +41,57 @@ DSR1_NAME = {
 
 
 #%%
-def dsr1_postproc(response_txt, *args, **kwargs):
-    for pat in [
-        re.compile(r'\\boxed\{([\s\S]*)}'),
-        re.compile(r'</think>\n([\s\S]*)$'),
-    ]:
-        match = pat.search(response_txt)
-        if match:
-            return match.group(1).strip()
-    return response_txt[-512:].strip() if response_txt else ""
-    # return response_txt
+def dsr1_postproc(response_txt_batch, *args, **kwargs):
+    response_txt_batch = [response_txt_batch]
+    ret = []
+    for response_txt in response_txt_batch:
+        _match = None
+        for pat in [
+            re.compile(r'\\boxed\{([\s\S]*)}'),
+            re.compile(r'</think>\n([\s\S]*)$'),
+        ]:
+            match = pat.search(response_txt)
+            if match:
+                _match = match.group(1).strip()
+                break
+        if _match is not None:
+            ret.append(_match)
+        else:
+            ret.append(response_txt[:256].strip() if response_txt else "")
+    return ret[0]
 
 
 #%%
-def get_dsr1_response(texts, *args, **kwargs):
+def get_dsr1_response(texts_batch, *args, **kwargs):
     # global model, tokenizer
+    texts_batch = [texts_batch]
     messages = [
-        {"role": "user",
-         "content": f"{text}\nPlease reason step by step, and put your final answer within \\boxed{{}} as text file."}
-        if i % 2 == 0 else
-        {"role": "assistant", "content": f"\\boxed{{{text}}}"}
-        for i, text in enumerate(texts)
+        [
+            {"role": "user",
+             "content": f"{text}\nPlease reason step by step, and put your final answer within \\boxed{{}} as text file."}
+            if i % 2 == 0 else
+            {"role": "assistant", "content": f"\\boxed{{{text}}}"}
+            for i, text in enumerate(texts)
+        ]
+        for texts in texts_batch
     ]
     text_inputs = tokenizer.apply_chat_template(
         messages,
         tokenize=False,
         add_generation_prompt=True
     )
-    model_inputs = tokenizer(text_inputs, return_tensors="pt").to(model.device)
-    generated_ids = model.generate(
+    model_inputs = tokenizer(text_inputs, return_tensors="pt", add_special_tokens=False).to(model.device)
+    output_ids = model.generate(
         **model_inputs,
         max_new_tokens=MAX_NEW_TOKENS,
         do_sample=False,
         pad_token_id=tokenizer.eos_token_id,
     )
     generated_ids = [
-        output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+        _output_ids[len(input_ids):] for input_ids, _output_ids in zip(model_inputs.input_ids, output_ids)
     ]
-    response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
-    return response.strip()
+    response = [r.strip() for r in tokenizer.batch_decode(generated_ids, skip_special_tokens=True)]
+    return response[0]
 
 
 #%%
@@ -89,7 +101,7 @@ def get_dsr1_response(texts, *args, **kwargs):
 
 #%%
 if __name__ == "__main__":
-    fp_out = (f"model_outputs/results_deepseek-r1-distill-{DSR1_SIZE}b"
+    fp_out = (f"model_outputs/__runs__/results_deepseek-r1-distill-{DSR1_SIZE}b"
               f"{'.1s' if ONE_SHOT else '.zs'}"
               f"{'' if GAME_ST is None else f'.{GAME_ST}'}"
               f"{'' if LVL_ST is None else f'.{LVL_ST}'}"
@@ -118,4 +130,5 @@ if __name__ == "__main__":
                      if SID_ST or SID_ED else None),
         prepend_example=ONE_SHOT,
         # remove_if_output_file_exist=False,
+        assistant_uses_raw_response=False,
     )
