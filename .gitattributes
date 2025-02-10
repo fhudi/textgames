@@ -17,3 +17,7 @@ model_outputs/results_gemma-2-9b-it.1s.jsonl filter=lfs diff=lfs merge=lfs -text
 model_outputs/results_gemma-2-9b-it.zs.jsonl filter=lfs diff=lfs merge=lfs -text
 model_outputs/results_gemma-2-27b-it.1s.jsonl filter=lfs diff=lfs merge=lfs -text
 model_outputs/results_gemma-2-27b-it.zs.jsonl filter=lfs diff=lfs merge=lfs -text
+model_outputs/results_llama-3.1-70b-instruct.1s.jsonl filter=lfs diff=lfs merge=lfs -text
+model_outputs/results_llama-3.1-70b-instruct.zs.jsonl filter=lfs diff=lfs merge=lfs -text
+model_outputs/results_llama-3.3-70b-instruct.1s.jsonl filter=lfs diff=lfs merge=lfs -text
+model_outputs/results_llama-3.3-70b-instruct.zs.jsonl filter=lfs diff=lfs merge=lfs -text
