@@ -44,6 +44,18 @@ class AnagramScribble(BaseGame):
         if total_chars_extraction != "Error loading game state.":
             characters = total_chars_extraction.split(",")
             self.total_chars = [char.strip().strip("'") for char in characters]
+        self.possible_ans = ""
+        _chars = sorted(self.total_chars)
+        for w in self.WORD_LIST_BIN[str(self.num_chars)]:
+            _ans = sorted(w)
+            j, k = 0, 0
+            while j < len(_ans) and k < len(_chars):
+                if _ans[j] == _chars[k]:
+                    j += 1
+                k += 1
+            if j >= len(_ans):
+                self.possible_ans = w
+                break
 
     def _generate_new_game(self, *args, **kwargs) -> None:
         self.low_num_chars = kwargs['low_num_chars']
@@ -64,10 +76,10 @@ class AnagramScribble(BaseGame):
         return prompt
     
     def _validate(self, answer: str) -> (bool, str):
-        answer = answer.lower()
-        if self.possible_ans != "" and answer == "none":
+        if self.possible_ans != "" and answer == "None":
             val_msg = "There is a valid answer."
             return False, val_msg
+        answer = answer.lower()
         if len(answer) != self.num_chars:
             val_msg = f"Your answer must be exactly {self.num_chars} characters long"
             return False, val_msg
