@@ -14,8 +14,10 @@ from pandas import read_csv
 import json
 
 
-# ["🔑\tPassword Game", "🧩\tText Sudoku", "🗳️\tBracket Game", "📈\tOrdering Text",
-#  "🏝️\tIslands", "🔎\tString Search", "📰\tCrossword Arranger", "🔤\tAnagram Scribble",]
+# [
+#  "📰\tCrossword Arranger", "🧩\tText Sudoku", "🏝️\tIslands", "🔑\tPassword Game",
+#  "📈\tOrdering Text", "🔤\tAnagram Scribble", "🗳️\tBracket Game", "🔎\tString Search",
+#  ]
 THE_GAMES = {
     k: v.get_game_name() for k, v in [
         ("1", CrosswordArrangerGame),

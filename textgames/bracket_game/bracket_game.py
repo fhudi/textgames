@@ -62,7 +62,7 @@ class BracketGame(BaseGame):
 
         if ("".join(filter(lambda a: a.isalpha(), answer)) !=
                 "".join(filter(lambda a: a.isalpha(), self.string.lower()))):
-            val_msg = f"You are only allowed to add parentheses to the base text '{self.string}'."
+            val_msg = f"You are not allowed to change the character sequence of base text '{self.string}'."
             return False, val_msg
 
         char2type_op = {b[1]: b[0] for b in self.BRACKETS}

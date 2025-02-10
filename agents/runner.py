@@ -23,6 +23,7 @@ def run_with_agent(fp_out: Union[str, Path],
                    sid_indices=None,  # sid_index_range=range(0, 1000),
                    remove_if_output_file_exist=True,
                    prepend_example=False,
+                   assistant_uses_raw_response=True,
                    ) -> None:
     os.makedirs(os.path.dirname(os.path.abspath(fp_out)), exist_ok=True)
     print(fp_out)
@@ -51,8 +52,8 @@ def run_with_agent(fp_out: Union[str, Path],
                 solved, val_msg = False, None
                 try:
                     response_raw = get_response(texts, game_name, difficulty_level, turn)
-                    texts.append(response_raw)
                     response = get_postprocess(response_raw, game_name, difficulty_level)
+                    texts.append(response_raw if assistant_uses_raw_response else response)
                     solved, val_msg = cur_game.validate(response)
                     texts.append(
                         f"Bad guess (Wrong Answer).\n{val_msg}\nPlease try again and print the answer only."
