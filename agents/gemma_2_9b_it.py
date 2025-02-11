@@ -23,7 +23,7 @@ GEMMA_SIZE = int(os.getenv("TG_GEMMA_SIZE", "9"))    # {3, 9, 27}
 
 
 #%%
-def gemma_postproc(response_txt, game_name, difficulty_level):
+def gemma_postproc(response_txt, game_name, difficulty_level, *args, **kwargs):
     # if game_name in [THE_GAMES[i] for i in ["1", "7"]]:  # crossword
     pat = re.compile(r'^```\n?([^`]*)\n?```')
     match = pat.search(response_txt)
@@ -40,7 +40,7 @@ def gemma_postproc(response_txt, game_name, difficulty_level):
 
 
 #%%
-def get_gemma_response(texts, game_name, difficulty_level, turn):
+def get_gemma_response(texts, game_name, difficulty_level, turn, *args, **kwargs):
     # global gen_model, tokenizer
     messages = [
         {"role": ("model" if i % 2 else "user"), "content": text}
@@ -88,6 +88,7 @@ if __name__ == "__main__":
 
     gen_model = AutoModelForCausalLM.from_pretrained(gen_model_checkpoint, **_kwargs)
     tokenizer = AutoTokenizer.from_pretrained(gen_model_checkpoint, **_kwargs)
+    print(f"    > model.dtype: {gen_model.dtype}")
 
     run_with_agent(
         fp_out,

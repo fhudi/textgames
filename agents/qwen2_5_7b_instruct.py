@@ -23,7 +23,7 @@ QWEN_SIZE = int(os.getenv("TG_QWEN_SIZE", "32"))    # {3, 7, 14, 32, 72}  unsupp
 
 
 #%%
-def qwen_postproc(response_txt, game_name, difficulty_level):
+def qwen_postproc(response_txt, game_name, difficulty_level, *args, **kwargs):
     # # if game_name in [THE_GAMES[i] for i in ["1", "7"]]:  # crossword
     # pat = re.compile(r'^```\n?([^`]*)\n?```')
     # match = pat.search(response_txt)
@@ -39,7 +39,7 @@ def qwen_postproc(response_txt, game_name, difficulty_level):
 
 
 #%%
-def get_qwen_response(texts, game_name, difficulty_level, turn):
+def get_qwen_response(texts, game_name, difficulty_level, turn, *args, **kwargs):
     # global model, tokenizer
     messages = [
         {"role": "system", "content": "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."},

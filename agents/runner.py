@@ -51,7 +51,7 @@ def run_with_agent(fp_out: Union[str, Path],
                 response_raw, response, e = None, None, None
                 solved, val_msg = False, None
                 try:
-                    response_raw = get_response(texts, game_name, difficulty_level, turn)
+                    response_raw = get_response(texts, game_name, difficulty_level, turn, sid=sid)
                     response = get_postprocess(response_raw, game_name, difficulty_level)
                     texts.append(response_raw if assistant_uses_raw_response else response)
                     solved, val_msg = cur_game.validate(response)
