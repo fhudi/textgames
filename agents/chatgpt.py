@@ -39,7 +39,8 @@ def preload_responses():
     for _turn in range(1, N_TURNS):
         fp = os.getenv(
             f"TG_GPT_OUTPUT_FILE_TURN_{_turn}",
-            "model_outputs/__runs__/chatgpt_4o_mini_results/raw/results_chatgpt-4o-mini.zs.jsonl"
+            (f"model_outputs/__runs__/chatgpt_4o_mini_results/raw/batch_output_chatgpt-4o-mini_turn{_turn}"
+             f"{'.1s' if ONE_SHOT else '.zs'}.jsonl")
         )
         with open(fp, "r", encoding="utf8") as i:
             data = [json.loads(line) for line in i]
@@ -69,20 +70,28 @@ def get_gpt_response(texts, game_name, difficulty_level, turn, *args, **kwargs):
     # global model, tokenizer
     sid = kwargs['sid']    # sid must be fed as params
     messages = [
-        {"role": "user", "content": text}
-        if i % 2 == 0 else
-        {"role": "assistant", "content": text}
+        ({"role": "user", "content": text}
+         if i % 2 == 0 else
+         {"role": "assistant", "content": text})
         for i, text in enumerate(texts)
     ]
 
-    response = ""
+    response = None
     if turn < N_TURNS:
         response = RESPONSES_ALL[(f"{game_filename(game_name)}_{difficulty_level}", turn)][sid]
     elif fp_next := os.getenv("TG_GPT_NEXTTURN_OUTPUT_FILE", None):
         with open(fp_next, "a", encoding="utf8") as o:
             o.write(json.dumps({
                 'custom_id': f"{sid}-{game_filename(game_name)}_{difficulty_level}",
-                'message': messages,
+                "method": "POST", "url": "/v1/chat/completions",
+                "body": {
+                    "model": "gpt-4o-mini-2024-07-18",
+                    "max_completion_tokens": 200,
+                    # "messages": [],
+                    'messages': messages,
+                    "seed": 42,
+                    "temperature": 0,
+                }
             }))
             o.write("\n")
 
