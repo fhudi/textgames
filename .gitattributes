@@ -21,3 +21,8 @@ model_outputs/results_llama-3.1-70b-instruct.1s.jsonl filter=lfs diff=lfs merge=
 model_outputs/results_llama-3.1-70b-instruct.zs.jsonl filter=lfs diff=lfs merge=lfs -text
 model_outputs/results_llama-3.3-70b-instruct.1s.jsonl filter=lfs diff=lfs merge=lfs -text
 model_outputs/results_llama-3.3-70b-instruct.zs.jsonl filter=lfs diff=lfs merge=lfs -text
+model_outputs/results_chatgpt-4o-mini.1s.jsonl filter=lfs diff=lfs merge=lfs -text
+model_outputs/results_chatgpt-4o-mini.zs.jsonl filter=lfs diff=lfs merge=lfs -text
+model_outputs/results_chatgpt-o3-mini.zs.jsonl filter=lfs diff=lfs merge=lfs -text
+model_outputs/results_deepseek-r1-distill-8b.1s.jsonl filter=lfs diff=lfs merge=lfs -text
+model_outputs/results_deepseek-r1-distill-8b.zs.jsonl filter=lfs diff=lfs merge=lfs -text

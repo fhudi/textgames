@@ -1,7 +1,9 @@
 */*.DS_Store
 .DS_Store
 
+agents/*.sh
 user_outputs/
+model_outputs/__runs__
 
 .idea/
 
