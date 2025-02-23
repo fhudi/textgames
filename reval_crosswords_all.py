@@ -4,7 +4,7 @@ from tqdm import tqdm
 from textgames import GAME_NAMES, game_filename, _game_class_from_name
 from pathlib import Path
 
-GAME_NAME = GAME_NAMES[6]
+GAME_NAME = GAME_NAMES[0]
 PROBLEMSET_DIR = Path(os.getenv("TG_PROBLEMSET_DIR", "problemsets"))
 MODEL_OUTPUT_DIR = Path(os.getenv("TG_MODEL_OUTPUT_DIR", "model_outputs"))
 OUTPUT_FILENAMES = [
@@ -31,22 +31,22 @@ OUTPUT_FILENAMES = [
     #
     # "results_deepseek-r1-distill-14b.1s.jsonl",
     # "results_deepseek-r1-distill-14b.zs.jsonl",
-    # "results_deepseek-r1-distill-14b.rerun.1s.jsonl",
+    # # "results_deepseek-r1-distill-14b.rerun.1s.jsonl",
     #
     # "results_chatgpt-4o-mini.1s.jsonl",
     # "results_chatgpt-4o-mini.zs.jsonl",
     # "results_chatgpt-o3-mini.zs.jsonl",
     #
-    # "results_qwen2-5-7b-instruct_sp.1s.jsonl",
-    # "results_qwen2-5-7b-instruct_sp.zs.jsonl",
+    # # "results_qwen2-5-7b-instruct_sp.1s.jsonl",
+    # # "results_qwen2-5-7b-instruct_sp.zs.jsonl",
 
-    # "results_deepseek-r1-distill-8b.1s.jsonl",
+    "results_deepseek-r1-distill-8b.1s.jsonl",
     "results_deepseek-r1-distill-8b.zs.jsonl",
 ]
 
 
-def revalidate_bracket(fp, reval_dir="revalidate_bracket_all",
-                       source_dirs=("revalidate_bracket_rerun", "revalidate_anagram_3",)):
+def revalidate_bracket(fp, reval_dir="revalidate_crosswords_all",
+                       source_dirs=("revalidate_bracket_all",)):
     os.makedirs(MODEL_OUTPUT_DIR/reval_dir, exist_ok=True)
     count_pos, count_neg = 0, 0
     source_dir = "."

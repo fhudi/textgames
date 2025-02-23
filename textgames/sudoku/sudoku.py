@@ -29,24 +29,32 @@ class Sudoku(BaseGame):
             for j in range(self.size):
                 num = mat[i][j]
                 if num == self.empty_character:
-                    return False
+                    return False, "There are unfilled cells"
     
                 subgrid_index = (i // self.srn) * self.srn + (j // self.srn)
     
-                if num in rows[i] or num in cols[j] or num in subgrids[subgrid_index]:
-                    return False
-    
+                if num in rows[i]:
+                    return False, f"Duplicated row value ({num}) for cell in row {i+1} column {j+1}."
+                elif num in cols[j]:
+                    return False, f"Duplicated column value ({num}) for cell in row {i+1} column {j+1}."
+                elif num in subgrids[subgrid_index]:
+                    return False, f"Duplicated subgrid value ({num}) for cell in row {i+1} column {j+1}."
+
                 rows[i].add(num)
                 cols[j].add(num)
                 subgrids[subgrid_index].add(num)
 
-        return True
+        return True, ""
 
     def _validate(self, input) -> (bool, str):
         mat = [[self.empty_character for i in range(self.size)] for j in range(self.size)]
 
+        input = input if input else ""
         arr = input.split()
+        if all(len(l) == 1 for l in arr) and (len(arr) == self.size * self.size):
+            arr = ["".join(arr[i:i+self.size]) for i in range(0, len(arr), self.size)]
         if (len(arr) != self.size) or any(len(arr[i]) != self.size for i in range(len(arr))):
+            arr = input.split("\n")
             val_msg = f"Your answer is wrong in shape, it should be {self.size}x{self.size} sudoku."
             return False, val_msg
 
@@ -60,7 +68,8 @@ class Sudoku(BaseGame):
                 if arr[i][j] != self.mat[i][j] and self.mat[i][j] != self.empty_character:
                     val_msg = "One or more characters are replaced"
                     return False, val_msg
-        return self.is_valid_sudoku(mat), ""
+
+        return self.is_valid_sudoku(mat)
 
     def _generate_new_game(self, *args, **kwargs) -> None:
         size=kwargs["size"]

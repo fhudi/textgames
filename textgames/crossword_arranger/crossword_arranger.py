@@ -125,8 +125,14 @@ class CrosswordArrangerGame(BaseGame):
         return prompt
 
     def _validate(self, answer: str) -> (bool, str):
-        ans_hor = list(filter(None, answer.lower().replace(' ', '\n').split("\n")))
+        answer = answer if answer else ""
+        # ans_hor = list(filter(None, answer.lower().replace(' ', '\n').split("\n")))
+        ans_hor = answer.lower().split()
         val_msg = ""
+        if len(ans_hor) != self.board_size:
+            arr = answer.lower().split()
+            if all(len(l) == 1 for l in arr) and (len(arr) == self.board_size * self.board_size):
+                ans_hor = ["".join(arr[i:i+self.board_size]) for i in range(0, len(arr), self.board_size)]
         if len(ans_hor) != self.board_size:
             val_msg = f"Mismatch answer length found!! Expected size of {self.board_size}, got {len(ans_hor)}."
             return False, val_msg
