@@ -54,13 +54,16 @@ def run_with_agent(fp_out: Union[str, Path],
                     response_raw = get_response(texts, game_name, difficulty_level, turn, sid=sid)
                     response = get_postprocess(response_raw, game_name, difficulty_level)
                     texts.append(response_raw if assistant_uses_raw_response else response)
-                    solved, val_msg = cur_game.validate(response)
+                    solved, val_msg = (False, None) if response is None else cur_game.validate(response)
                     texts.append(
                         f"Bad guess (Wrong Answer).\n{val_msg}\nPlease try again and print the answer only."
                         if not solved else "Correct guess."
                     )
                 except Exception as _e:
                     e = _e
+                    # print(e)
+                # assert False, {"texts": texts, "response": response_raw,
+                #                "args": (n_turns, game_names_list, remove_if_output_file_exist, prepend_example, assistant_uses_raw_response)}
                 with open(fp_out, "a", encoding="utf8") as o:
                     json.dump({
                         "game": game_str,

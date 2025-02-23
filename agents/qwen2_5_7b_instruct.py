@@ -3,9 +3,19 @@ import os
 import re
 
 #%%
-from transformers import AutoTokenizer, AutoModelForCausalLM
-from textgames import THE_GAMES, GAME_NAMES, LEVEL_IDS
+import torch
+import numpy as np
+from transformers import AutoTokenizer, AutoModelForCausalLM, set_seed
+from textgames import GAME_NAMES, LEVEL_IDS
 from agents import run_with_agent
+
+
+#%%
+def set_all_seed(seed=42):
+    set_seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
 
 
 #%%
@@ -39,12 +49,13 @@ def qwen_postproc(response_txt, game_name, difficulty_level, *args, **kwargs):
 
 
 #%%
-def get_qwen_response(texts, game_name, difficulty_level, turn, *args, **kwargs):
+def get_qwen_response(texts_batch, game_name, difficulty_level, turn, *args, **kwargs):
     # global model, tokenizer
-    messages = [
+    texts_batch = [texts_batch]    # currently we do not support batch
+    messages = [[
         {"role": "system", "content": "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."},
         *[{"role": ("assistant" if i % 2 else "user"), "content": text} for i, text in enumerate(texts)]
-    ]
+    ] for texts in texts_batch ]
 
     text_inputs = tokenizer.apply_chat_template(
         messages,
@@ -77,13 +88,13 @@ if __name__ == "__main__":
               f"{'' if LVL_ST is None else f'.{LVL_ST}'}"
               f".jsonl")
 
+    set_all_seed()
     model_name = f"Qwen/Qwen2.5-{QWEN_SIZE}B-Instruct"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         device_map="auto",
         torch_dtype="auto",
-        # **({"torch_dtype": "auto"} if QWEN_SIZE > 7 else {}),
     )
     print(f"    > model.dtype: {model.dtype}")
 
