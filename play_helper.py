@@ -1,6 +1,7 @@
 # %%
 import os
 import time
+import json
 import pandas as pd
 import gradio as gr
 import hashlib
@@ -19,19 +20,27 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
+# %%
+_leaderboards = f"{os.getenv('TEXTGAMES_OUTPUT_DIR', '.')}/_leaderboards.jsonl"
+
 
 # %%
-def declare_components(demo, greet):
+def declare_components(demo, greet, use_login_button=False):
     with gr.Row():
         with gr.Column(scale=1):
             m = gr.Markdown("Welcome to TextGames!", elem_id="md-greeting")
-            logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', size='sm', elem_id="btn-logout")
+            if use_login_button:
+                logout_btn = gr.LoginButton(size='sm')
+                reset_sid_btn = gr.Button("♻️ Reset Game Progress", variant='huggingface', size='sm')
+            else:
+                logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', size='sm', elem_id="btn-logout")
+                reset_sid_btn = gr.Button(interactive=False, visible=False, size='sm')
         with gr.Column(scale=2):
-            solved_games_df = gr.DataFrame(headers=[g.split('\t', 1)[0] for g in GAME_NAMES], label="Finished Games",
-                                           interactive=False, elem_id="df-solved-games")
-    game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name")
-    level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name")
-    new_game_btn = gr.Button("Start Game", elem_id="btn-start-game")
+            solved_games_df = gr.DataFrame(headers=[g.split('\t', 1)[0] for g in GAME_NAMES], label="Attempted Games",
+                                           row_count=(1, 'fixed'), interactive=False, elem_id="df-solved-games")
+    level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name", visible=False)
+    game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name", visible=False)
+    new_game_btn = gr.Button("Start Game", elem_id="btn-start-game", visible=False)
     render_toggle = gr.Checkbox(False, visible=False, interactive=False)
 
     # cur_game_start = gr.BrowserState()
@@ -41,9 +50,12 @@ def declare_components(demo, greet):
     user_state = gr.State()
     uid_state = gr.State()
 
+    if not os.path.exists(_leaderboards):
+        download_from_drive(_leaderboards, compare_checksum=False)
+
     session_state.change(
-        lambda s: session_state_change_fn(s, 2, 0, 2, 0),
-        [session_state], [game_radio, level_radio, new_game_btn, logout_btn], js=js_remove_input_helper,
+        lambda s: session_state_change_fn(s, 2, 0, 3, 0),
+        [session_state], [game_radio, level_radio, new_game_btn, logout_btn, reset_sid_btn], js=js_remove_input_helper,
     )
     new_game_btn.click(check_to_start_new_game, [game_radio, level_radio, user_state, uid_state], [session_state])
     solved_games.change(solved_games_change_fn, solved_games, solved_games_df)
@@ -54,13 +66,15 @@ def declare_components(demo, greet):
     ).then(
         lambda: gr.update(interactive=False), None, [new_game_btn],
     ).then(
-        check_played_game, [solved_games, uid_state], [solved_games, solved_games_df]
+        check_played_game, [solved_games, user_state], [solved_games, solved_games_df]
     ).then(
-        lambda: gr.update(interactive=True), None, [new_game_btn],
+        lambda uid: ([gr.update(visible=True, interactive=True)] if uid else
+                     [gr.update(visible=False, interactive=False)]) * 3,
+        [uid_state], [level_radio, game_radio, new_game_btn]
     )
 
     return (
-        (m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle),
+        (m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle, reset_sid_btn),
         (session_state, is_solved, solved_games, user_state, uid_state),
     )
 
@@ -489,7 +503,8 @@ def _is_checksum_same(fp_out, matches=None, mime_type="application/octet-stream"
         matches = _files.list(
             q=f"'{_folder_id}' in parents and mimeType='{mime_type}' and name = '{fp_out.rsplit('/', 1)[-1]}'",
             fields=f"files(name, id, {_cksm_methods_str})",
-        ).execute()['files']
+        ).execute()
+        matches = matches['files']
     if not os.path.exists(fp_out):
         return None, None, matches
     with open(fp_out, "rb") as o:
@@ -502,9 +517,9 @@ def _is_checksum_same(fp_out, matches=None, mime_type="application/octet-stream"
 
 
 # %%
-def upload_to_drive(fp_out, matches=None, mime_type="application/octet-stream", compare_checksum=True):
+def upload_to_drive(fp_out, matches=None, mime_type="application/octet-stream", compare_checksum=True, update=False):
     if compare_checksum:
-        same_checksum, _, _ = _is_checksum_same(fp_out, matches, mime_type)
+        same_checksum, _, matches = _is_checksum_same(fp_out, matches, mime_type)
         # same_checksum, _, _ = _is_checksum_same(
         #     fp_out, **{k: v for k, v in [('matches', matches), ('mime_type', mime_type)] if v})
         if same_checksum:
@@ -513,7 +528,11 @@ def upload_to_drive(fp_out, matches=None, mime_type="application/octet-stream", 
     file_metadata = {"name": fn, "parents": [_folder_id]}
     media = MediaFileUpload(fp_out)
     try:
-        _files.create(body=file_metadata, media_body=media).execute()
+        if update and matches:
+            file_metadata.pop("parents")
+            _files.update(fileId=matches[0]['id'], body=file_metadata, media_body=media).execute()
+        else:
+            _files.create(body=file_metadata, media_body=media).execute()
     except HttpError as error:
         msg = f"Failed to upload the file, error: {error}"
         print(msg)
@@ -547,7 +566,7 @@ def download_from_drive(fp_out, matches=None, mime_type="application/octet-strea
 
 # %%
 def start_new_game(game_name, level, session_state_component, is_solved_component, solved_games_component,
-                   user=None, show_timer=False, uid=None):
+                   user=None, show_timer=False, uid=None, sid=None):
     # cur_game_id = GAME_IDS[GAME_NAMES.index(game_name)]
     difficulty_level = LEVEL_IDS[LEVELS.index(level)]
 
@@ -555,11 +574,16 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
     #     elapsed_text = gr.Textbox("N/A", label=f"{game_name}", info=f"{level}", )
     #     gr.Timer(.3).tick(_calc_time_elapsed, [cur_game_start, elapsed_text, is_solved_component], [elapsed_text])
 
-    fp_out = _get_file_output(game_name, difficulty_level, uid)
+    if (not sid) and user and ('sid' in user):
+        sid = user['sid']
+
+    fp_out = _get_file_output(game_name, difficulty_level, f"{uid}_{sid}")
     cur_game = (
         new_game(game_name, difficulty_level)
         if user is None else
         preload_game(game_name, difficulty_level, user)
+        if sid is None else
+        preload_game(game_name, difficulty_level, user, sid=sid)
     )
     cur_game.attach_stats_output_(fp_out)
     cur_game.flush_stats_(user_info_to_flush=user)
@@ -644,6 +668,8 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
     def game_is_solved(_is_solved, _session_state, _solved_games, progress=gr.Progress()):
         if _is_solved:
             if level in LEVELS and level not in _solved_games[game_name]:
+                if isinstance(_solved_games[game_name], str):
+                    _solved_games[game_name] = []
                 _solved_games[game_name].append(level)
             return (
                 2,
@@ -659,8 +685,16 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
 
     def finalize_game(_is_solved):
         if _is_solved:
-            gr.Info("Reporting... Please click the button when available...")
+            gr.Info(f"Wrapping things up... Please click the button when available...<br/>"
+                    f"Time: {cur_game.end_timestamp-cur_game.start_timestamp:4.1f} sec. Attempt: {cur_game.attempt_count}.")
+            with open(_leaderboards, "a", encoding="utf-8") as f:
+                json.dump({'uid': uid, 'sid': sid, 'turns': cur_game.attempt_count,
+                           'st': cur_game.start_timestamp, 'ed': cur_game.end_timestamp,
+                           'game_name': game_name, 'difficulty_level': difficulty_level,
+                           }, f)
+                f.write("\n")
             upload_to_drive(fp_out)
+            upload_to_drive(_leaderboards, update=True)
             return gr.update(interactive=True)
         return gr.update()
 
@@ -677,13 +711,14 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
 
 
 # %%
-def check_to_start_new_game(game_name, level, user=None, uid=None):
-    print(game_name, level)
+def check_to_start_new_game(game_name, level, user=None, uid=None, sid=None):
+    print(game_name, level, uid, sid)
     if game_name is None or level is None:
         raise gr.Error("please choose both Game & Level")
-    fp = _get_file_output(game_name, LEVEL_IDS[LEVELS.index(level)], uid)
+    fp = _get_file_output(game_name, LEVEL_IDS[LEVELS.index(level)], f"{uid}_{sid}")
     if os.path.exists(fp):
-        raise gr.Error(f"You have done this game already.<br/>{game_name} - {level}")
+        # raise gr.Error(f"You have done this game already.<br/>{game_name} - {level}")
+        gr.Warning("You have done this game already. Only first attempt is recorded in the scoreboard.")
     if user is None:
         gr.Warning("no user, game will be generated randomly")
     # else:
@@ -695,16 +730,19 @@ def check_to_start_new_game(game_name, level, user=None, uid=None):
 
 
 # %%
-def check_played_game(solved_games, uid, progress=gr.Progress()):
+def check_played_game(solved_games, user, progress=gr.Progress()):
+    uid = user['email']
+    sid = user.get('sid', None)
     matches = _files.list(
         q=f"'{_folder_id}' in parents and mimeType='application/octet-stream' and name contains '{uid}_-_'",
         fields=f"files(name, id, {_cksm_methods_str})",
-    ).execute()['files']
+    ).execute()
+    matches = matches['files']
     ret = dict()
     for game_name in solved_games.keys():
         cur = []
         for level, level_id in zip(LEVELS, LEVEL_IDS):
-            fp_out = _get_file_output(game_name, level_id, uid)
+            fp_out = _get_file_output(game_name, level_id, f"{uid}_{sid}")
             _matches = list(filter(lambda m: fp_out.endswith(m['name']), matches))
             if os.path.exists(fp_out):
                 upload_to_drive(fp_out, _matches)
@@ -712,7 +750,7 @@ def check_played_game(solved_games, uid, progress=gr.Progress()):
                 download_from_drive(fp_out, _matches)
             if os.path.exists(fp_out):
                 cur.append(level)
-        ret[game_name] = cur
+        ret[game_name] = cur or '∅'
     return ret, gr.update()
 
 

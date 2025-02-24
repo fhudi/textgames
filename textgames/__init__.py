@@ -62,12 +62,13 @@ def _game_class_from_name(game_name):
     return None
 
 
-def preload_game(game_name, level_id, user):
+def preload_game(game_name, level_id, user, sid=None):
     game_cls = _game_class_from_name(game_name)
-    email_sid_dict = read_csv(
-        f"{os.getenv('TEXTGAMES_OUTPUT_DIR')}/textgames_userauth.tsv", sep='\t'
-    ).dropna().set_index("EMAIL").SID.to_dict()
-    sid = email_sid_dict.get(user["email"])
+    if not sid:
+        email_sid_dict = read_csv(
+            f"{os.getenv('TEXTGAMES_OUTPUT_DIR')}/textgames_userauth.tsv", sep='\t'
+        ).dropna().set_index("EMAIL").SID.to_dict()
+        sid = email_sid_dict.get(user["email"])
     print(f"preload_game('{game_name}', '{level_id}', '{user['email']}') on {sid}")
 
     with open(f"problemsets/{game_filename(game_name)}_{level_id}.json", "r", encoding="utf8") as f:

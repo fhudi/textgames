@@ -130,7 +130,7 @@ with gr.Blocks(title="TextGames") as login_demo:
 app = gr.mount_gradio_app(app, login_demo, path="/login")
 
 with gr.Blocks(title="TextGames", css=css, delete_cache=(3600, 3600)) as demo:
-    ((m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle),
+    ((m, logout_btn, solved_games_df, game_radio, level_radio, new_game_btn, render_toggle, reset_sid_btn),
      (session_state, is_solved, solved_games, user_state, uid_state),
      ) = declare_components(demo, greet)
 
