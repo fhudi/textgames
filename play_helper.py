@@ -7,12 +7,15 @@ import gradio as gr
 import hashlib
 from io import BytesIO
 
-from textgames import GAME_NAMES, LEVEL_IDS, LEVELS, new_game, preload_game, game_filename
+from textgames import GAME_NAMES as _GAME_NAMES, LEVEL_IDS, LEVELS, new_game, preload_game, game_filename
 from textgames.islands.islands import Islands
 from textgames.sudoku.sudoku import Sudoku
 from textgames.crossword_arranger.crossword_arranger import CrosswordArrangerGame
 from textgames.ordering_text.ordering_text import OrderingTextGame
 
+
+# %%
+GAME_NAMES = [_GAME_NAMES[_] for _ in [5, 3, 6, 7, 0, 1, 2, 4]]
 
 # %%
 import google.auth

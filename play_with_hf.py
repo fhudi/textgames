@@ -74,7 +74,7 @@ with gr.Blocks(title="TextGames", css=css, delete_cache=(3600, 3600)) as demo:
 
     def _resetting(confirmed, user):
         uid = user.get('email', None) if isinstance(user, dict) else None
-        if uid is None:
+        if not uid:
             gr.Warning("You need to log in first!")
         elif confirmed:
             user['sid'] = get_sid(uid, force_generate_sid=True)

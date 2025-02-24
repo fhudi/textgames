@@ -1,8 +1,11 @@
 ---
 title: textgames
-app_file: play_gradio.py
+app_file: play_with_hf.py
 sdk: gradio
-sdk_version: 5.8.0
+sdk_version: 5.17.1
+python_version: 3.11.8
+
+hf_oauth: true
 ---
 # TextGames
 
