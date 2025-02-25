@@ -86,6 +86,7 @@ with gr.Blocks(title="TextGames", css=css, delete_cache=(3600, 3600)) as demo:
         _resetting, [reset_sid_checkbox, user_state], [user_state, reset_sid_checkbox]
     ).then(
         check_played_game, [user_state, solved_games, solved_games_df], [solved_games, solved_games_df]
+
     ).then(
         lambda: [gr.update(interactive=True)]*3, None, [logout_btn, reset_sid_btn, new_game_btn]
     )
@@ -97,30 +98,72 @@ with gr.Blocks(title="TextGames", css=css, delete_cache=(3600, 3600)) as demo:
             start_new_game(game_name, level, session_state, is_solved, solved_games, user=user, uid=_uid_state)
 
 #%%
-with demo.route("Leaderboards", "/leaderboard") as demo_leaderboard:
-    gr.Markdown("Under Construction. Will be available soon.")
-    leaderboards = []
-    for tab in ["🚅 Easy", "🚀 Medium", "🛸 Hard"]:
-        with gr.Tab(tab):
-            leaderboards.append(gr.DataFrame(label="Rankings"))
+with (demo.route("Leaderboards", "/leaderboards") as demo_leaderboard):
+    # gr.Markdown("Under Construction. Will be available soon.")
+    def reload_leaderboard():
+        ret_leaderboards = {}
 
-    # if os.path.exists(_leaderboards):
-    #     datas = []
-    #     with open(_leaderboards, "r", encoding="utf8") as f:
-    #         for line in f:
-    #             datas.append(json.loads(line))
-    #     concat = [{'Level': d['difficulty_level'], 'User': d['uid'], 'Game': d['game_name'].split('\t', 1)[0], 'Attempts': d['turns'],
-    #                "Time": d['ed'] - d['st']} for d in datas]
-    # else:
-    def add_dummies():
-        return pd.DataFrame({
-            'User': ['dummy'],
-            'Solved': [' '.join([g.split('\t', 1)[0] for g in GAME_NAMES])],
-            'Attempts': [8],
-            'Time': [7200.8],
-        })
-    for l in leaderboards:
-        demo_leaderboard.load(add_dummies, None, [l])
+        def add_dummies():
+            return pd.DataFrame({
+                'User': ['dummy'],
+                'Solved': [sorted([g.split('\t', 1)[0] for g in GAME_NAMES])],
+                'Attempts': [888],
+                'Time': [8888.8888],
+            })
+
+        if not os.path.exists(_leaderboards):
+            for lv in ['1', '2', '3']:
+                ret_leaderboards[lv] = add_dummies()
+
+        else:
+            datas = []
+            with open(_leaderboards, "r", encoding="utf8") as f:
+                for line in f:
+                    datas.append(json.loads(line))
+            concat = [{'Level': d['difficulty_level'], 'User': d['uid'], 'Session': d['sid'],
+                       'Solved': d['game_name'].split('\t', 1)[0], 'Attempts': d['turns'], "Time": d['ed'] - d['st']
+                       } for d in datas]
+            df_leaderboards_all = pd.DataFrame(concat)
+
+            def get_best(_cur_df):
+                def _per_session(_df):
+                    best = _df.groupby("Solved").apply(
+                        lambda _df: _df.sort_values(["Attempts", "Time"]).iloc[0]
+                    ).reset_index(drop=True)
+                    ret = pd.DataFrame({
+                        "Solved": [sorted(best.Solved.unique())], "Attempts": best.Attempts.sum(), "Time": best.Time.sum(),
+                    })
+                    return ret
+                flat = _cur_df.groupby("Session").apply(_per_session)
+                srt = flat.sort_values(["Solved", "Attempts", "Time"], key=lambda c: {
+                    "Solved": lambda s: -s.apply(len),
+                }.get(c.name, lambda s: s)(c))
+                return srt.iloc[0]
+
+            for lv in ['1', '2', '3']:
+                cur_df = df_leaderboards_all.loc[df_leaderboards_all.Level.eq(lv)].groupby("User").apply(get_best)
+                ret_leaderboards[lv] = cur_df.reset_index() if len(cur_df) else add_dummies()
+
+        return ret_leaderboards
+
+    df_leaderboards = {}
+
+    # for lv, tab_name in [('1', "🚅 Easy"), ('2', "🚀 Medium"), ('3', "🛸 Hard")]:
+    with gr.Tab("🚅 Easy") as tab1:
+        lb_df_1 = gr.DataFrame(label="Rankings", col_count=(4, 'fixed'), interactive=False, show_search='filter')
+        tab1.select(lambda: df_leaderboards['1'], None, [lb_df_1])
+    with gr.Tab("🚀 Medium") as tab2:
+        lb_df_2 = gr.DataFrame(label="Rankings", col_count=(4, 'fixed'), interactive=False, show_search='filter')
+        tab2.select(lambda: df_leaderboards['2'], None, [lb_df_2])
+    with gr.Tab("🛸 Hard") as tab3:
+        lb_df_3 = gr.DataFrame(label="Rankings", col_count=(4, 'fixed'), interactive=False, show_search='filter')
+        tab3.select(lambda: df_leaderboards['3'], None, [lb_df_3])
+
+    def onload(progress=gr.Progress()):
+        global df_leaderboards
+        df_leaderboards = reload_leaderboard()
+        return df_leaderboards['1']
+    demo_leaderboard.load(onload, None, [lb_df_1])
 
 
 #%%
@@ -131,3 +174,18 @@ demo.launch(
 )
 
 
+#%%
+
+#%%
+
+
+#%%
+
+
+#%%
+
+
+#%%
+
+
+#%%
