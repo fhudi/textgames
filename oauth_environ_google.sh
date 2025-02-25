@@ -1,1 +1,1 @@
-export $(cat oauth_environ_google.env | xargs)
+export $(cat ${ENVFILE} | xargs)

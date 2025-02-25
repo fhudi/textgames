@@ -7,6 +7,8 @@ import gradio as gr
 import hashlib
 from io import BytesIO
 
+from datetime import datetime
+
 from textgames import GAME_NAMES as _GAME_NAMES, LEVEL_IDS, LEVELS, new_game, preload_game, game_filename
 from textgames.islands.islands import Islands
 from textgames.sudoku.sudoku import Sudoku
@@ -39,8 +41,10 @@ def declare_components(demo, greet, use_login_button=False):
                 logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', size='sm', elem_id="btn-logout")
                 reset_sid_btn = gr.Button(interactive=False, visible=False, size='sm')
         with gr.Column(scale=2):
-            solved_games_df = gr.DataFrame(headers=[g.split('\t', 1)[0] for g in GAME_NAMES], label="Attempted Games",
-                                           row_count=(1, 'fixed'), interactive=False, elem_id="df-solved-games")
+            solved_games_df = gr.DataFrame(
+                pd.DataFrame({g.split('\t', 1)[0]: ['∅'] for g in GAME_NAMES}), label="Attempted Games",
+                row_count=(1, 'fixed'), col_count=(8, 'fixed'), interactive=False, elem_id="df-solved-games",
+            )
     level_radio = gr.Radio(LEVELS, label="Level", elem_id="radio-level-name", visible=False)
     game_radio = gr.Radio(GAME_NAMES, label="Game", elem_id="radio-game-name", visible=False)
     new_game_btn = gr.Button("Start Game", elem_id="btn-start-game", visible=False)
@@ -69,7 +73,7 @@ def declare_components(demo, greet, use_login_button=False):
     ).then(
         lambda: gr.update(interactive=False), None, [new_game_btn],
     ).then(
-        check_played_game, [solved_games, user_state], [solved_games, solved_games_df]
+        check_played_game, [user_state, solved_games, solved_games_df], [solved_games, solved_games_df]
     ).then(
         lambda uid: ([gr.update(visible=True, interactive=True)] if uid else
                      [gr.update(visible=False, interactive=False)]) * 3,
@@ -643,12 +647,12 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
                      js=js_submit)
     give_up_checkbox = gr.Checkbox(False, visible=False, interactive=False)
     give_up_btn.click(
-        lambda: (gr.update(interactive=False), gr.update(interactive=False)), None, [submit_btn, give_up_btn]
-    ).then(
+    #     lambda: (gr.update(interactive=False), gr.update(interactive=False)), None, [submit_btn, give_up_btn]
+    # ).then(
         lambda x: x, [give_up_checkbox], [give_up_checkbox],
         js="(x) => confirm('🥹 Give-up? 💸')"
-    ).then(
-        lambda: (gr.update(interactive=True), gr.update(interactive=True)), None, [submit_btn, give_up_btn]
+    # ).then(
+    #     lambda: (gr.update(interactive=True), gr.update(interactive=True)), None, [submit_btn, give_up_btn]
     )
 
     def _forfeiting(confirmed, _solved_games):
@@ -657,7 +661,7 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
             cur_game.finish_stats_(forfeit=True)
             if level in LEVELS and level not in _solved_games[game_name]:
                 _solved_games[game_name].append(level)
-            upload_to_drive(fp_out)
+            upload_to_drive(fp_out, update=True)
             return 0, _solved_games
         return 1, _solved_games
     give_up_checkbox.change(
@@ -696,7 +700,8 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
                            'game_name': game_name, 'difficulty_level': difficulty_level,
                            }, f)
                 f.write("\n")
-            upload_to_drive(fp_out)
+            print(f"   >>> Solved @ {datetime.now()}:", uid, sid, game_name, level, sep="  ")
+            upload_to_drive(fp_out, update=True)
             upload_to_drive(_leaderboards, update=True)
             return gr.update(interactive=True)
         return gr.update()
@@ -715,13 +720,15 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
 
 # %%
 def check_to_start_new_game(game_name, level, user=None, uid=None, sid=None):
-    print(game_name, level, uid, sid)
+    if not sid and isinstance(user, dict):
+        sid = user.get('sid', None)
+    print(f"  >>> Starts @ {datetime.now()}:", uid, sid, game_name, level, sep="  ")
     if game_name is None or level is None:
         raise gr.Error("please choose both Game & Level")
     fp = _get_file_output(game_name, LEVEL_IDS[LEVELS.index(level)], f"{uid}_{sid}")
     if os.path.exists(fp):
         # raise gr.Error(f"You have done this game already.<br/>{game_name} - {level}")
-        gr.Warning("You have done this game already. Only first attempt is recorded in the scoreboard.")
+        gr.Warning("You have done this game already.<br/>Only the first attempt is recorded on the leaderboard.")
     if user is None:
         gr.Warning("no user, game will be generated randomly")
     # else:
@@ -733,11 +740,11 @@ def check_to_start_new_game(game_name, level, user=None, uid=None, sid=None):
 
 
 # %%
-def check_played_game(solved_games, user, progress=gr.Progress()):
+def check_played_game(user, solved_games, solved_games_df, progress=gr.Progress()):
     uid = user['email']
     sid = user.get('sid', None)
     matches = _files.list(
-        q=f"'{_folder_id}' in parents and mimeType='application/octet-stream' and name contains '{uid}_-_'",
+        q=f"'{_folder_id}' in parents and mimeType='application/octet-stream' and name contains '{uid}_{sid}_-_'",
         fields=f"files(name, id, {_cksm_methods_str})",
     ).execute()
     matches = matches['files']
@@ -747,10 +754,14 @@ def check_played_game(solved_games, user, progress=gr.Progress()):
         for level, level_id in zip(LEVELS, LEVEL_IDS):
             fp_out = _get_file_output(game_name, level_id, f"{uid}_{sid}")
             _matches = list(filter(lambda m: fp_out.endswith(m['name']), matches))
-            if os.path.exists(fp_out):
-                upload_to_drive(fp_out, _matches)
-            else:
-                download_from_drive(fp_out, _matches)
+            if _matches and not os.path.exists(fp_out):
+                os.system(f"touch \"{fp_out}\"")
+            elif not _matches and os.path.exists(fp_out):
+                upload_to_drive(fp_out, _matches, update=True)
+            # if os.path.exists(fp_out):
+            #     upload_to_drive(fp_out, _matches, update=True)
+            # else:
+            #     download_from_drive(fp_out, _matches)
             if os.path.exists(fp_out):
                 cur.append(level)
         ret[game_name] = cur or '∅'

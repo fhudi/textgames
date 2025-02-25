@@ -64,12 +64,12 @@ with gr.Blocks(title="TextGames", css=css, delete_cache=(3600, 3600)) as demo:
 
     reset_sid_checkbox = gr.Checkbox(False, visible=False, interactive=False)
     reset_sid_btn.click(
-        lambda: [gr.update(interactive=False)]*2, None, [reset_sid_btn, new_game_btn]
-    ).then(
+    #     lambda: [gr.update(interactive=False)]*2, None, [reset_sid_btn, new_game_btn]
+    # ).then(
         lambda x: x, [reset_sid_checkbox], [reset_sid_checkbox],
-        js="(x) => confirm('Reset Progress? (cannot be undone)')"
-    ).then(
-        lambda: [gr.update(interactive=True)]*2, None, [reset_sid_btn, new_game_btn]
+        js="(x) => confirm('Only your best session is recorded on the leaderboard. Are you sure you want to start from the beginning? (cannot be undone)')"
+    # ).then(
+    #     lambda: [gr.update(interactive=True)]*2, None, [reset_sid_btn, new_game_btn]
     )
 
     def _resetting(confirmed, user):
@@ -78,13 +78,14 @@ with gr.Blocks(title="TextGames", css=css, delete_cache=(3600, 3600)) as demo:
             gr.Warning("You need to log in first!")
         elif confirmed:
             user['sid'] = get_sid(uid, force_generate_sid=True)
+            gr.Info("Successfully resets the game with new session. Enjoy the game! 💪")
         return user, False
     reset_sid_checkbox.change(
         lambda: [gr.update(interactive=False)]*3, None, [logout_btn, reset_sid_btn, new_game_btn]
     ).then(
         _resetting, [reset_sid_checkbox, user_state], [user_state, reset_sid_checkbox]
     ).then(
-        check_played_game, [solved_games, user_state], [solved_games, solved_games_df]
+        check_played_game, [user_state, solved_games, solved_games_df], [solved_games, solved_games_df]
     ).then(
         lambda: [gr.update(interactive=True)]*3, None, [logout_btn, reset_sid_btn, new_game_btn]
     )
