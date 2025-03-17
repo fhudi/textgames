@@ -36,7 +36,7 @@ def declare_components(demo, greet, use_login_button=False):
             m = gr.Markdown("Welcome to TextGames!", elem_id="md-greeting")
             if use_login_button:
                 logout_btn = gr.LoginButton(size='sm')
-                reset_sid_btn = gr.Button("♻️ Reset Game Progress", variant='huggingface', size='sm')
+                reset_sid_btn = gr.Button("♻️ Reset Game Progress", variant='huggingface', size='sm', interactive=False)
             else:
                 logout_btn = gr.Button("Logout", link="/logout", variant='huggingface', size='sm', elem_id="btn-logout")
                 reset_sid_btn = gr.Button(interactive=False, visible=False, size='sm')
@@ -57,6 +57,8 @@ def declare_components(demo, greet, use_login_button=False):
     user_state = gr.State()
     uid_state = gr.State()
 
+    if os.getenv('TG_RESET_LEADERBOARDS', '0') == '1':
+        os.system(f"rm \"{_leaderboards}\"")
     if not os.path.exists(_leaderboards):
         download_from_drive(_leaderboards, compare_checksum=False)
 
@@ -76,8 +78,8 @@ def declare_components(demo, greet, use_login_button=False):
         check_played_game, [user_state, solved_games, solved_games_df], [solved_games, solved_games_df]
     ).then(
         lambda uid: ([gr.update(visible=True, interactive=True)] if uid else
-                     [gr.update(visible=False, interactive=False)]) * 3,
-        [uid_state], [level_radio, game_radio, new_game_btn]
+                     [gr.update(visible=True, interactive=False)]) * 4,
+        [uid_state], [level_radio, game_radio, new_game_btn, reset_sid_btn]
     )
 
     return (
@@ -660,6 +662,8 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
             gr.Info("Sad to see you go... Wrapping things up...")
             cur_game.finish_stats_(forfeit=True)
             if level in LEVELS and level not in _solved_games[game_name]:
+                if isinstance(_solved_games[game_name], str):
+                    _solved_games[game_name] = []
                 _solved_games[game_name].append(level)
             upload_to_drive(fp_out, update=True)
             return 0, _solved_games
@@ -720,6 +724,8 @@ def start_new_game(game_name, level, session_state_component, is_solved_componen
 
 # %%
 def check_to_start_new_game(game_name, level, user=None, uid=None, sid=None):
+    if not uid:
+        raise gr.Error("please login first!")
     if not sid and isinstance(user, dict):
         sid = user.get('sid', None)
     print(f"  >>> Starts @ {datetime.now()}:", uid, sid, game_name, level, sep="  ")
@@ -743,11 +749,14 @@ def check_to_start_new_game(game_name, level, user=None, uid=None, sid=None):
 def check_played_game(user, solved_games, solved_games_df, progress=gr.Progress()):
     uid = user['email']
     sid = user.get('sid', None)
-    matches = _files.list(
-        q=f"'{_folder_id}' in parents and mimeType='application/octet-stream' and name contains '{uid}_{sid}_-_'",
-        fields=f"files(name, id, {_cksm_methods_str})",
-    ).execute()
-    matches = matches['files']
+    if uid and sid:
+        matches = _files.list(
+            q=f"'{_folder_id}' in parents and mimeType='application/octet-stream' and name contains '{uid}_{sid}_-_'",
+            fields=f"files(name, id, {_cksm_methods_str})",
+        ).execute()
+        matches = matches['files']
+    else:
+        matches = []
     ret = dict()
     for game_name in solved_games.keys():
         cur = []

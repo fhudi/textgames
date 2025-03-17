@@ -86,7 +86,6 @@ with gr.Blocks(title="TextGames", css=css, delete_cache=(3600, 3600)) as demo:
         _resetting, [reset_sid_checkbox, user_state], [user_state, reset_sid_checkbox]
     ).then(
         check_played_game, [user_state, solved_games, solved_games_df], [solved_games, solved_games_df]
-
     ).then(
         lambda: [gr.update(interactive=True)]*3, None, [logout_btn, reset_sid_btn, new_game_btn]
     )
@@ -110,6 +109,11 @@ with (demo.route("Leaderboards", "/leaderboards") as demo_leaderboard):
                 'Attempts': [888],
                 'Time': [8888.8888],
             })
+
+        def sort_df(_cur_df):
+            return _cur_df.sort_values(["Solved", "Attempts", "Time"], key=lambda c: {
+                    "Solved": lambda s: -s.apply(len),
+                }.get(c.name, lambda s: s)(c))
 
         if not os.path.exists(_leaderboards):
             for lv in ['1', '2', '3']:
@@ -135,14 +139,16 @@ with (demo.route("Leaderboards", "/leaderboards") as demo_leaderboard):
                     })
                     return ret
                 flat = _cur_df.groupby("Session").apply(_per_session)
-                srt = flat.sort_values(["Solved", "Attempts", "Time"], key=lambda c: {
-                    "Solved": lambda s: -s.apply(len),
-                }.get(c.name, lambda s: s)(c))
-                return srt.iloc[0]
+                return sort_df(flat).iloc[0]
 
             for lv in ['1', '2', '3']:
                 cur_df = df_leaderboards_all.loc[df_leaderboards_all.Level.eq(lv)].groupby("User").apply(get_best)
-                ret_leaderboards[lv] = cur_df.reset_index() if len(cur_df) else add_dummies()
+                cur_df = (
+                    (sort_df(cur_df.reset_index()) if len(cur_df) else add_dummies()).rename({"Attempts": "Turns"}, axis=1)
+                    .rename_axis("Rank").reset_index()
+                )
+                cur_df["Rank"] = list(range(1, len(cur_df)+1))
+                ret_leaderboards[lv] = cur_df
 
         return ret_leaderboards
 
@@ -150,13 +156,13 @@ with (demo.route("Leaderboards", "/leaderboards") as demo_leaderboard):
 
     # for lv, tab_name in [('1', "🚅 Easy"), ('2', "🚀 Medium"), ('3', "🛸 Hard")]:
     with gr.Tab("🚅 Easy") as tab1:
-        lb_df_1 = gr.DataFrame(label="Rankings", col_count=(4, 'fixed'), interactive=False, show_search='filter')
+        lb_df_1 = gr.DataFrame(label="Rankings", col_count=(5, 'fixed'), interactive=False, show_search='filter')
         tab1.select(lambda: df_leaderboards['1'], None, [lb_df_1])
     with gr.Tab("🚀 Medium") as tab2:
-        lb_df_2 = gr.DataFrame(label="Rankings", col_count=(4, 'fixed'), interactive=False, show_search='filter')
+        lb_df_2 = gr.DataFrame(label="Rankings", col_count=(5, 'fixed'), interactive=False, show_search='filter')
         tab2.select(lambda: df_leaderboards['2'], None, [lb_df_2])
     with gr.Tab("🛸 Hard") as tab3:
-        lb_df_3 = gr.DataFrame(label="Rankings", col_count=(4, 'fixed'), interactive=False, show_search='filter')
+        lb_df_3 = gr.DataFrame(label="Rankings", col_count=(5, 'fixed'), interactive=False, show_search='filter')
         tab3.select(lambda: df_leaderboards['3'], None, [lb_df_3])
 
     def onload(progress=gr.Progress()):
@@ -170,7 +176,7 @@ with (demo.route("Leaderboards", "/leaderboards") as demo_leaderboard):
 # demo.launch()
 demo.launch(
     favicon_path=favicon_path if os.path.exists(favicon_path) else None,
-    show_api=False,
+    show_api=False, enable_monitoring=False, pwa=False,
 )
 
 
